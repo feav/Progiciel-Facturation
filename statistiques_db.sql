@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Mar 14, 2020 at 05:59 AM
+-- Generation Time: Mar 21, 2020 at 08:21 AM
 -- Server version: 5.7.21
 -- PHP Version: 7.2.4
 
@@ -31,11 +31,11 @@ SET time_zone = "+00:00";
 CREATE TABLE `annonceurs` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `nom` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `url` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `adresse_facturation` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email_comptabilite` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email_direction` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email_production` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email_comptabilite` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `email_direction` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `email_production` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `delai_paiement` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -49,7 +49,12 @@ INSERT INTO `annonceurs` (`id`, `nom`, `url`, `adresse_facturation`, `email_comp
 (1, 'GeryAnnonceur1', 'GeryAnnonceur1', 'GeryAnnonceur1', 'meligery93@gmail.com', 'meligery93@gmail.com', 'meligery93@gmail.com', '12/03/2020', '2020-03-10 21:19:06', '2020-03-10 21:19:06'),
 (2, 'GeryAnnonceur2', 'GeryAnnonceur2', 'GeryAnnonceur2', 'meligery@yahoo.com', 'meligery@yahoo.com', 'meligery@yahoo.com', '19/03/2020', '2020-03-10 21:19:36', '2020-03-10 21:19:36'),
 (3, 'GeryAnnonceur3', 'GeryAnnonceur3', 'GeryAnnonceur3', 'meligery@outlook.fr', 'meligery@outlook.fr', 'meligery@outlook.fr', '25/03/2020', '2020-03-10 21:20:04', '2020-03-10 21:20:04'),
-(4, 'GeryAnnonceur4', 'GeryAnnonceur4', 'GeryAnnonceur4', 'toto@toto.com', 'toto@toto.com', 'toto@toto.com', '31/03/2020', '2020-03-10 23:11:46', '2020-03-10 23:11:46');
+(4, 'GeryAnnonceur4', 'GeryAnnonceur4', 'GeryAnnonceur4', 'toto@toto.com', 'toto@toto.com', 'toto@toto.com', '31/03/2020', '2020-03-10 23:11:46', '2020-03-10 23:11:46'),
+(5, 'AnnonceurTest', NULL, 'adresseTest', NULL, NULL, NULL, '2020-03-21', '2020-03-21 02:18:22', '2020-03-21 02:18:22'),
+(6, 'AnnonceurTest2', NULL, 'adresseTest2', NULL, NULL, NULL, '2020-03-28', '2020-03-21 02:22:43', '2020-03-21 02:22:43'),
+(7, 'AnnonceurTest3', NULL, 'adresseTest3', NULL, NULL, NULL, '2020-03-31', '2020-03-21 02:23:59', '2020-03-21 02:23:59'),
+(8, 'AnnonceurTest4', NULL, 'adresseTest4', NULL, NULL, NULL, '2020-03-31', '2020-03-21 02:26:22', '2020-03-21 02:26:22'),
+(9, 'AnnonceurTest5', NULL, 'adresseTest5', NULL, NULL, NULL, '2020-03-30', '2020-03-21 02:29:45', '2020-03-21 02:29:45');
 
 -- --------------------------------------------------------
 
@@ -75,7 +80,8 @@ INSERT INTO `bases` (`id`, `nom`, `routeur_id`, `created_at`, `updated_at`) VALU
 (3, 'Base3', 1, '2020-03-11 06:39:28', '2020-03-11 06:39:28'),
 (4, 'Base4', 2, '2020-03-11 07:45:47', '2020-03-11 07:45:47'),
 (5, 'Base5', 4, '2020-03-11 07:47:10', '2020-03-11 07:47:10'),
-(6, 'Base6', 4, '2020-03-11 07:49:09', '2020-03-11 07:49:09');
+(6, 'Base6', 4, '2020-03-11 07:49:09', '2020-03-11 07:49:09'),
+(7, 'BaseTest', 5, '2020-03-21 02:12:50', '2020-03-21 02:12:50');
 
 -- --------------------------------------------------------
 
@@ -101,7 +107,8 @@ INSERT INTO `campagnes` (`id`, `nom`, `type_remuneration`, `remuneration`, `anno
 (1, 'Campagne1', 'argent', 50.00, 4, '2020-03-10 23:21:37', '2020-03-10 23:21:37'),
 (2, 'Campagne2', 'argent', 100.00, 2, '2020-03-11 07:59:19', '2020-03-11 07:59:19'),
 (3, 'Campagne3', 'money', 150.00, 1, '2020-03-11 07:59:49', '2020-03-11 07:59:49'),
-(4, 'Campagne4', 'nkap', 200.00, 3, '2020-03-11 08:00:05', '2020-03-11 08:00:05');
+(4, 'Campagne4', 'nkap', 200.00, 3, '2020-03-11 08:00:05', '2020-03-11 08:00:05'),
+(5, 'campagneTest', 'argent', 250.00, 6, '2020-03-21 02:33:14', '2020-03-21 02:33:14');
 
 -- --------------------------------------------------------
 
@@ -168,7 +175,9 @@ CREATE TABLE `plannings` (
 
 INSERT INTO `plannings` (`id`, `annonceur_id`, `campagne_id`, `routeur_id`, `base_id`, `volume`, `date_envoi`, `created_at`, `updated_at`) VALUES
 (1, 4, 1, 4, 5, 12000.00, '12/03/2020', '2020-03-11 07:53:49', '2020-03-11 07:53:49'),
-(2, 1, 3, 1, 3, 500.00, '16/03/2020', '2020-03-14 00:55:54', '2020-03-14 00:55:54');
+(2, 1, 3, 1, 3, 500.00, '16/03/2020', '2020-03-14 00:55:54', '2020-03-14 00:55:54'),
+(3, 6, 5, 5, 7, 50000.00, '2020-03-25', '2020-03-21 02:40:02', '2020-03-21 02:40:02'),
+(4, 3, 4, 4, 6, 104.00, '2020-03-27', '2020-03-21 05:00:46', '2020-03-21 05:00:46');
 
 -- --------------------------------------------------------
 
@@ -195,7 +204,9 @@ CREATE TABLE `resultats` (
 
 INSERT INTO `resultats` (`id`, `annonceur_id`, `campagne_id`, `routeur_id`, `base_id`, `volume`, `date_envoi`, `resultat`, `created_at`, `updated_at`) VALUES
 (1, 4, 1, 4, 5, 1200.00, '12/03/2020', 5, '2020-03-11 06:53:49', '2020-03-14 04:54:41'),
-(2, 1, 3, 1, 3, 500.00, '16/03/2020', 3, '2020-03-14 00:55:54', '2020-03-14 04:49:41');
+(2, 1, 3, 1, 3, 500.00, '16/03/2020', 3, '2020-03-14 00:55:54', '2020-03-14 04:49:41'),
+(3, 6, 5, 5, 7, 50000.00, '2020-03-25', 103, '2020-03-21 02:40:02', '2020-03-21 07:20:06'),
+(4, 3, 4, 4, 6, 104.00, '2020-03-27', 104, '2020-03-21 05:00:46', '2020-03-21 07:16:06');
 
 -- --------------------------------------------------------
 
@@ -219,7 +230,10 @@ INSERT INTO `routeurs` (`id`, `nom`, `prix`, `created_at`, `updated_at`) VALUES
 (1, 'GeryRouteur1', 50.00, '2020-03-10 21:17:55', '2020-03-10 21:17:55'),
 (2, 'GeryRouteur2', 100.00, '2020-03-10 21:18:04', '2020-03-10 21:18:04'),
 (3, 'GeryRouteur3', 150.00, '2020-03-10 21:18:12', '2020-03-10 21:18:12'),
-(4, 'GeryRouteur4', 200.00, '2020-03-10 23:11:03', '2020-03-10 23:11:03');
+(4, 'GeryRouteur4', 200.00, '2020-03-10 23:11:03', '2020-03-10 23:11:03'),
+(5, 'test', 250.00, '2020-03-21 02:07:40', '2020-03-21 02:07:40'),
+(6, 'routeurTest2', 300.00, '2020-03-21 02:45:05', '2020-03-21 02:45:05'),
+(7, 'routeurTest3', 350.00, '2020-03-21 02:48:39', '2020-03-21 02:48:39');
 
 -- --------------------------------------------------------
 
@@ -305,19 +319,19 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `annonceurs`
 --
 ALTER TABLE `annonceurs`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `bases`
 --
 ALTER TABLE `bases`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `campagnes`
 --
 ALTER TABLE `campagnes`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `failed_jobs`
@@ -335,19 +349,19 @@ ALTER TABLE `migrations`
 -- AUTO_INCREMENT for table `plannings`
 --
 ALTER TABLE `plannings`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `resultats`
 --
 ALTER TABLE `resultats`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `routeurs`
 --
 ALTER TABLE `routeurs`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `users`

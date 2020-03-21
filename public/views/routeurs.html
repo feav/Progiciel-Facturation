@@ -1,0 +1,59 @@
+<div id="page-heading">
+    <ol class="breadcrumb">
+        <li><a href="#/">Tableau de Bord</a></li>
+        <li class="active">Routeurs</li>
+    </ol>
+
+    <h1>Résultats par Routeurs</h1>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-12">
+            <panel panel-class="panel-primary" data-heading="Tableau des résultats triés par routeurs">
+                <table id="routeursTab" class="table table-striped table-bordered table-hover table-responsive">
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Prix</th>
+                            <th>Volume</th>
+                            <th>Chiffre d'Affaires</th>
+                            <th>Prix d'achat</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </panel>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function(){
+        $.ajax({
+            url:'api/routeurs/forStatistics',
+            type:'GET',
+            success: function (rep) {
+                if(rep.code == 200){
+                    $.each(rep.body, function (index, value) {
+                        var tr = $("<tr></tr>");
+                        var td1 = $("<td></td>");
+                        var td2 = $("<td></td>");
+                        var td3 = $("<td></td>");
+                        var td4 = $("<td></td>");
+                        var td5 = $("<td></td>");
+                        td1.text(value.nom);
+                        td2.text(value.prix);
+                        td3.text(value.volume);
+                        if(value.resultat == null) td4.text('0 €');
+                        else td4.text((value.resultat*value.rem)+' €');
+                        td5.text(value.pa+' €');
+                        tr.append(td1, td2, td3, td4, td5);
+                        $('#routeursTab tbody').append(tr);
+                    });      
+                }
+            },
+            error: function (res,status,err) { console.log(err) },
+            complete: function () {}
+        });
+    });
+</script>

@@ -16,11 +16,11 @@ class CreateAnnonceursTable extends Migration
         Schema::create('annonceurs', function (Blueprint $table) {
             $table->id();
             $table->string('nom');
-            $table->string('url');
+            $table->string('url')->nullable(true);
             $table->string('adresse_facturation');
-            $table->string('email_comptabilite');
-            $table->string('email_direction');
-            $table->string('email_production');
+            $table->string('email_comptabilite')->nullable(true);
+            $table->string('email_direction')->nullable(true);
+            $table->string('email_production')->nullable(true);
             $table->string('delai_paiement');
             $table->timestamps();
         });

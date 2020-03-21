@@ -1,0 +1,213 @@
+<div id="page-heading">
+    <ol class="breadcrumb">
+        <li><a href="#/">Tableau de Bord</a></li>
+        <li class="active">Résultats</li>
+    </ol>
+
+    <h1>Résultats Globaux</h1>
+    <!-- <div class="options">
+        <div class="btn-toolbar">
+            <div class="btn-group" dropdown>
+                <button type="button" class="btn btn-default dropdown-toggle">
+                    Filtre <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="#">Action</a></li>
+                    <li><a href="#">Another action</a></li>
+                    <li><a href="#">Something else here</a></li>
+                    <li class="divider"></li>
+                    <li><a href="#">Separated link</a></li>
+                </ul>
+            </div>
+        </div>
+    </div> -->
+</div>
+
+<div class="modal fade" id="editerResultatModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Formulaire de Modification d'un résultat</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editerResultatForm" method="POST" action="">
+                    <input type="text" style="display: none;" id="idResultat" name="id">
+                    <div class="form-group row">
+                        <label for="dateResultat" class="col-sm-4 col-form-label">Date</label>
+                        <div class="col-sm-8">
+                            <input type="text" readonly="readonly" disabled class="form-control" id="dateResultat" name="date">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="routeurResultat" class="col-sm-4 col-form-label">Routeur</label>
+                        <div class="col-sm-8">
+                            <input type="text" readonly="readonly" disabled class="form-control" id="routeurResultat" name="routeur">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="baseResultat" class="col-sm-4 col-form-label">Base</label>
+                        <div class="col-sm-8">
+                            <input type="text" readonly="readonly" disabled class="form-control" id="baseResultat" name="base">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="annonceurResultat" class="col-sm-4 col-form-label">Annonceur</label>
+                        <div class="col-sm-8">
+                            <input type="text" readonly="readonly" disabled class="form-control" id="annonceurResultat" name="annonceur">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="campagneResultat" class="col-sm-4 col-form-label">Campagne</label>
+                        <div class="col-sm-8">
+                            <input type="text" readonly="readonly" disabled class="form-control" id="campagneResultat" name="campagne">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="volumeResultat" class="col-sm-4 col-form-label">Volume envoyé</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="volumeResultat" name="volume">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="resultatResultat" class="col-sm-4 col-form-label">Résultat</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="resultatResultat" name="resultat">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success"><i class="fa fa-check-circle"></i> Mettre à jour</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times-circle"></i> Annuler</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-12">
+            <panel panel-class="panel-primary" data-heading="Tableau des résultats globaux">
+                <table id="resultatsTab" class="table table-striped table-bordered table-hover table-responsive">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Routeur</th>
+                            <th>Base</th>
+                            <th>Annonceur</th>
+                            <th>Campagne</th>
+                            <th>Volume envoyé</th>
+                            <th>Résultat</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </panel>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function(){
+        $.ajax({
+            url:'api/resultats',
+            type:'GET',
+            success: function (rep) {
+                if(rep.code == 200){
+                    $.each(rep.body, function (index, value) {
+                        var tr = $("<tr></tr>");
+                        var td0 = $("<td class='id' style='display:none;'></td>");
+                        var td1 = $("<td class='date'></td>");
+                        var td2 = $("<td class='routeur'></td>");
+                        var td3 = $("<td class='base'></td>");
+                        var td4 = $("<td class='annonceur'></td>");
+                        var td5 = $("<td class='campagne'></td>");
+                        var td6 = $("<td class='volume'></td>");
+                        var td7 = $("<td class='resultat'></td>");
+                        var td8 = $("<td><button class='btn btn-sm btn-indigo editerCellule' data-toggle='modal' data-target='#editerResultatModal'>Editer</button></td>")
+                        td0.text(value.id);
+                        td1.text(value.date);
+                        td2.text(value.routeur);
+                        td3.text(value.base);
+                        td4.text(value.annonceur);
+                        td5.text(value.campagne);
+                        td6.text(value.volume);
+                        if(value.resultat == null) td7.text("");
+                        else td7.text(value.resultat);
+                        tr.append(td0, td1, td2, td3, td4, td5, td6, td7, td8);
+                        $('#resultatsTab tbody').append(tr);
+                    });      
+                }
+            },
+            error: function (res,status,err) { console.log(err) },
+            complete: function () {}
+        });
+        
+        $('#editerResultatModal').on('show.bs.modal', function (e) {
+            $('#idResultat').attr('value',$(e.relatedTarget).parent().parent().children('.id').text());
+            $('#dateResultat').attr('value',$(e.relatedTarget).parent().parent().children('.date').text());
+            $('#routeurResultat').attr('value',$(e.relatedTarget).parent().parent().children('.routeur').text());
+            $('#baseResultat').attr('value',$(e.relatedTarget).parent().parent().children('.base').text());
+            $('#annonceurResultat').attr('value',$(e.relatedTarget).parent().parent().children('.annonceur').text());
+            $('#campagneResultat').attr('value',$(e.relatedTarget).parent().parent().children('.campagne').text());
+            $('#volumeResultat').attr('value',$(e.relatedTarget).parent().parent().children('.volume').text());
+            $('#resultatResultat').attr('value',$(e.relatedTarget).parent().parent().children('.resultat').text());
+        });
+
+        $('#editerResultatForm').submit(function(){
+            var url = 'api/resultats/'+$('#idResultat').attr('value');
+            $.ajax({
+                url: url,
+                type:'PUT',
+                data: $('#editerResultatForm').serialize(),
+                success: function (rep) {
+                    if(rep.code == 200){
+                        $('#editerResultatModal').modal('hide');
+                        $.ajax({
+                            url:'api/resultats',
+                            type:'GET',
+                            success: function (rep) {
+                                if(rep.code == 200){
+                                    $('#resultatsTab tbody').empty();
+                                    $.each(rep.body, function (index, value) {
+                                        var tr = $("<tr></tr>");
+                                        var td0 = $("<td class='id' style='display:none;'></td>");
+                                        var td1 = $("<td class='date'></td>");
+                                        var td2 = $("<td class='routeur'></td>");
+                                        var td3 = $("<td class='base'></td>");
+                                        var td4 = $("<td class='annonceur'></td>");
+                                        var td5 = $("<td class='campagne'></td>");
+                                        var td6 = $("<td class='volume'></td>");
+                                        var td7 = $("<td class='resultat'></td>");
+                                        var td8 = $("<td><button class='btn btn-sm btn-indigo editerCellule' data-toggle='modal' data-target='#editerResultatModal'>Editer</button></td>")
+                                        td0.text(value.id);
+                                        td1.text(value.date);
+                                        td2.text(value.routeur);
+                                        td3.text(value.base);
+                                        td4.text(value.annonceur);
+                                        td5.text(value.campagne);
+                                        td6.text(value.volume);
+                                        if(value.resultat == null) td7.text("");
+                                        else td7.text(value.resultat);
+                                        tr.append(td0, td1, td2, td3, td4, td5, td6, td7, td8);
+                                        $('#resultatsTab tbody').append(tr);
+                                    });      
+                                }
+                            },
+                            error: function (res,status,err) { console.log(err) },
+                            complete: function () {}
+                        });
+                        $("#successNotifButton").click();
+                        $('#editerResultatForm')[0].reset();
+                    }else
+                        $("#errorNotifButton").click();
+                },
+                error: function (res,status,err) { console.log(err); $("#errorNotifButton").click(); },
+                complete: function () {}
+            });
+        });
+    });
+</script>
