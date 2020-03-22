@@ -12,6 +12,7 @@ use App\Http\Controllers\OthersResponses\AnnonceurOtherResponse;
 
 class AnnonceurController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      *

@@ -12,6 +12,7 @@ use App\Http\Controllers\OthersResponses\BaseOtherResponse;
 
 class BaseController extends Controller
 {
+    
     /**
      * Display a listing of the resource.
      *

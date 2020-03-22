@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Page Not Found :(</title>
+    <title>Page introuvable</title>
     <style>
       ::-moz-selection {
         background: #b3d4fc;
@@ -141,17 +141,14 @@
   </head>
   <body>
     <div class="container">
-      <h1>Page Introuvable <span>:(</span></h1>
-      <p>D�sol�, mais la page ou la ressource que vous recherchez n'existe pas sur ce domaine.</p>
-      <p>It looks like this was the result of either:</p>
+      <h1>Page Introuvable</h1>
+      <p>Désolé, mais la page ou la ressource que vous recherchez n'existe pas sur ce domaine.</p>
+      <p>Ceci pourrait être le résultat de:</p>
       <ul>
-        <li>a mistyped address</li>
-        <li>an out-of-date link</li>
+        <li>Une adresse mal saisie</li>
+        <li>Un lien obsolète</li>
       </ul>
-      <script>
-        var GOOG_FIXURL_LANG = (navigator.language || '').slice(0,2),GOOG_FIXURL_SITE = location.host;
-      </script>
-      <script src="//linkhelp.clients.google.com/tbproxy/lh/wm/fixurl.js"></script>
+      <span>Retourner à <a href="/">l'acceuil</a></span>
     </div>
   </body>
 </html>

@@ -34,5 +34,6 @@ Route::apiResources([
     'campagnes' => 'CampagneController',
     'plannings' => 'PlanningController',
     'routeurs' => 'RouteurController',
-    'resultats' => 'ResultatController'
+    'resultats' => 'ResultatController',
+    'users' => 'UserController'
 ]);

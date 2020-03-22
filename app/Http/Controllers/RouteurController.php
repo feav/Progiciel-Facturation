@@ -11,6 +11,7 @@ use App\Http\Controllers\OthersResponses\RouteurOtherResponse;
 
 class RouteurController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      *

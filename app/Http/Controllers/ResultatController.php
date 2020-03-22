@@ -14,6 +14,7 @@ use App\Http\Controllers\OthersResponses\ResultatResponse;
 
 class ResultatController extends Controller
 {
+    
     /**
      * Display a listing of the resource.
      *

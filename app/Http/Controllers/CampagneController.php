@@ -9,6 +9,7 @@ use App\Annonceur;
 
 class CampagneController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      *

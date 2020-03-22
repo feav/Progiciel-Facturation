@@ -11,6 +11,7 @@ use App\Resultat;
 
 class PlanningController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      *
