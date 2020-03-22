@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Mar 21, 2020 at 08:21 AM
+-- Generation Time: Mar 22, 2020 at 12:35 PM
 -- Server version: 5.7.21
 -- PHP Version: 7.2.4
 
@@ -205,7 +205,7 @@ CREATE TABLE `resultats` (
 INSERT INTO `resultats` (`id`, `annonceur_id`, `campagne_id`, `routeur_id`, `base_id`, `volume`, `date_envoi`, `resultat`, `created_at`, `updated_at`) VALUES
 (1, 4, 1, 4, 5, 1200.00, '12/03/2020', 5, '2020-03-11 06:53:49', '2020-03-14 04:54:41'),
 (2, 1, 3, 1, 3, 500.00, '16/03/2020', 3, '2020-03-14 00:55:54', '2020-03-14 04:49:41'),
-(3, 6, 5, 5, 7, 50000.00, '2020-03-25', 103, '2020-03-21 02:40:02', '2020-03-21 07:20:06'),
+(3, 6, 5, 5, 7, 50000.00, '2020-03-25', 101, '2020-03-21 02:40:02', '2020-03-22 09:24:46'),
 (4, 3, 4, 4, 6, 104.00, '2020-03-27', 104, '2020-03-21 05:00:46', '2020-03-21 07:16:06');
 
 -- --------------------------------------------------------
@@ -251,6 +251,19 @@ CREATE TABLE `users` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
+(1, 'Gery Meli', 'meligery@yahoo.fr', NULL, '$2y$10$mGg3AiFXXPd4zjd/nZZjL.fSFW7Llp5v6yekgpXRUq4GHa0OYPTHK', NULL, '2020-03-22 05:01:29', '2020-03-22 05:01:29'),
+(2, 'Toto', 'toto@toto.com', NULL, '$2y$10$xjdQG0.DXuJI03DnP.3rU.5fCV4Ry8FXfBGznSXrMPKHLd9FDDn02', 'wEqgNyMxhShsNUq9IYlCJFlL8sodBdQQFbcFVqvMZxexGSZvLV1kS7E6ccSX', '2020-03-22 08:16:04', '2020-03-22 08:16:04'),
+(6, 'Tata', 'tata@tata.com', NULL, '$2y$10$pCQfWaH8WsGVJvQyArGmV.lC6VdyAPyWescsLBceXlj8W.PITcbmu', NULL, '2020-03-22 08:35:57', '2020-03-22 08:35:57'),
+(7, 'Tete', 'tete@tete.com', NULL, '$2y$10$FIf1dj7jQ9GIUc77rgy3iOqZFVI5RT6Pvw/pnj.ON4uSs7NTYocgy', NULL, '2020-03-22 08:37:35', '2020-03-22 08:37:35'),
+(8, 'Titi', 'titi@titi.com', NULL, '$2y$10$eco4Xl6hbOUbeIrYOdVSrOOZw37sg7wHXNOjc.WmUrUJ8g4fSRq2e', NULL, '2020-03-22 08:39:14', '2020-03-22 08:39:14'),
+(9, 'Tutu', 'tutu@tutu.com', NULL, '$2y$10$u/NtwgXZ3anMiuZmtBbyeeIMt7mZIDE9o1.v7Qh/KgQHnVlg4xhMO', NULL, '2020-03-22 09:26:32', '2020-03-22 09:26:32'),
+(11, 'Tyty', 'tyty@tyty.com', NULL, '$2y$10$aVJ9EikOSxXuj2JLiRZurOU7726lmijpMnIMFGpN1P09P0Xik.JMO', NULL, '2020-03-22 09:29:37', '2020-03-22 09:29:37');
 
 --
 -- Indexes for dumped tables
@@ -367,7 +380,7 @@ ALTER TABLE `routeurs`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
