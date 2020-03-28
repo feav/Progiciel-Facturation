@@ -39,11 +39,6 @@
                             <button id="loginFormSubmitButton" type="submit" class="btn btn-primary btn-block">Connexion</button>
                         </form>
                 </div>
-                <div class="panel-footer">
-                    <span class="pull-right">
-                        Pas de compte ?<a href="/register" class="btn btn-link" style="padding-right:0">Créer un compte</a>
-                    </span>
-                </div>
             </div>
         </div>
     </div>
