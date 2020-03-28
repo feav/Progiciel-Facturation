@@ -5,9 +5,14 @@ namespace App\Http\Controllers;
 use App\Planning;
 use Illuminate\Http\Request;
 use App\RESTResponse;
+use App\Routeur;
+use App\Annonceur;
 use App\Base;
 use App\Campagne;
 use App\Resultat;
+use App\User;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\OthersResponses\PlanningResponse;
 
 class PlanningController extends Controller
 {
@@ -19,7 +24,25 @@ class PlanningController extends Controller
      */
     public function index()
     {
-        return response()->json(Planning::all());
+        $plannings = Planning::all();
+        $plannings->transform(function ($item, $key) {
+            $planning = new PlanningResponse(
+                $item->id,
+                date('d-m-Y', strtotime($item->date_envoi)),
+                $item->heure_envoi,
+                Routeur::find($item->routeur_id), 
+                Base::find($item->base_id), 
+                Annonceur::find($item->annonceur_id), 
+                Campagne::find($item->campagne_id), 
+                $item->volume, 
+                date('d-m-Y à H:i:s', strtotime($item->created_at)),
+                User::find($item->cree_par)->name,
+                date('d-m-Y à H:i:s', strtotime($item->updated_at)),
+                User::find($item->modifie_par)->name
+            );
+            return $planning;
+        });
+        return response()->json(new RESTResponse(200, "OK", $plannings));
     }
 
     /**
@@ -34,8 +57,10 @@ class PlanningController extends Controller
         $resultat = new Resultat;
         $planning->volume = $request->input('volume');
         $planning->date_envoi = $request->input('date_envoi');
+        $planning->heure_envoi = $request->input('heure_envoi');
         $resultat->volume = $request->input('volume');
         $resultat->date_envoi = $request->input('date_envoi');
+        $resultat->heure_envoi = $request->input('heure_envoi');
         $base = Base::find($request->input('base'));
         $campagne = Campagne::find($request->input('campagne'));
         $planning->base()->associate($base);
@@ -46,6 +71,10 @@ class PlanningController extends Controller
         $planning->annonceur_id = $campagne->annonceur_id;
         $resultat->routeur_id = $base->routeur_id;
         $resultat->annonceur_id = $campagne->annonceur_id;
+        $planning->cree_par = Auth::user()->id;
+        $resultat->cree_par = Auth::user()->id;
+        $planning->modifie_par = Auth::user()->id;
+        $resultat->modifie_par = Auth::user()->id;
         $planning->save();
         $resultat->save();
         return response()->json(new RESTResponse(200, "OK", null));
@@ -71,10 +100,12 @@ class PlanningController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $planning = Planning::find('id',$id);
-        if($planning != null){
+        $planning = Planning::find($id);
+        $resultat = Resultat::find($id);
+        if($planning != null && $resultat != null){
             $planning->volume = $request->input('volume');
             $planning->date_envoi = $request->input('date_envoi');
+            $planning->heure_envoi = $request->input('heure_envoi');
             $planning->base()->dissociate();
             $planning->campagne()->dissociate();
             $base = Base::find($request->input('base'));
@@ -83,10 +114,23 @@ class PlanningController extends Controller
             $planning->campagne()->associate($campagne);
             $planning->routeur_id = $base->routeur_id;
             $planning->annonceur_id = $campagne->annonceur_id;
+            $planning->modifie_par = Auth::user()->id;
+
+            $resultat->volume = $request->input('volume');
+            $resultat->date_envoi = $request->input('date_envoi');
+            $resultat->heure_envoi = $request->input('heure_envoi');
+            $resultat->base()->dissociate();
+            $resultat->campagne()->dissociate();
+            $resultat->base()->associate($base);
+            $resultat->campagne()->associate($campagne);
+            $resultat->routeur_id = $base->routeur_id;
+            $resultat->annonceur_id = $campagne->annonceur_id;
+            $resultat->modifie_par = Auth::user()->id;
             $planning->save();
+            $resultat->save();
             return response()->json(new RESTResponse(200, "OK", null));
         }else
-            return response()->json(new RESTResponse(404, "L'élément que vous souhaiter modifier n'existe pas dans la Base de données !", null));
+            return response()->json(new RESTResponse(404, "L'élément que vous souhaitez modifier n'existe pas dans la Base de données !", null));
     }
 
     /**
@@ -98,10 +142,14 @@ class PlanningController extends Controller
     public function destroy($id)
     {
         $planning = Planning::find($id);
-        if($planning != null){
+        $resultat = Resultat::find($id);
+        if($planning != null && $resultat != null){
             $planning->base()->dissociate();
             $planning->campagne()->dissociate();
+            $resultat->base()->dissociate();
+            $resultat->campagne()->dissociate();
             $planning->delete();
+            $resultat->delete();
             return response()->json(new RESTResponse(200, "OK", null));
         }else
         return response()->json(new RESTResponse(404, "L'élément que vous souhaiter supprimer n'existe pas dans la Base de données !", null));

@@ -2,18 +2,14 @@
     <title>Logiciel de Statistiques</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Forza">
-    <meta name="author" content="ARS Group">
+    <meta name="description" content="Logiciel de Statistiques">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link rel="icon" type="image/png" href="favicon.png">
 
     <!-- prochtml:remove:dist -->
     <link href="assets/less/styles.css" rel='stylesheet' type='text/css' media="all"> 
     <!-- /prochtml -->
-
-    {{--  <link rel='stylesheet' type='text/css' href='styles/bootstrap.min.css' />
-    <link rel='stylesheet' type='text/css' href='styles/bootstrap-grid.min.css' />
-    <link rel='stylesheet' type='text/css' href='styles/bootstrap-reboot.min.css' />  --}}
 
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700' rel='stylesheet' type='text/css'>
     <link href='assets/demo/variations/default.css' rel='stylesheet' type='text/css' media='all' id='styleswitcher'> 

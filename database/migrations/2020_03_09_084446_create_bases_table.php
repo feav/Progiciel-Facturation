@@ -17,6 +17,8 @@ class CreateBasesTable extends Migration
             $table->id();
             $table->string('nom');
             $table->foreignId('routeur_id');
+            $table->unsignedBigInteger('cree_par');
+            $table->unsignedBigInteger('modifie_par')->nullable();
             $table->timestamps();
         });
     }

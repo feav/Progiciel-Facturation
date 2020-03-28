@@ -8,23 +8,29 @@ class BaseOtherResponse
      
     public $nom;
      
-    public $rem;
+    public $routeur;
 
-    public $resultat;
+    public $cree_le;
 
-    public $pa;
+    public $cree_par;
+
+    public $modifie_le;
+
+    public $modifie_par;
 
     /**
      * Create a new BaseOtherResponse instance.
      *
      * @return void
      */
-    public function __construct($id, $n, $rem, $res, $p)
+    public function __construct($id, $n, $ro, $cl, $cp, $ml, $mp)
     {
         $this->id = $id;
         $this->nom = $n;
-        $this->rem = $rem;
-        $this->resultat = $res;
-        $this->pa = $p;
+        $this->routeur = $ro;
+        $this->cree_le = $cl;
+        $this->cree_par = $cp;
+        $this->modifie_le = $ml;
+        $this->modifie_par = $mp;
     }
 }

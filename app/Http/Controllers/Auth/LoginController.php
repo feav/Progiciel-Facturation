@@ -57,17 +57,15 @@ class LoginController extends Controller
      * @return redirect()
      */
     public function login(Request $request){
-
-        //$credentials = $request->only('email', 'password');
-
         if (Auth::attempt(
                 [
                     'email' => $request->input('email'),
                     'password' => $request->input('password')
                 ], 
-                $request->has('remember_me'))) {
+                $request->has('remember_me'))
+            ) {
             // Authentication passed...
-            return redirect()->intended(route('index'));
+            return redirect()->route('index');
         }
     }
 

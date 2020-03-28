@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\OthersResponses;
 
-class ResultatResponse
+class PlanningResponse
 {
     public $id;
      
@@ -20,8 +20,6 @@ class ResultatResponse
 
     public $volume;
 
-    public $resultat;
-
     public $cree_le;
 
     public $cree_par;
@@ -31,11 +29,11 @@ class ResultatResponse
     public $modifie_par;
 
     /**
-     * Create a new ResultatResponse instance.
+     * Create a new PlanningResponse instance.
      *
      * @return void
      */
-    public function __construct($id, $d, $h, $ro, $b, $a, $c, $v, $re, $cl, $cp, $ml, $mp)
+    public function __construct($id, $d, $h, $ro, $b, $a, $c, $v, $cl, $cp, $ml, $mp)
     {
         $this->id = $id;
         $this->date = $d;
@@ -45,7 +43,6 @@ class ResultatResponse
         $this->annonceur = $a;
         $this->campagne = $c;
         $this->volume = $v;
-        $this->resultat = $re;
         $this->cree_le = $cl;
         $this->cree_par = $cp;
         $this->modifie_le = $ml;

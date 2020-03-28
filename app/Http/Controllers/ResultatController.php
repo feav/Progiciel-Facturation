@@ -10,7 +10,9 @@ use App\Base;
 use App\Campagne;
 use App\Routeur;
 use App\Annonceur;
+use App\User;
 use App\Http\Controllers\OthersResponses\ResultatResponse;
+use Illuminate\Support\Facades\Auth;
 
 class ResultatController extends Controller
 {
@@ -24,7 +26,59 @@ class ResultatController extends Controller
     {
         $resultats = Resultat::all();
         $resultats->transform(function ($item, $key) {
-            $resultat = new ResultatResponse($item->id, $item->date_envoi, Routeur::find($item->routeur_id)->nom, Base::find($item->base_id)->nom, Annonceur::find($item->annonceur_id)->nom, Campagne::find($item->campagne_id)->nom, $item->volume, $item->resultat);
+            $resultat = new ResultatResponse(
+                $item->id, 
+                date('d-m-Y', strtotime($item->date_envoi)),
+                $item->heure_envoi, 
+                Routeur::find($item->routeur_id)->nom, 
+                Base::find($item->base_id)->nom, 
+                Annonceur::find($item->annonceur_id)->nom, 
+                Campagne::find($item->campagne_id)->nom, 
+                $item->volume, 
+                $item->resultat,
+                date('d-m-Y à H:i:s', strtotime($item->created_at)),
+                User::find($item->cree_par)->name,
+                date('d-m-Y à H:i:s', strtotime($item->updated_at)),
+                User::find($item->modifie_par)->name
+            );
+            return $resultat;
+        });
+        return response()->json(new RESTResponse(200, "OK", $resultats));
+    }
+
+    /**
+     * Apply filter to retrieve correct data.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function applyFilter(Request $request){
+        $from = date('Y-m-d', strtotime($request->filtre_date_debut));
+        $to = date('Y-m-d', strtotime($request->filtre_date_fin));
+        //dd($from);
+        $resultats = Resultat::where([
+            'annonceur_id' => $request->filtre_annonceur,
+            'routeur_id' => $request->filtre_routeur,
+            'campagne_id' => $request->filtre_campagne,
+            'base_id' => $request->filtre_base
+        ])->whereBetween('date_envoi', [$from, $to])->get();
+
+        $resultats->transform(function ($item, $key) {
+            $resultat = new ResultatResponse(
+                $item->id, 
+                date('d-m-Y', strtotime($item->date_envoi)),
+                $item->heure_envoi, 
+                Routeur::find($item->routeur_id)->nom, 
+                Base::find($item->base_id)->nom, 
+                Annonceur::find($item->annonceur_id)->nom, 
+                Campagne::find($item->campagne_id)->nom, 
+                $item->volume, 
+                $item->resultat,
+                date('d-m-Y à H:i:s', strtotime($item->created_at)),
+                User::find($item->cree_par)->name,
+                date('d-m-Y à H:i:s', strtotime($item->updated_at)),
+                User::find($item->modifie_par)->name
+            );
             return $resultat;
         });
         return response()->json(new RESTResponse(200, "OK", $resultats));
@@ -41,6 +95,7 @@ class ResultatController extends Controller
         $resultat = new Resultat;
         $resultat->volume = $request->input('volume');
         $resultat->date_envoi = $request->input('date_envoi');
+        $resultat->heure_envoi = $request->input('heure_envoi');
         $resultat->resultat = $request->input('resultat');
         $base = Base::find($request->input('base'));
         $campagne = Campagne::find($request->input('campagne'));
@@ -48,6 +103,8 @@ class ResultatController extends Controller
         $resultat->campagne()->associate($campagne);
         $resultat->routeur_id = $base->routeur_id;
         $resultat->annonceur_id = $campagne->annonceur_id;
+        $resultat->cree_par = Auth::user()->id;
+        $resultat->modifie_par = Auth::user()->id;
         $resultat->save();
         return response()->json(new RESTResponse(200, "OK", null));
         
@@ -77,10 +134,11 @@ class ResultatController extends Controller
         if($resultat != null){
             $resultat->volume = $request->input('volume');
             $resultat->resultat = $request->input('resultat');
+            $resultat->modifie_par = Auth::user()->id;
             $resultat->save();
             return response()->json(new RESTResponse(200, "OK", null));
         }else
-            return response()->json(new RESTResponse(404, "L'élément que vous souhaiter modifier n'existe pas dans la Base de données !", null));
+            return response()->json(new RESTResponse(404, "L'élément que vous souhaitez modifier n'existe pas dans la Base de données !", null));
     }
 
     /**

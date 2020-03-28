@@ -6,9 +6,13 @@ use App\Base;
 use App\Resultat;
 use App\Campagne;
 use App\Routeur;
+use App\Annonceur;
+use App\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\RESTResponse;
 use App\Http\Controllers\OthersResponses\BaseOtherResponse;
+use App\Http\Controllers\OthersResponses\BaseStatsOtherResponse;
 
 class BaseController extends Controller
 {
@@ -20,7 +24,21 @@ class BaseController extends Controller
      */
     public function index()
     {
-        return response()->json(new RESTResponse(200, "OK", Base::all()));
+        $bases = Base::all();
+        $bases->transform(function ($item, $key) {
+            $base = new BaseOtherResponse
+                        (
+                            $item->id, 
+                            $item->nom,
+                            Routeur::find($item->routeur_id),
+                            date('d-m-Y à H:i:s', strtotime($item->created_at)),
+                            User::find($item->cree_par)->name,
+                            date('d-m-Y à H:i:s', strtotime($item->updated_at)),
+                            User::find($item->modifie_par)->name
+                        );
+            return $base;
+        });
+        return response()->json(new RESTResponse(200, "OK", $bases));
     }
 
     /**
@@ -32,13 +50,18 @@ class BaseController extends Controller
     {
         $bases = Resultat::all();
         $bases->transform(function ($item, $key) {
-            $base = new BaseOtherResponse
+            $base = new BaseStatsOtherResponse
                         (
                             $item->id, 
                             Base::find($item->base_id)->nom,
+                            Annonceur::find($item->annonceur_id),
                             Campagne::find($item->campagne_id)->remuneration,
                             $item->resultat,
-                            Routeur::find($item->routeur_id)->prix * $item->volume
+                            Routeur::find($item->routeur_id)->prix * $item->volume,
+                            date('d-m-Y à H:i:s', strtotime($item->created_at)),
+                            User::find($item->cree_par)->name,
+                            date('d-m-Y à H:i:s', strtotime($item->updated_at)),
+                            User::find($item->modifie_par)->name
                         );
             return $base;
         });
@@ -67,6 +90,8 @@ class BaseController extends Controller
         $base = new Base;
         $base->nom = $request->input('nom');
         $base->routeur()->associate(Routeur::find($request->input('routeur')));
+        $base->cree_par = Auth::user()->id;
+        $base->modifie_par = Auth::user()->id;
         $base->save();
         return response()->json(new RESTResponse(200, "OK", null));
     }
@@ -91,16 +116,17 @@ class BaseController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $base = Base::find('id',$id);
+        $base = Base::find($id);
         if($base != null){
             $base->nom = $request->input('nom');
             $routeur = Routeur::find($request->input('routeur'));
             $base->routeur()->dissociate();
             $base->routeur()->associate($routeur);
+            $base->modifie_par = Auth::user()->id;
             $base->save();
             return response()->json(new RESTResponse(200, "OK", null));
         }else
-            return response()->json(new RESTResponse(404, "L'élément que vous souhaiter modifier n'existe pas dans la Base de données !", null));
+            return response()->json(new RESTResponse(404, "L'élément que vous souhaitez modifier n'existe pas dans la Base de données !", null));
     }
 
     /**

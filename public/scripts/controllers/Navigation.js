@@ -15,9 +15,73 @@ angular
             url: '#/routeurs'
         },
         {
+            label: 'Bases',
+            iconClasses: 'fa fa-building',
+            url: '#/bases'
+        },
+        {
             label: 'Annonceurs',
-            iconClasses: 'fa fa-users',
+            iconClasses: 'fa fa-flag',
             url: '#/annonceurs'
+        },
+        {
+            label: 'Campagnes',
+            iconClasses: 'fa fa-briefcase',
+            url: '#/campagnes'
+        },
+        {
+            label: 'Plannings',
+            iconClasses: 'fa fa-calendar',
+            url: '#/plannings'
+        },
+        {
+            label: 'Résultats',
+            iconClasses: 'fa fa-tasks',
+            url: '#/resultats'
+        },
+        {
+            label: 'Statistiques',
+            iconClasses: 'fa fa-bar-chart-o',
+            children: [
+                {
+                    label: 'Par Routeurs',
+                    iconClasses: 'fa fa-sitemap',
+                    url: '#/statistiques-par-routeurs'
+                },
+                {
+                    label: 'Par Bases',
+                    iconClasses: 'fa fa-building',
+                    url: '#/statistiques-par-bases'
+                },
+                {
+                    label: 'Par Annonceurs',
+                    iconClasses: 'fa fa-users',
+                    url: '#/statistiques-par-annonceurs'
+                },
+                // {
+                //     label: 'Globales',
+                //     iconClasses: 'fa fa-tasks',
+                //     url: '#/statistiques-globales'
+                // },
+            ]
+        },
+        {
+            label: 'Gestion des Utilisateurs',
+            iconClasses: 'fa fa-users',
+            url: '#/users'
+        }
+    ];
+
+    $scope.menu2 = [
+        {
+            label: 'Tableau de Bord',
+            iconClasses: 'fa fa-home',
+            url: '#/'
+        },
+        {
+            label: 'Routeurs',
+            iconClasses: 'fa fa-sitemap',
+            url: '#/routeurs'
         },
         {
             label: 'Bases',
@@ -25,9 +89,50 @@ angular
             url: '#/bases'
         },
         {
-            label: 'Résultats Globaux',
-            iconClasses: 'fa fa-bar-chart-o',
+            label: 'Annonceurs',
+            iconClasses: 'fa fa-flag',
+            url: '#/annonceurs'
+        },
+        {
+            label: 'Campagnes',
+            iconClasses: 'fa fa-briefcase',
+            url: '#/campagnes'
+        },
+        {
+            label: 'Plannings',
+            iconClasses: 'fa fa-calendar',
+            url: '#/plannings'
+        },
+        {
+            label: 'Résultats',
+            iconClasses: 'fa fa-tasks',
             url: '#/resultats'
+        },
+        {
+            label: 'Statistiques',
+            iconClasses: 'fa fa-bar-chart-o',
+            children: [
+                {
+                    label: 'Par Routeurs',
+                    iconClasses: 'fa fa-sitemap',
+                    url: '#/statistiques-par-routeurs'
+                },
+                {
+                    label: 'Par Bases',
+                    iconClasses: 'fa fa-building',
+                    url: '#/statistiques-par-bases'
+                },
+                {
+                    label: 'Par Annonceurs',
+                    iconClasses: 'fa fa-users',
+                    url: '#/statistiques-par-annonceurs'
+                },
+                {
+                    label: 'Globales',
+                    iconClasses: 'fa fa-tasks',
+                    url: '#/statistiques-globales'
+                },
+            ]
         }
     ];
     
@@ -51,6 +156,7 @@ angular
     };
     
     setParent ($scope.menu, null);
+    setParent ($scope.menu2, null);
     
     $scope.openItems = [];
     $scope.selectedItems = [];
@@ -94,8 +200,11 @@ angular
     }, function (newVal, oldVal) {
       if ($scope.selectedFromNavMenu == false) {
         var item = $scope.findItemByUrl ($scope.menu, newVal);
+        var item2 = $scope.findItemByUrl ($scope.menu2, newVal);
         if (item)
-          $timeout (function () { $scope.select (item); });
+            $timeout (function () { $scope.select (item); });
+        if (item2)
+            $timeout (function () { $scope.select (item2); });
       }
       $scope.selectedFromNavMenu = false;
     });

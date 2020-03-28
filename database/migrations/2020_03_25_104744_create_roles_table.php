@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCampagnesTable extends Migration
+class CreateRolesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,11 @@ class CreateCampagnesTable extends Migration
      */
     public function up()
     {
-        Schema::create('campagnes', function (Blueprint $table) {
+        Schema::create('roles', function (Blueprint $table) {
             $table->id();
-            $table->string('nom');
-            $table->string('type_remuneration');
-            $table->float('remuneration');
-            $table->foreignId('annonceur_id');
+            $table->string('intitule');
             $table->unsignedBigInteger('cree_par');
-            $table->unsignedBigInteger('modifie_par')->nullable();
-            $table->timestamps();
+            $table->unsignedBigInteger('modifie_par');
         });
     }
 
@@ -32,6 +28,6 @@ class CreateCampagnesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('campagnes');
+        Schema::dropIfExists('roles');
     }
 }

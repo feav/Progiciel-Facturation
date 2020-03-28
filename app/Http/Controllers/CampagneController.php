@@ -6,6 +6,9 @@ use App\Campagne;
 use Illuminate\Http\Request;
 use App\RESTResponse;
 use App\Annonceur;
+use App\User;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\OthersResponses\CampagneOtherResponse;
 
 class CampagneController extends Controller
 {
@@ -17,7 +20,23 @@ class CampagneController extends Controller
      */
     public function index()
     {
-        return response()->json(new RESTResponse(200, "OK", Campagne::all()));
+        $campagnes = Campagne::all();
+        $campagnes->transform(function ($item, $key) {
+            $campagne = new CampagneOtherResponse
+                        (
+                            $item->id, 
+                            $item->nom,
+                            $item->type_remuneration,
+                            $item->remuneration, 
+                            Annonceur::find($item->annonceur_id),
+                            date('d-m-Y à H:i:s', strtotime($item->created_at)),
+                            User::find($item->cree_par)->name,
+                            date('d-m-Y à H:i:s', strtotime($item->updated_at)),
+                            User::find($item->modifie_par)->name
+                        );
+            return $campagne;
+        });
+        return response()->json(new RESTResponse(200, "OK", $campagnes));
     }
 
     /**
@@ -45,6 +64,8 @@ class CampagneController extends Controller
         $campagne->remuneration = $request->input('remuneration');
         $annonceur = Annonceur::find($request->input('annonceur'));
         $campagne->annonceur()->associate($annonceur);
+        $campagne->cree_par = Auth::user()->id;
+        $campagne->modifie_par = Auth::user()->id;
         $campagne->save();
         return response()->json(new RESTResponse(200, "OK", null));
     }
@@ -69,7 +90,7 @@ class CampagneController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $campagne = Campagne::find('id',$id);
+        $campagne = Campagne::find($id);
         if($campagne != null){
             $campagne->nom = $request->input('nom');
             $campagne->type_remuneration = $request->input('type_remuneration');
@@ -77,10 +98,11 @@ class CampagneController extends Controller
             $campagne->annonceur()->dissociate();
             $annonceur = Annonceur::find($request->input('annonceur'));
             $campagne->annonceur()->associate($annonceur);
+            $campagne->modifie_par = Auth::user()->id;
             $campagne->save();
             return response()->json(new RESTResponse(200, "OK", null));
         }else
-            return response()->json(new RESTResponse(404, "L'élément que vous souhaiter modifier n'existe pas dans la Base de données !", null));
+            return response()->json(new RESTResponse(404, "L'élément que vous souhaitez modifier n'existe pas dans la Base de données !", null));
     }
 
     /**

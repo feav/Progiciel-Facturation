@@ -8,23 +8,44 @@ class AnnonceurOtherResponse
      
     public $nom;
      
-    public $rem;
+    public $url;
 
-    public $resultat;
+    public $adresse_facturation;
 
-    public $pa;
+    public $email_comptabilite;
+
+    public $email_direction;
+     
+    public $email_production;
+
+    public $delai_paiement;
+
+    public $cree_le;
+
+    public $cree_par;
+
+    public $modifie_le;
+
+    public $modifie_par;
 
     /**
      * Create a new AnnonceurOtherResponse instance.
      *
      * @return void
      */
-    public function __construct($id, $n, $rem, $res, $p)
+    public function __construct($id, $n, $url, $af, $ec, $ed, $ep, $dp, $cl, $cp, $ml, $mp)
     {
         $this->id = $id;
         $this->nom = $n;
-        $this->rem = $rem;
-        $this->resultat = $res;
-        $this->pa = $p;
+        $this->url = $url;
+        $this->adresse_facturation = $af;
+        $this->email_comptabilite = $ec;
+        $this->email_direction = $ed;
+        $this->email_production = $ep;
+        $this->delai_paiement = $dp;
+        $this->cree_le = $cl;
+        $this->cree_par = $cp;
+        $this->modifie_le = $ml;
+        $this->modifie_par = $mp;
     }
 }

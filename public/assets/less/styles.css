@@ -11746,9 +11746,9 @@ header #leftmenu-trigger {
   padding-top: 11px;
   padding-bottom: 10px;
 }
-.navbar-nav.toolbar > li {
+/* .navbar-nav.toolbar > li {
   float: right;
-}
+} */
 a.username {
   padding: 8px 10px !important;
   font-size: 12px !important;
@@ -12155,7 +12155,7 @@ body.show-rightbar #chatarea .chatmsg.sent:after {
   float: left;
   background: #353e49;
   white-space: nowrap;
-  position: relative;
+  position: fixed;
 }
 #page-leftbar:before,
 #page-leftbar:after {
@@ -12182,7 +12182,7 @@ body.show-rightbar #chatarea .chatmsg.sent:after {
 /* Sidebar Menu */
 #sidebar {
   white-space: normal;
-  margin: 40px 0 0 0;
+  /* margin: 40px 0 0 0; */
   padding-left: 0 !important;
 }
 #sidebar .badge {
@@ -12838,6 +12838,10 @@ body.collapse-leftbar #search.keep-open form button[type="submit"] {
 @media (max-width: 767px) {
   .navbar-form .form-group {
     margin-bottom: 5px;
+  }
+  .navbar-nav > li {
+    /* float: left; */
+    float: right;
   }
 }
 @media (min-width: 768px) {

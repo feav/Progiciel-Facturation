@@ -3,51 +3,219 @@
         <li><a href="#/">Tableau de Bord</a></li>
         <li class="active">Annonceurs</li>
     </ol>
-
-    <h1>Résultats par Annonceurs</h1>
-</div>
-
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-xs-12">
-            <panel panel-class="panel-primary" data-heading="Tableau des résultats triés par annonceurs">
-                <table id="annonceursTab" class="table table-striped table-bordered table-hover table-responsive">
-                    <thead>
-                        <tr>
-                            <th>Nom</th>
-                            <th>Chiffre d'Affaires</th>
-                            <th>Prix d'achat</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </panel>
+    <div class="container-fluid">
+        <h1>Liste des Annonceurs</h1>
+        <div class="options">
+            <div class="btn-toolbar">
+                <button class="btn btn-primary" data-toggle="modal" data-target="#ajouterAnnonceurModal">
+                    <i class="fa fa-plus-circle"></i> Ajouter un Annonceur
+                </button>
+            </div>
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="ajouterAnnonceurModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Formulaire d'ajout d'un Annonceur</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="ajouterAnnonceurForm" method="POST" action="">
+                    <div class="form-group row">
+                        <label for="nomAnnonceur" class="col-sm-4 col-form-label">Nom de l'Annonceur *</label>
+                        <div class="col-sm-8">
+                            <input type="text" required class="form-control" id="nomAnnonceur" name="nom">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="urlAnnonceur" class="col-sm-4 col-form-label">URL de l'Annonceur</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="urlAnnonceur" name="url">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="adresse_facturation" class="col-sm-4 col-form-label">Adresse de Facturation *</label>
+                        <div class="col-sm-8">
+                            <input type="text" required class="form-control" id="adresse_facturation" name="adresse_facturation">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="email_comptabilite" class="col-sm-4 col-form-label">Email Comptabilité</label>
+                        <div class="col-sm-8">
+                            <input type="email" class="form-control" id="email_comptabilite" name="email_comptabilite">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="email_direction" class="col-sm-4 col-form-label">Email Direction</label>
+                        <div class="col-sm-8">
+                            <input type="email" class="form-control" id="email_direction" name="email_direction">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="email_production" class="col-sm-4 col-form-label">Email Production</label>
+                        <div class="col-sm-8">
+                            <input type="email" class="form-control" id="email_production" name="email_production">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="delai_paiement" class="col-sm-4 col-form-label">Délai de Paiement *</label>
+                        <div class="col-sm-8">
+                            <input type="number" required min="0" class="form-control" id="delai_paiement" name="delai_paiement" placeholder="(Nombre de jours)">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success"><i class="fa fa-check-circle"></i> Valider</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times-circle"></i> Annuler</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="display: none;" ng-controller="AlertsController">
+    <button id="successAnnonceurNotifButton" ng-click="simpleSuccessWithParams('Annonceur','Annonceur enregistré avec succès !')"></button>
+    <button id="errorAnnonceurNotifButton" ng-click="simpleErrorWithParams('Annonceur', 'Une erreur est survenue !')"></button>
+</div>
+    
+<div class="container-fluid" ng-controller="AnnonceursController">
+    <button id="refreshTab" ng-click="refreshTab()" style="display: none;"></button>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading"><h4>Tableau de tous les Annonceurs enregistrés</h4></div>
+                <div class="panel-body">
+                    <div class="input-icon right mb10">
+                        <i class="fa fa-search"></i>
+                        <input type="text" ng-model="filterOptions.filterText" class="form-control" placeholder="Filtre">
+                    </div>
+                    <div class="table-responsive table-vertical">
+                        <table id="annonceursTab" class="table table-striped table-bordered table-hover">
+                            <thead>
+                                <tr style="font-weight: bold">
+                                    <th>Nom</th>
+                                    <th>URL</th>
+                                    <th>Adresse facturation</th>
+                                    <th>Email Comptabilité</th>
+                                    <th>Email Direction</th>
+                                    <th>Email Production</th>
+                                    <th>Délai Paiement</th>
+                                    <th>Créé le</th>
+                                    <th>Créé par</th>
+                                    <th>Modifié le</th>
+                                    <th>Modifié par</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="annonceur in annonceurs">
+                                    <td data-title="Nom">
+                                        <span editable-text="annonceur.nom" e-name="nom" e-form="rowform" e-required>
+                                            {{ annonceur.nom || '' }}
+                                        </span>
+                                    </td>
+                                    <td data-title="URL">
+                                        <span editable-text="annonceur.url" e-name="url" e-form="rowform">
+                                            {{ annonceur.url || '' }}
+                                        </span>
+                                    </td>
+                                    <td data-title="Adresse facturation">
+                                        <span editable-text="annonceur.adresse_facturation" e-name="adresse_facturation" e-form="rowform" e-required>
+                                            {{ annonceur.adresse_facturation || '' }}
+                                        </span>
+                                    </td>
+                                    <td data-title="Email Comptabilité">
+                                        <span editable-text="annonceur.email_comptabilite" e-name="email_comptabilite" e-form="rowform">
+                                            {{ annonceur.email_comptabilite || '' }}
+                                        </span>
+                                    </td>
+                                    <td data-title="Email Direction">
+                                        <span editable-text="annonceur.email_direction" e-name="email_direction" e-form="rowform">
+                                            {{ annonceur.email_direction || '' }}
+                                        </span>
+                                    </td>
+                                    <td data-title="Email Production">
+                                        <span editable-text="annonceur.email_production" e-name="email_production" e-form="rowform">
+                                            {{ annonceur.email_production || '' }}
+                                        </span>
+                                    </td>
+                                    <td data-title="Délai Paiement">
+                                        <span editable-number="annonceur.delai_paiement" e-name="delai_paiement" e-form="rowform" e-required>
+                                            {{ annonceur.delai_paiement + 'jours' || '' }}
+                                        </span>
+                                    </td>
+                                    <td data-title="Créé le">
+                                        <span>
+                                            {{ annonceur.cree_le || '' }}
+                                        </span>
+                                    </td>
+                                    <td data-title="Créé Par">
+                                        <span>
+                                            {{ annonceur.cree_par || '' }}
+                                        </span>
+                                    </td>
+                                    <td data-title="Modifié le">
+                                        <span>
+                                            {{ annonceur.modifie_le || '' }}
+                                        </span>
+                                    </td>
+                                    <td data-title="Modifié Par">
+                                        <span>
+                                            {{ annonceur.modifie_par || '' }}
+                                        </span>
+                                    </td>
+                                    <td style="white-space: nowrap" data-title="Actions">
+                                        <form editable-form name="rowform" onbeforesave="saveAnnonceur($data, annonceur.id)"
+                                            ng-show="rowform.$visible" class="form-buttons form-inline"
+                                            shown="inserted == annonceur">
+                                            <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-sm btn-success">
+                                                Valider
+                                            </button>
+                                            <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()"
+                                                class="btn btn-sm btn-default">
+                                                Annuler
+                                            </button>
+                                        </form>
+                                        <div class="buttons" ng-show="!rowform.$visible">
+                                            <button class="btn btn-sm btn-primary" ng-click="rowform.$show()">Modifier</button>
+                                            <button class="btn btn-sm btn-danger" ng-click="removeAnnonceur(annonceur.id)">Supprimer</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <pager total-items="totalServerItems" ng-model="pagingOptions.currentPage" previous-text="Précédent" next-text="Suivant"></pager>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     $(document).ready(function(){
-        $.ajax({
-            url:'api/annonceurs/forStatistics',
-            type:'GET',
-            success: function (rep) {
-                if(rep.code == 200){
-                    $.each(rep.body, function (index, value) {
-                        var tr = $("<tr></tr>");
-                        var td1 = $("<td></td>");
-                        var td2 = $("<td></td>");
-                        var td3 = $("<td></td>");
-                        td1.text(value.nom);
-                        if(value.resultat == null) td2.text('0 €');
-                        else td2.text((value.resultat*value.rem)+' €');
-                        td3.text(value.pa+' €');
-                        tr.append(td1, td2, td3);
-                        $('#annonceursTab tbody').append(tr);
-                    });      
-                }
-            },
-            error: function (res,status,err) { console.log(err) },
-            complete: function () {}
+        $('#ajouterAnnonceurForm').submit(function(){
+            $.ajax({
+                url: 'annonceurs',
+                type:'POST',
+                data: $('#ajouterAnnonceurForm').serialize(),
+                success: function (rep) {
+                    if(rep.code == 200){
+                        $('#refreshTab').click();
+                        $('#ajouterAnnonceurModal').modal('hide');
+                        $("#successAnnonceurNotifButton").click();
+                        $('#ajouterAnnonceurForm')[0].reset();
+                    }else
+                        $("#errorAnnonceurNotifButton").click();
+                },
+                error: function (res,status,err) { console.log(err); $("#errorAnnonceurNotifButton").click(); },
+                complete: function () {}
+            });
         });
     });
 </script>

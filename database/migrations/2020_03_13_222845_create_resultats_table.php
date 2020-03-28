@@ -20,8 +20,11 @@ class CreateResultatsTable extends Migration
             $table->unsignedBigInteger('routeur_id');
             $table->foreignId('base_id');
             $table->float('volume');
-            $table->string('date_envoi');
+            $table->date('date_envoi');
+            $table->time('heure_envoi');
             $table->unsignedBigInteger('resultat')->nullable(true);
+            $table->unsignedBigInteger('cree_par');
+            $table->unsignedBigInteger('modifie_par')->nullable();
             $table->timestamps();
         });
     }

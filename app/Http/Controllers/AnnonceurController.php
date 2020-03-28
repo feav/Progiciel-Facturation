@@ -8,7 +8,10 @@ use App\RESTResponse;
 use App\Resultat;
 use App\Campagne;
 use App\Routeur;
+use App\User;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\OthersResponses\AnnonceurOtherResponse;
+use App\Http\Controllers\OthersResponses\AnnonceurStatsOtherResponse;
 
 class AnnonceurController extends Controller
 {
@@ -20,7 +23,26 @@ class AnnonceurController extends Controller
      */
     public function index()
     {
-        return response()->json(new RESTResponse(200, "OK", Annonceur::all()));
+        $annonceurs = Annonceur::all();
+        $annonceurs->transform(function ($item, $key) {
+            $annonceur = new AnnonceurOtherResponse
+                        (
+                            $item->id, 
+                            $item->nom,
+                            $item->url,
+                            $item->adresse_facturation, 
+                            $item->email_comptabilite,
+                            $item->email_direction,
+                            $item->email_production,
+                            $item->delai_paiement,
+                            date('d-m-Y à H:i:s', strtotime($item->created_at)),
+                            User::find($item->cree_par)->name,
+                            date('d-m-Y à H:i:s', strtotime($item->updated_at)),
+                            User::find($item->modifie_par)->name
+                        );
+            return $annonceur;
+        });
+        return response()->json(new RESTResponse(200, "OK", $annonceurs));
     }
 
     /**
@@ -32,13 +54,45 @@ class AnnonceurController extends Controller
     {
         $annonceurs = Resultat::all();
         $annonceurs->transform(function ($item, $key) {
-            $annonceur = new AnnonceurOtherResponse
+            $annonceur = new AnnonceurStatsOtherResponse
                         (
                             $item->id, 
                             Annonceur::find($item->annonceur_id)->nom,
+                            Annonceur::find($item->annonceur_id),
                             Campagne::find($item->campagne_id)->remuneration,
                             $item->resultat,
-                            Routeur::find($item->routeur_id)->prix * $item->volume
+                            Routeur::find($item->routeur_id)->prix * $item->volume,
+                            date('d-m-Y à H:i:s', strtotime($item->created_at)),
+                            User::find($item->cree_par)->name,
+                            date('d-m-Y à H:i:s', strtotime($item->updated_at)),
+                            User::find($item->modifie_par)->name
+                        );
+            return $annonceur;
+        });
+        return response()->json(new RESTResponse(200, "OK", $annonceurs));
+    }
+
+    /**
+     * Apply filter to retrieve correct data.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function applyFilter(Request $request){
+        $annonceurs = Resultat::whereIn();
+        $annonceurs->transform(function ($item, $key) {
+            $annonceur = new AnnonceurStatsOtherResponse
+                        (
+                            $item->id, 
+                            Annonceur::find($item->annonceur_id)->nom,
+                            Annonceur::find($item->annonceur_id),
+                            Campagne::find($item->campagne_id)->remuneration,
+                            $item->resultat,
+                            Routeur::find($item->routeur_id)->prix * $item->volume,
+                            date('d-m-Y à H:i:s', strtotime($item->created_at)),
+                            User::find($item->cree_par)->name,
+                            date('d-m-Y à H:i:s', strtotime($item->updated_at)),
+                            User::find($item->modifie_par)->name
                         );
             return $annonceur;
         });
@@ -48,7 +102,7 @@ class AnnonceurController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -60,7 +114,9 @@ class AnnonceurController extends Controller
             'email_comptabilite'=>$request->input('email_comptabilite'), 
             'email_direction'=>$request->input('email_direction'),
             'email_production'=>$request->input('email_production'), 
-            'delai_paiement'=>$request->input('delai_paiement')
+            'delai_paiement'=>$request->input('delai_paiement'),
+            'cree_par'=>Auth::user()->id,
+            'modifie_par'=>Auth::user()->id
         ]);
         return response()->json(new RESTResponse(200, "OK", null));
     }
@@ -93,7 +149,8 @@ class AnnonceurController extends Controller
                     'email_comptabilite'=>$request->input('email_comptabilite'), 
                     'email_direction'=>$request->input('email_direction'),
                     'email_production'=>$request->input('email_production'), 
-                    'delai_paiement'=>$request->input('delai_paiement')
+                    'delai_paiement'=>$request->input('delai_paiement'),
+                    'modifie_par'=>Auth::user()->id
                 ]);
         return response()->json(new RESTResponse(200, "OK", null));
     }

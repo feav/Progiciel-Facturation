@@ -17,6 +17,8 @@ class CreateRouteursTable extends Migration
             $table->id();
             $table->string('nom');
             $table->float('prix');
+            $table->unsignedBigInteger('cree_par');
+            $table->unsignedBigInteger('modifie_par')->nullable();
             $table->timestamps();
         });
     }

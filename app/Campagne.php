@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Campagne extends Model
 {
-    protected $fillable = ['nom', 'type_remuneration', 'remuneration', 'annonceur_id'];
+    protected $fillable = ['nom', 'type_remuneration', 'remuneration', 'annonceur_id', 'cree_par', 'modifie_par'];
 
     public function annonceur()
     {

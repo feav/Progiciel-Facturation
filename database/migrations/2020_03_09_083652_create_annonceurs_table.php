@@ -21,7 +21,9 @@ class CreateAnnonceursTable extends Migration
             $table->string('email_comptabilite')->nullable(true);
             $table->string('email_direction')->nullable(true);
             $table->string('email_production')->nullable(true);
-            $table->string('delai_paiement');
+            $table->unsignedInteger('delai_paiement');
+            $table->unsignedBigInteger('cree_par');
+            $table->unsignedBigInteger('modifie_par')->nullable();
             $table->timestamps();
         });
     }

@@ -114,3 +114,10 @@
     <script src="scripts/controllers/ColorPicker.js"></script>
     <script src="scripts/controllers/Dashboard.js"></script>
     <script src="scripts/app.js"></script>
+    <script type="text/javascript">
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+    </script>

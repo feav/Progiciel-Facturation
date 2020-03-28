@@ -3,57 +3,160 @@
         <li><a href="#/">Tableau de Bord</a></li>
         <li class="active">Routeurs</li>
     </ol>
-
-    <h1>Résultats par Routeurs</h1>
-</div>
-
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-xs-12">
-            <panel panel-class="panel-primary" data-heading="Tableau des résultats triés par routeurs">
-                <table id="routeursTab" class="table table-striped table-bordered table-hover table-responsive">
-                    <thead>
-                        <tr>
-                            <th>Nom</th>
-                            <th>Prix</th>
-                            <th>Volume</th>
-                            <th>Chiffre d'Affaires</th>
-                            <th>Prix d'achat</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </panel>
+    <div class="container-fluid">
+        <h1>Liste des Routeurs</h1>
+        <div class="options">
+            <div class="btn-toolbar">
+                <button class="btn btn-primary" data-toggle="modal" data-target="#ajouterRouteurModal">
+                    <i class="fa fa-plus-circle"></i> Ajouter un Routeur
+                </button>
+            </div>
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="ajouterRouteurModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Formulaire d'ajout d'un Routeur</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="ajouterRouteurForm" method="POST" action="">
+                    <div class="form-group row">
+                        <label for="nomRouteur" class="col-sm-3 col-form-label">Nom du Routeur *</label>
+                        <div class="col-sm-9">
+                            <input type="text" required class="form-control" id="nomRouteur" name="nom">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="prixRouteur" class="col-sm-3 col-form-label">Prix du Routeur *</label>
+                        <div class="col-sm-9">
+                            <input type="number" required min="0" step="0.01" class="form-control" id="prixRouteur" placeholder="en €" name="prix">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success"><i class="fa fa-check-circle"></i> Valider</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times-circle"></i> Annuler</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="display: none;" ng-controller="AlertsController">
+    <button id="successRouteurNotifButton" ng-click="simpleSuccessWithParams('Routeur','Routeur enregistré avec succès !')"></button>
+    <button id="errorRouteurNotifButton" ng-click="simpleErrorWithParams('Routeur', 'Une erreur est survenue !')"></button>
+</div>
+
+<div class="container-fluid" ng-controller="RouteursController">
+    <button id="refreshTab" ng-click="refreshTab()" style="display: none;"></button>    
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading"><h4>Tableau de tous les Routeurs enregistrés</h4></div>
+                <div class="panel-body">
+                    <div class="input-icon right mb10">
+                        <i class="fa fa-search"></i>
+                        <input type="text" ng-model="filterOptions.filterText" class="form-control" placeholder="Filtre">
+                    </div>
+                    <div class="table-responsive table-vertical">
+                        <table id="routeursTab" class="table table-striped table-bordered table-hover">
+                            <thead>
+                                <tr style="font-weight: bold">
+                                    <th>Nom</th>
+                                    <th>Prix</th>
+                                    <th>Crée le</th>
+                                    <th>Crée par</th>
+                                    <th>Modifié le</th>
+                                    <th>Modifié par</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="routeur in routeurs">
+                                    <td data-title="Nom">
+                                        <span editable-text="routeur.nom" e-name="nom" e-form="rowform" e-required>
+                                            {{ routeur.nom || '' }}
+                                        </span>
+                                    </td>
+                                    <td data-title="Prix">
+                                        <span editable-number="routeur.prix" e-name="prix" e-form="rowform" e-required>
+                                            {{ routeur.prix || '' }}
+                                        </span>
+                                    </td>
+                                    <td data-title="Créé le">
+                                        <span>
+                                            {{ routeur.cree_le || '' }}
+                                        </span>
+                                    </td>
+                                    <td data-title="Créé Par">
+                                        <span>
+                                            {{ routeur.cree_par || '' }}
+                                        </span>
+                                    </td>
+                                    <td data-title="Modifié le">
+                                        <span>
+                                            {{ routeur.modifie_le || '' }}
+                                        </span>
+                                    </td>
+                                    <td data-title="Modifié Par">
+                                        <span>
+                                            {{ routeur.modifie_par || '' }}
+                                        </span>
+                                    </td>
+                                    <td data-title="Actions" style="white-space: nowrap">
+                                        <!-- form -->
+                                        <form editable-form name="rowform" onbeforesave="saveRouteur($data, routeur.id)"
+                                            ng-show="rowform.$visible" class="form-buttons form-inline"
+                                            shown="inserted == routeur">
+                                            <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-sm btn-success">
+                                                Valider
+                                            </button>
+                                            <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()"
+                                                class="btn btn-sm btn-default">
+                                                Annuler
+                                            </button>
+                                        </form>
+                                        <div class="buttons" ng-show="!rowform.$visible">
+                                            <button class="btn btn-sm btn-primary" ng-click="rowform.$show()">Modifier</button>
+                                            <button class="btn btn-sm btn-danger" ng-click="removeRouteur(routeur.id)">Supprimer</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <pager total-items="totalServerItems" ng-model="pagingOptions.currentPage" previous-text="Précédent" next-text="Suivant"></pager>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     $(document).ready(function(){
-        $.ajax({
-            url:'api/routeurs/forStatistics',
-            type:'GET',
-            success: function (rep) {
-                if(rep.code == 200){
-                    $.each(rep.body, function (index, value) {
-                        var tr = $("<tr></tr>");
-                        var td1 = $("<td></td>");
-                        var td2 = $("<td></td>");
-                        var td3 = $("<td></td>");
-                        var td4 = $("<td></td>");
-                        var td5 = $("<td></td>");
-                        td1.text(value.nom);
-                        td2.text(value.prix);
-                        td3.text(value.volume);
-                        if(value.resultat == null) td4.text('0 €');
-                        else td4.text((value.resultat*value.rem)+' €');
-                        td5.text(value.pa+' €');
-                        tr.append(td1, td2, td3, td4, td5);
-                        $('#routeursTab tbody').append(tr);
-                    });      
-                }
-            },
-            error: function (res,status,err) { console.log(err) },
-            complete: function () {}
+        $('#ajouterRouteurForm').submit(function(){
+            $.ajax({
+                url: 'routeurs',
+                type:'POST',
+                data: $('#ajouterRouteurForm').serialize(),
+                success: function (rep) {
+                    if(rep.code == 200){
+                        $('#refreshTab').click();
+                        $('#ajouterRouteurModal').modal('hide');
+                        $("#successRouteurNotifButton").click();
+                        $('#ajouterRouteurForm')[0].reset();
+                    }else
+                        $("#errorRouteurNotifButton").click();
+                },
+                error: function (res,status,err) { console.log(err); $("#errorRouteurNotifButton").click(); },
+                complete: function () {}
+            });
         });
     });
 </script>

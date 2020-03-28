@@ -1,0 +1,249 @@
+<div id="page-heading">
+    <ol class="breadcrumb">
+        <li><a href="#/">Tableau de Bord</a></li>
+        <li class="active">Plannings</li>
+    </ol>
+    <div class="container-fluid">
+        <h1>Liste des Plannings</h1>
+        <div class="options">
+            <div class="btn-toolbar">
+                <button class="btn btn-primary" data-toggle="modal" data-target="#planifierEnvoiModal">
+                    <i class="fa fa-plus-circle"></i> Planifier un envoi
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="planifierEnvoiModal" tabindex="-1" role="dialog" ng-controller="PlanningsController">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Formulaire de planification d'un envoi</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="planifierEnvoiForm" method="POST" action="">
+                    <div class="form-group row">
+                        <label for="annonceursPourPlanning" class="col-sm-5 col-form-label">Sélectionnez un Annonceur *</label>
+                        <div class="col-sm-7">
+                            <select ui-select2  ng-model="annonceur" ng-change="annonceurChange()" required id="annonceursPourPlanning" name="annonceur" style="width:100%">
+                                <option ng-repeat="a in annonceurs" value="{{a.id}}">
+                                    {{a.nom}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="campagnesPourPlanning" class="col-sm-5 col-form-label">Sélectionnez une Campagne *</label>
+                        <div class="col-sm-7">
+                            <select ui-select2 ng-model="campagne" required id="campagnesPourPlanning" name="campagne" style="width:100%">
+                                <option ng-repeat="c in campagnesPourPlanning" value="{{c.id}}">
+                                    {{c.nom}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="routeursPourPlanning" class="col-sm-5 col-form-label">Sélectionnez un Routeur *</label>
+                        <div class="col-sm-7">
+                            <select ui-select2 ng-model="routeur" ng-change="routeurChange()" required id="routeursPourPlanning" name="routeur" style="width:100%">
+                                <option ng-repeat="r in routeurs" value="{{r.id}}">
+                                    {{r.nom}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="basesPourPlanning" class="col-sm-5 col-form-label">Sélectionnez une Base *</label>
+                        <div class="col-sm-7">
+                            <select ui-select2 ng-model="base" required id="basesPourPlanning" name="base" style="width:100%">
+                                <option ng-repeat="b in basesPourPlanning" value="{{b.id}}">
+                                    {{b.nom}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="volume" class="col-sm-5 col-form-label">Volume envoyé *</label>
+                        <div class="col-sm-7">
+                            <input type="number" ng-model="volume" min="0" required class="form-control" id="volume" name="volume">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="date_envoi" class="col-sm-5 col-form-label">Date d'envoi *</label>
+                        <div class="col-sm-7">
+                            <input type="date" ng-model="date_envoi" required class="form-control" id="date_envoi" name="date_envoi">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="heure_envoi" class="col-sm-5 col-form-label">Heure d'envoi *</label>
+                        <div class="col-sm-7">
+                            <input type="time" ng-model="heure_envoi" required class="form-control" step="1" id="heure_envoi" name="heure_envoi" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success"><i class="fa fa-check-circle"></i> Valider</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times-circle"></i> Annuler</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="display: none;" ng-controller="AlertsController">
+    <button id="successPlanifierEnvoiNotifButton" ng-click="simpleSuccessWithParams('Routeur','Envoi planifié avec succès !')"></button>
+    <button id="errorPlanifierEnvoiNotifButton" ng-click="simpleErrorWithParams('Routeur', 'Une erreur est survenue durant la planification !')"></button>
+</div>
+
+<div class="container-fluid" ng-controller="PlanningsController">
+    <button id="refreshTab" ng-click="refreshTab()" style="display: none;"></button>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading"><h4>Tableau de tous les envois plannifiés</h4></div>
+                <div class="panel-body">
+                    <div class="input-icon right mb10">
+                        <i class="fa fa-search"></i>
+                        <input type="text" ng-model="filterOptions.filterText" class="form-control" placeholder="Filtre">
+                    </div>
+                    <div class="table-responsive table-vertical">
+                        <table id="planningsTab" class="table table-striped table-bordered table-hover table-responsive">
+                            <thead>
+                                <tr style="font-weight: bold">
+                                    <th>Date d'envoi</th>
+                                    <th>Heure d'envoi</th>
+                                    <th>Routeur</th>
+                                    <th>Base</th>
+                                    <th>Annonceur</th>
+                                    <th>Campagne</th>
+                                    <th>Volume</th>
+                                    <th>Créé le</th>
+                                    <th>Créé par</th>
+                                    <th>Modifié le</th>
+                                    <th>Modifié par</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="planning in plannings">
+                                    <td data-title="Date d'envoi">
+                                        <span editable-date="planning.date" e-name="date" e-form="rowform" e-required>
+                                            {{ planning.date || '' }}
+                                        </span>
+                                    </td>
+                                    <td data-title="Heure d'envoi">
+                                        <span editable-time="planning.heure" e-name="heure" e-form="rowform" e-required>
+                                            {{ planning.heure || '' }}
+                                        </span>
+                                    </td>
+                                    <td data-title="Routeur">
+                                        <span editable-select="planning.routeur.id" e-name="routeur" e-form="rowform" e-required  e-ng-options="r.id as r.nom for r in routeurs">
+                                            {{ planning.routeur.nom || '' }}
+                                        </span>
+                                    </td>
+                                    <td data-title="Base">
+                                        <span editable-select="planning.base.id" e-name="base" e-form="rowform" e-required  e-ng-options="b.id as b.nom for b in bases">
+                                            {{ planning.base.nom || '' }}
+                                        </span>
+                                    </td>
+                                    <td data-title="Annonceur">
+                                        <span editable-select="planning.annonceur.id" e-name="annonceur" e-form="rowform" e-required  e-ng-options="a.id as a.nom for a in annonceurs">
+                                            {{ planning.annonceur.nom || '' }}
+                                        </span>
+                                    </td>
+                                    <td data-title="Campagne">
+                                        <span editable-select="planning.campagne.id" e-name="campagne" e-form="rowform" e-required  e-ng-options="c.id as c.nom for c in campagnes">
+                                            {{ planning.campagne.nom || '' }}
+                                        </span>
+                                    </td>
+                                    <td data-title="Volume">
+                                        <span editable-number="planning.volume" e-name="volume" e-form="rowform" e-required>
+                                            {{ planning.volume || '' }}
+                                        </span>
+                                    </td>
+                                    <td data-title="Créé le">
+                                        <span>
+                                            {{ planning.cree_le || '' }}
+                                        </span>
+                                    </td>
+                                    <td data-title="Créé Par">
+                                        <span>
+                                            {{ planning.cree_par || '' }}
+                                        </span>
+                                    </td>
+                                    <td data-title="Modifié le">
+                                        <span>
+                                            {{ planning.modifie_le || '' }}
+                                        </span>
+                                    </td>
+                                    <td data-title="Modifié Par">
+                                        <span>
+                                            {{ planning.modifie_par || '' }}
+                                        </span>
+                                    </td>
+                                    <td data-title="Actions" style="white-space: nowrap">
+                                        <form editable-form name="rowform" onbeforesave="savePlanning($data, planning.id)"
+                                            ng-show="rowform.$visible" class="form-buttons form-inline"
+                                            shown="inserted == planning">
+                                            <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-sm btn-success">
+                                                Valider
+                                            </button>
+                                            <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()"
+                                                class="btn btn-sm btn-default">
+                                                Annuler
+                                            </button>
+                                        </form>
+                                        <div class="buttons" ng-show="!rowform.$visible">
+                                            <!-- <button class="btn btn-sm btn-primary" ng-click="rowform.$show()">Modifier</button> -->
+                                            <button class="btn btn-sm btn-danger" ng-click="removePlanning(planning.id)">Supprimer</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <pager total-items="totalServerItems" ng-model="pagingOptions.currentPage" previous-text="Précédent" next-text="Suivant"></pager>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function(){
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth()+1; //January is 0!
+        var yyyy = today.getFullYear();
+        if(dd<10) dd='0'+dd;
+        if(mm<10) mm='0'+mm;
+
+        today = yyyy+'-'+mm+'-'+dd;
+
+        $('#date_envoi').attr("min", today);
+        
+        $('#planifierEnvoiForm').submit(function(){
+            $.ajax({
+                url: 'plannings',
+                type:'POST',
+                data: $('#planifierEnvoiForm').serialize(),
+                success: function (rep) {
+                    if(rep.code == 200){
+                        $('#refreshTab').click();
+                        $('#planifierEnvoiModal').modal('hide');
+                        $("#successPlanifierEnvoiNotifButton").click();
+                        $('#planifierEnvoiForm')[0].reset();
+                    }else
+                        $("#errorPlanifierEnvoiNotifButton").click();
+                },
+                error: function (res,status,err) { console.log(err); $("#errorPlanifierEnvoiNotifButton").click(); },
+                complete: function () {}
+            });
+        });
+    
+    });
+</script>

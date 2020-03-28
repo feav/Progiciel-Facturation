@@ -2,18 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
-// Auth::routes();
-
 Route::get('/', function () {
     return view('welcome');
 })->name('index')->middleware('auth');
@@ -23,9 +11,35 @@ Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 
-// Registration Routes...
-Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
-Route::post('register', 'Auth\RegisterController@register');
+Route::get('campagnes/parAnnonceur/{idAnnonceur}', 'CampagneController@indexByAnnonceurId');
+
+Route::get('bases/parRouteur/{idRouteur}', 'BaseController@indexByRouteurId');
+
+Route::get('routeurs/forStatistics', 'RouteurController@indexForStatistics');
+
+Route::post('routeurs/applyFilter', 'RouteurController@applyFilter');
+
+Route::get('annonceurs/forStatistics', 'AnnonceurController@indexForStatistics');
+
+Route::post('annonceurs/applyFilter', 'AnnonceurController@applyFilter');
+
+Route::get('bases/forStatistics', 'BaseController@indexForStatistics');
+
+Route::post('bases/applyFilter', 'BaseController@applyFilter');
+
+Route::post('resultats/applyFilter', 'ResultatController@applyFilter');
+
+Route::apiResources([
+    'annonceurs' => 'AnnonceurController',
+    'bases' => 'BaseController',
+    'campagnes' => 'CampagneController',
+    'plannings' => 'PlanningController',
+    'routeurs' => 'RouteurController',
+    'resultats' => 'ResultatController',
+    'users' => 'UserController'
+]);
+
+Route::resource('roles', 'RoleController', ['only' => ['index']]);
 
 Route::fallback(function () {
     return view('pages.errors.404');

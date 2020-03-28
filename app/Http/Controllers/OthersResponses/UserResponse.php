@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers\OthersResponses;
 
-class RouteurOtherResponse
+class UserResponse
 {
     public $id;
      
     public $nom;
+     
+    public $email;
 
-    public $prix;
+    public $password;
+     
+    public $role;
 
     public $cree_le;
 
@@ -19,15 +23,17 @@ class RouteurOtherResponse
     public $modifie_par;
 
     /**
-     * Create a new RouteurOtherResponse instance.
+     * Create a new CampagneOtherResponse instance.
      *
      * @return void
      */
-    public function __construct($id, $n, $pr, $cl, $cp, $ml, $mp)
+    public function __construct($id, $n, $em, $pw, $rol, $cl, $cp, $ml, $mp)
     {
         $this->id = $id;
         $this->nom = $n;
-        $this->prix = $pr;
+        $this->email = $em;
+        $this->password = $pw;
+        $this->role = $rol;
         $this->cree_le = $cl;
         $this->cree_par = $cp;
         $this->modifie_le = $ml;

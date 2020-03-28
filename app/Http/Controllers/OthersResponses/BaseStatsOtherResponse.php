@@ -2,13 +2,19 @@
 
 namespace App\Http\Controllers\OthersResponses;
 
-class RouteurOtherResponse
+class BaseStatsOtherResponse
 {
     public $id;
      
     public $nom;
 
-    public $prix;
+    public $annonceur;
+     
+    public $rem;
+
+    public $resultat;
+
+    public $pa;
 
     public $cree_le;
 
@@ -19,15 +25,18 @@ class RouteurOtherResponse
     public $modifie_par;
 
     /**
-     * Create a new RouteurOtherResponse instance.
+     * Create a new BaseStatsOtherResponse instance.
      *
      * @return void
      */
-    public function __construct($id, $n, $pr, $cl, $cp, $ml, $mp)
+    public function __construct($id, $n, $ann, $rem, $res, $p, $cl, $cp, $ml, $mp)
     {
         $this->id = $id;
         $this->nom = $n;
-        $this->prix = $pr;
+        $this->annonceur = $ann;
+        $this->rem = $rem;
+        $this->resultat = $res;
+        $this->pa = $p;
         $this->cree_le = $cl;
         $this->cree_par = $cp;
         $this->modifie_le = $ml;

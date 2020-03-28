@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use App\Routeur;
+use App\Annonceur;
 use Illuminate\Http\Request;
 use App\RESTResponse;
 use App\Resultat;
 use App\Campagne;
+use App\User;
 use App\Http\Controllers\OthersResponses\RouteurOtherResponse;
+use App\Http\Controllers\OthersResponses\RouteurStatsOtherResponse;
 
 class RouteurController extends Controller
 {
@@ -19,7 +23,21 @@ class RouteurController extends Controller
      */
     public function index()
     {
-        return response()->json(new RESTResponse(200, "OK", Routeur::all()));
+        $routeurs = Routeur::all();
+        $routeurs->transform(function ($item, $key) {
+            $routeur = new RouteurOtherResponse
+                        (
+                            $item->id, 
+                            $item->nom,
+                            $item->prix,
+                            date('d-m-Y à H:i:s', strtotime($item->created_at)),
+                            User::find($item->cree_par)->name,
+                            date('d-m-Y à H:i:s', strtotime($item->updated_at)),
+                            User::find($item->modifie_par)->name
+                        );
+            return $routeur;
+        });
+        return response()->json(new RESTResponse(200, "OK", $routeurs));
     }
 
     /**
@@ -31,15 +49,20 @@ class RouteurController extends Controller
     {
         $routeurs = Resultat::all();
         $routeurs->transform(function ($item, $key) {
-            $routeur = new RouteurOtherResponse
+            $routeur = new RouteurStatsOtherResponse
                         (
                             $item->id, 
                             Routeur::find($item->routeur_id)->nom, 
+                            Annonceur::find($item->annonceur_id),
                             Routeur::find($item->routeur_id)->prix, 
                             $item->volume,
                             Campagne::find($item->campagne_id)->remuneration,
                             $item->resultat,
-                            Routeur::find($item->routeur_id)->prix * $item->volume
+                            Routeur::find($item->routeur_id)->prix * $item->volume,
+                            date('d-m-Y à H:i:s', strtotime($item->created_at)),
+                            User::find($item->cree_par)->name,
+                            date('d-m-Y à H:i:s', strtotime($item->updated_at)),
+                            User::find($item->modifie_par)->name
                         );
             return $routeur;
         });
@@ -54,7 +77,12 @@ class RouteurController extends Controller
      */
     public function store(Request $request)
     {
-        Routeur::create(['nom'=>$request->input('nom'), 'prix'=>$request->input('prix')]);
+        Routeur::create([
+            'nom'=>$request->input('nom'), 
+            'prix'=>$request->input('prix'),
+            'cree_par'=>Auth::user()->id,
+            'modifie_par'=>Auth::user()->id
+        ]);
         return response()->json(new RESTResponse(200, "OK", null));
     }
 
@@ -81,7 +109,8 @@ class RouteurController extends Controller
         Routeur::where('id',$id)
                 ->update([  
                     'nom'=>$request->input('nom'),
-                    'prix'=>$request->input('prix')
+                    'prix'=>$request->input('prix'),
+                    'modifie_par'=>Auth::user()->id
                 ]);
         return response()->json(new RESTResponse(200, "OK", null));
     }
