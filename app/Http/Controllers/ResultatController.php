@@ -55,13 +55,85 @@ class ResultatController extends Controller
     public function applyFilter(Request $request){
         $from = date('Y-m-d', strtotime($request->filtre_date_debut));
         $to = date('Y-m-d', strtotime($request->filtre_date_fin));
-        //dd($from);
-        $resultats = Resultat::where([
-            'annonceur_id' => $request->filtre_annonceur,
-            'routeur_id' => $request->filtre_routeur,
-            'campagne_id' => $request->filtre_campagne,
-            'base_id' => $request->filtre_base
-        ])->whereBetween('date_envoi', [$from, $to])->get();
+        
+        $resultats;
+
+        if($request->filtre_annonceur==null && $request->filtre_routeur==null && $request->filtre_campagne==null && $request->filtre_base==null){
+            $resultats = Resultat::whereBetween('date_envoi', [$from, $to])->get();
+        }else if($request->filtre_annonceur!=null && $request->filtre_routeur==null && $request->filtre_campagne==null && $request->filtre_base==null){
+            $resultats = Resultat::where([ 'annonceur_id' => $request->filtre_annonceur ])
+                                    ->whereBetween('date_envoi', [$from, $to])->get();
+        }else if($request->filtre_annonceur==null && $request->filtre_routeur!=null && $request->filtre_campagne==null && $request->filtre_base==null){
+            $resultats = Resultat::where([ 'routeur_id' => $request->filtre_routeur ])
+                                    ->whereBetween('date_envoi', [$from, $to])->get();
+        }else if($request->filtre_annonceur==null && $request->filtre_routeur==null && $request->filtre_campagne!=null && $request->filtre_base==null){
+            $resultats = Resultat::where([ 'campagne_id' => $request->filtre_campagne ])
+                                    ->whereBetween('date_envoi', [$from, $to])->get();
+        }else if($request->filtre_annonceur==null && $request->filtre_routeur==null && $request->filtre_campagne==null && $request->filtre_base!=null){
+            $resultats = Resultat::where([ 'base_id' => $request->filtre_base ])
+                                    ->whereBetween('date_envoi', [$from, $to])->get();
+        }else if($request->filtre_annonceur==null && $request->filtre_routeur!=null && $request->filtre_campagne!=null && $request->filtre_base!=null){
+            $resultats = Resultat::where([
+                'routeur_id' => $request->filtre_routeur,
+                'campagne_id' => $request->filtre_campagne,
+                'base_id' => $request->filtre_base
+            ])->whereBetween('date_envoi', [$from, $to])->get();
+        }else if($request->filtre_annonceur!=null && $request->filtre_routeur==null && $request->filtre_campagne!=null && $request->filtre_base!=null){
+            $resultats = Resultat::where([
+                'annonceur_id' => $request->filtre_annonceur,
+                'campagne_id' => $request->filtre_campagne,
+                'base_id' => $request->filtre_base
+            ])->whereBetween('date_envoi', [$from, $to])->get();
+        }else if($request->filtre_annonceur!=null && $request->filtre_routeur!=null && $request->filtre_campagne==null && $request->filtre_base!=null){
+            $resultats = Resultat::where([
+                'annonceur_id' => $request->filtre_annonceur,
+                'routeur_id' => $request->filtre_routeur,
+                'base_id' => $request->filtre_base
+            ])->whereBetween('date_envoi', [$from, $to])->get();
+        }else if($request->filtre_annonceur!=null && $request->filtre_routeur!=null && $request->filtre_campagne!=null && $request->filtre_base==null){
+            $resultats = Resultat::where([
+                'annonceur_id' => $request->filtre_annonceur,
+                'routeur_id' => $request->filtre_routeur,
+                'campagne_id' => $request->filtre_campagne
+            ])->whereBetween('date_envoi', [$from, $to])->get();
+        }else if($request->filtre_annonceur==null && $request->filtre_routeur==null && $request->filtre_campagne!=null && $request->filtre_base!=null){
+            $resultats = Resultat::where([
+                'campagne_id' => $request->filtre_campagne,
+                'base_id' => $request->filtre_base
+            ])->whereBetween('date_envoi', [$from, $to])->get();
+        }else if($request->filtre_annonceur==null && $request->filtre_routeur!=null && $request->filtre_campagne==null && $request->filtre_base!=null){
+            $resultats = Resultat::where([
+                'routeur_id' => $request->filtre_routeur,
+                'base_id' => $request->filtre_base
+            ])->whereBetween('date_envoi', [$from, $to])->get();
+        }else if($request->filtre_annonceur==null && $request->filtre_routeur!=null && $request->filtre_campagne!=null && $request->filtre_base==null){
+            $resultats = Resultat::where([
+                'routeur_id' => $request->filtre_routeur,
+                'campagne_id' => $request->filtre_campagne
+            ])->whereBetween('date_envoi', [$from, $to])->get();
+        }else if($request->filtre_annonceur!=null && $request->filtre_routeur==null && $request->filtre_campagne==null && $request->filtre_base!=null){
+            $resultats = Resultat::where([
+                'annonceur_id' => $request->filtre_annonceur,
+                'base_id' => $request->filtre_base
+            ])->whereBetween('date_envoi', [$from, $to])->get();
+        }else if($request->filtre_annonceur!=null && $request->filtre_routeur==null && $request->filtre_campagne!=null && $request->filtre_base==null){
+            $resultats = Resultat::where([
+                'annonceur_id' => $request->filtre_annonceur,
+                'campagne_id' => $request->filtre_campagne
+            ])->whereBetween('date_envoi', [$from, $to])->get();
+        }else if($request->filtre_annonceur!=null && $request->filtre_routeur!=null && $request->filtre_campagne==null && $request->filtre_base==null){
+            $resultats = Resultat::where([
+                'annonceur_id' => $request->filtre_annonceur,
+                'routeur_id' => $request->filtre_routeur,
+            ])->whereBetween('date_envoi', [$from, $to])->get();
+        }else {
+            $resultats = Resultat::where([
+                'annonceur_id' => $request->filtre_annonceur,
+                'routeur_id' => $request->filtre_routeur,
+                'campagne_id' => $request->filtre_campagne,
+                'base_id' => $request->filtre_base
+            ])->whereBetween('date_envoi', [$from, $to])->get();
+        }
 
         $resultats->transform(function ($item, $key) {
             $resultat = new ResultatResponse(

@@ -580,6 +580,13 @@ angular
                 $scope.notif('Résultat', 'Une erreur est survenue durant le filtrage !', 'error');
             });
         }
+
+        $scope.viderLesChamps = function (){
+            $scope.filter_data.filtre_routeur= null;
+            $scope.filter_data.filtre_base= null;
+            $scope.filter_data.filtre_annonceur= null;
+            $scope.filter_data.filtre_campagne= null;
+        }
         
         $scope.pagingOptions = {
             pageSizes: [25, 50, 100],
