@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Planning;
 use Illuminate\Http\Request;
 use App\RESTResponse;
+use App\RESTPaginateResponse;
 use App\Routeur;
 use App\Annonceur;
 use App\Base;
@@ -26,23 +27,67 @@ class PlanningController extends Controller
     {
         $plannings = Planning::all();
         $plannings->transform(function ($item, $key) {
-            $planning = new PlanningResponse(
-                $item->id,
-                date('d-m-Y', strtotime($item->date_envoi)),
-                $item->heure_envoi,
-                Routeur::find($item->routeur_id), 
-                Base::find($item->base_id), 
-                Annonceur::find($item->annonceur_id), 
-                Campagne::find($item->campagne_id), 
-                $item->volume, 
-                date('d-m-Y à H:i:s', strtotime($item->created_at)),
-                User::find($item->cree_par)->name,
-                date('d-m-Y à H:i:s', strtotime($item->updated_at)),
-                User::find($item->modifie_par)->name
-            );
+            $planning = new PlanningResponse($item->id, date('d-m-Y', strtotime($item->date_envoi)), $item->heure_envoi, Routeur::find($item->routeur_id), Base::find($item->base_id), Annonceur::find($item->annonceur_id), Campagne::find($item->campagne_id), $item->volume, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par)->name);
             return $planning;
         });
         return response()->json(new RESTResponse(200, "OK", $plannings));
+    }
+
+    /**
+     * Display a listing of the resource by page.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function indexPaginate($per_page = 15){
+        $plannings = Planning::paginate($per_page);
+        $plannings->transform(function ($item, $key) {
+            $planning = new PlanningResponse($item->id, date('d-m-Y', strtotime($item->date_envoi)), $item->heure_envoi, Routeur::find($item->routeur_id), Base::find($item->base_id), Annonceur::find($item->annonceur_id), Campagne::find($item->campagne_id), $item->volume, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par)->name);
+            return $planning;
+        });
+        return response()->json(new RESTPaginateResponse($plannings->currentPage(), $plannings->items(), $plannings->url(1), $plannings->lastPage(), $plannings->url($plannings->lastPage()), $plannings->nextPageUrl(), $plannings->perPage(), $plannings->previousPageUrl(), $plannings->count(), $plannings->total()));
+    }
+
+    /**
+     * Display a listing of the resource using search_text by page.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function indexSearchPaginate($per_page = 15, $search_text=""){
+        $plannings = Planning::whereHas('campagne', function ($query) use($search_text) {
+            $query->where('nom', 'like', '%' . $search_text . '%');
+        })->orWhereHas('base', function ($query) use($search_text) {
+            $query->where('nom', 'like', '%' . $search_text . '%');
+        })->orWhereHas('base', function ($query) use($search_text) {
+            $query->whereHas('routeur', function($query) use($search_text){
+                $query->where('nom', 'like', '%' . $search_text . '%');
+            });
+        })->orWhereHas('campagne', function ($query) use($search_text) {
+            $query->whereHas('annonceur', function($query) use($search_text){
+                $query->where('nom', 'like', '%' . $search_text . '%');
+            });
+        })->paginate($per_page);
+        $plannings->transform(function ($item, $key) {
+            $planning = new PlanningResponse($item->id, date('d-m-Y', strtotime($item->date_envoi)), $item->heure_envoi, Routeur::find($item->routeur_id), Base::find($item->base_id), Annonceur::find($item->annonceur_id), Campagne::find($item->campagne_id), $item->volume, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par)->name);
+            return $planning;
+        });
+        return response()->json(new RESTPaginateResponse($plannings->currentPage(), $plannings->items(), $plannings->url(1), $plannings->lastPage(), $plannings->url($plannings->lastPage()), $plannings->nextPageUrl(), $plannings->perPage(), $plannings->previousPageUrl(), $plannings->count(), $plannings->total()));
+    }
+    
+    /**
+     * Apply filter to retrieve correct data.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function applyFilter($per_page = 15, Request $request){
+        $from = date('Y-m-d', strtotime($request->filtre_date_debut));
+        $to = date('Y-m-d', strtotime($request->filtre_date_fin));
+        $plannings = Planning::whereBetween('date_envoi', [$from, $to])->paginate($per_page);
+        $plannings->transform(function ($item, $key) {
+            $planning = new PlanningResponse($item->id, date('d-m-Y', strtotime($item->date_envoi)), $item->heure_envoi, Routeur::find($item->routeur_id), Base::find($item->base_id), Annonceur::find($item->annonceur_id), Campagne::find($item->campagne_id), $item->volume, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par)->name);
+            return $planning;
+        });
+        return response()->json(new RESTPaginateResponse($plannings->currentPage(), $plannings->items(), $plannings->url(1), $plannings->lastPage(), $plannings->url($plannings->lastPage()), $plannings->nextPageUrl(), $plannings->perPage(), $plannings->previousPageUrl(), $plannings->count(), $plannings->total()));
     }
 
     /**

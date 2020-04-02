@@ -13878,7 +13878,8 @@ div.shortcut-tiles {
   color: rgba(255, 255, 255, 0.4);
 }
 .info-tiles .tiles-body {
-  font-size: 32px;
+  font-size: 18px;
+  line-height: 2;
   border-bottom-right-radius: 3px;
   border-bottom-left-radius: 3px;
 }

@@ -1,21 +1,21 @@
 <div id="page-heading">
     <ol class="breadcrumb">
         <li><a href="#/">Tableau de Bord</a></li>
-        <li class="active">Résultats par Bases</li>
+        <li class="active">Résultats par Campagnes</li>
     </ol>
     <div class="container-fluid">
-        <div class="row"><h1>Résultats par Bases</h1></div>
+        <div class="row"><h1>Résultats par Campagnes</h1></div>
     </div>
 </div>
 
-<div class="container-fluid" ng-controller="StatsParBasesController">
+<div class="container-fluid" ng-controller="StatsParCampagnesController">
     <div class="row">
         <div class="col-xs-12">
             <div class="panel panel-primary">
                 <div class="panel-heading"><h4>Tableau des résultats par bases</h4></div>
                 <div class="panel-body">
                     <div class="row" style="margin: 10px 0;">
-                        <div class="col-lg-9 col-sm-12" style="margin: 5px 0;">
+                        <div class="col-lg-8 col-sm-12" style="margin: 5px 0;">
                             <button class="btn btn-default" daterangepicker="filtre_date_options" date-begin="filter_data.filtre_date_debut" date-end="filter_data.filtre_date_fin">
                                 <i class="fa fa-calendar"></i> <span style="margin-left: 5px">{{filter_data.filtre_date_debut}} - {{filter_data.filtre_date_fin}}</span> <b class="caret"></b>
                             </button>
@@ -41,7 +41,7 @@
                         </div>
                     </div> -->
                     <div class="table-responsive table-vertical">
-                        <table id="statsParBasesTab" class="table table-striped table-bordered table-hover table-responsive">
+                        <table id="statsParCampagnesTab" class="table table-striped table-bordered table-hover table-responsive">
                             <thead>
                                 <tr style="font-weight: bold">
                                     <th>Nom</th>

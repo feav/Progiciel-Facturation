@@ -19,10 +19,10 @@ class CreateResultatsTable extends Migration
             $table->foreignId('campagne_id');
             $table->unsignedBigInteger('routeur_id');
             $table->foreignId('base_id');
-            $table->float('volume');
+            $table->unsignedBigInteger('volume');
             $table->date('date_envoi');
             $table->time('heure_envoi');
-            $table->unsignedBigInteger('resultat')->nullable(true);
+            $table->unsignedBigInteger('resultat', 0);
             $table->unsignedBigInteger('cree_par');
             $table->unsignedBigInteger('modifie_par')->nullable();
             $table->timestamps();

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Annonceur;
 use Illuminate\Http\Request;
 use App\RESTResponse;
+use App\RESTPaginateResponse;
 use App\Resultat;
 use App\Campagne;
 use App\Routeur;
@@ -25,52 +26,95 @@ class AnnonceurController extends Controller
     {
         $annonceurs = Annonceur::all();
         $annonceurs->transform(function ($item, $key) {
-            $annonceur = new AnnonceurOtherResponse
-                        (
-                            $item->id, 
-                            $item->nom,
-                            $item->url,
-                            $item->adresse_facturation, 
-                            $item->email_comptabilite,
-                            $item->email_direction,
-                            $item->email_production,
-                            $item->delai_paiement,
-                            date('d-m-Y à H:i:s', strtotime($item->created_at)),
-                            User::find($item->cree_par)->name,
-                            date('d-m-Y à H:i:s', strtotime($item->updated_at)),
-                            User::find($item->modifie_par)->name
-                        );
+            $annonceur = new AnnonceurOtherResponse ($item->id, $item->nom, $item->url, $item->adresse_facturation, $item->email_comptabilite, $item->email_direction, $item->email_production, $item->delai_paiement, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par)->name);
             return $annonceur;
         });
         return response()->json(new RESTResponse(200, "OK", $annonceurs));
     }
 
     /**
-     * Display a listing of the resource for statistics.
+     * Display a listing of the resource by page.
      *
      * @return \Illuminate\Http\Response
      */
-    public function indexForStatistics()
-    {
-        $annonceurs = Resultat::all();
+    public function indexPaginate($per_page = 15){
+        $annonceurs = Annonceur::paginate($per_page);
         $annonceurs->transform(function ($item, $key) {
-            $annonceur = new AnnonceurStatsOtherResponse
-                        (
-                            $item->id, 
-                            Annonceur::find($item->annonceur_id)->nom,
-                            Annonceur::find($item->annonceur_id),
-                            Campagne::find($item->campagne_id)->remuneration,
-                            $item->resultat,
-                            Routeur::find($item->routeur_id)->prix * $item->volume,
-                            date('d-m-Y à H:i:s', strtotime($item->created_at)),
-                            User::find($item->cree_par)->name,
-                            date('d-m-Y à H:i:s', strtotime($item->updated_at)),
-                            User::find($item->modifie_par)->name
-                        );
+            $annonceur = new AnnonceurOtherResponse ($item->id, $item->nom, $item->url, $item->adresse_facturation, $item->email_comptabilite, $item->email_direction, $item->email_production, $item->delai_paiement, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par)->name);
             return $annonceur;
         });
-        return response()->json(new RESTResponse(200, "OK", $annonceurs));
-    }
+        return response()
+                ->json(new RESTPaginateResponse($annonceurs->currentPage(), $annonceurs->items(), $annonceurs->url(1), $annonceurs->lastPage(), $annonceurs->url($annonceurs->lastPage()), $annonceurs->nextPageUrl(), $annonceurs->perPage(), $annonceurs->previousPageUrl(), $annonceurs->count(), $annonceurs->total()));
+	}
+	
+	/**
+     * Display a listing of the resource using search_text by page.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function indexSearchPaginate($per_page = 15, $search_text=""){
+        $annonceurs = Annonceur::where('nom', 'like', '%' . $search_text . '%')->paginate($per_page);
+        $annonceurs->transform(function ($item, $key) {
+            $annonceur = new AnnonceurOtherResponse ($item->id, $item->nom, $item->url, $item->adresse_facturation, $item->email_comptabilite, $item->email_direction, $item->email_production, $item->delai_paiement, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par)->name);
+            return $annonceur;
+        });
+        return response()
+                ->json(new RESTPaginateResponse($annonceurs->currentPage(), $annonceurs->items(), $annonceurs->url(1), $annonceurs->lastPage(), $annonceurs->url($annonceurs->lastPage()), $annonceurs->nextPageUrl(), $annonceurs->perPage(), $annonceurs->previousPageUrl(), $annonceurs->count(), $annonceurs->total()));
+	}
+	
+	/**
+     * Display a listing of the resource for statistics by page.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function indexForStatistics(){
+        //$annonceursFull = Resultat::paginate($per_page);
+        $annonceursFull = Resultat::all();
+
+        $totalVolume = $annonceursFull->sum("volume");
+        
+        $annonceursFull->transform(function ($item, $key) {
+            $annonceur = new AnnonceurStatsOtherResponse ($item->id, Annonceur::find($item->annonceur_id)->nom, Annonceur::find($item->annonceur_id), Campagne::find($item->campagne_id)->remuneration, $item->resultat, Routeur::find($item->routeur_id)->prix * $item->volume, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par)->name);
+            return $annonceur;
+        });
+        $annonceurs = $annonceursFull->uniqueStrict("nom");
+        $annonceurs->each(function ($item, $key) use($annonceursFull) {
+            $item->resultat = $annonceursFull->where('nom', $item->nom)->sum("resultat");
+            $item->pa = $annonceursFull->where('nom', $item->nom)->sum("pa");
+        });
+        
+        $totalPA = $annonceurs->sum("pa");
+        $totalCA = $annonceurs->sum(function ($item) { return $item->rem * $item->resultat; });
+        $totalMarge = $totalCA - $totalPA;
+
+        $response = array(  'totalVolume'=>$totalVolume, 
+                            'totalPA'=>$totalPA,
+                            'totalCA'=>$totalCA,
+                            'totalMarge'=>$totalMarge,
+                            'data'=>new RESTResponse(200, "OK", $annonceurs));
+        return response()->json($response);
+        // return response()
+        //         ->json(new RESTPaginateResponse($annonceurs->currentPage(), $annonceurs->items(), $annonceurs->url(1), $annonceurs->lastPage(), $annonceurs->url($annonceurs->lastPage()), $annonceurs->nextPageUrl(), $annonceurs->perPage(), $annonceurs->previousPageUrl(), $annonceurs->count(), $annonceurs->total()));
+	}
+	
+	/**
+     * Display a listing of the resource for statistics using search_text by page.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function indexSearchPaginateForStatistics($per_page = 15, $search_text=""){
+        $annonceurs = Resultat::whereHas('campagne', function ($query) use($search_text) {
+            $query->whereHas('annonceur', function($query) use($search_text){
+                $query->where('nom', 'like', '%' . $search_text . '%');
+            });
+        })->paginate($per_page);
+        $annonceurs->transform(function ($item, $key) {
+            $annonceur = new AnnonceurStatsOtherResponse ($item->id, Annonceur::find($item->annonceur_id)->nom, Annonceur::find($item->annonceur_id), Campagne::find($item->campagne_id)->remuneration, $item->resultat, Routeur::find($item->routeur_id)->prix * $item->volume, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par)->name);
+            return $annonceur;
+        });
+        return response()
+                ->json(new RESTPaginateResponse($annonceurs->currentPage(), $annonceurs->items(), $annonceurs->url(1), $annonceurs->lastPage(), $annonceurs->url($annonceurs->lastPage()), $annonceurs->nextPageUrl(), $annonceurs->perPage(), $annonceurs->previousPageUrl(), $annonceurs->count(), $annonceurs->total()));
+	}
 
     /**
      * Apply filter to retrieve correct data.
@@ -78,25 +122,33 @@ class AnnonceurController extends Controller
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function applyFilter(Request $request){
-        $annonceurs = Resultat::whereIn();
-        $annonceurs->transform(function ($item, $key) {
-            $annonceur = new AnnonceurStatsOtherResponse
-                        (
-                            $item->id, 
-                            Annonceur::find($item->annonceur_id)->nom,
-                            Annonceur::find($item->annonceur_id),
-                            Campagne::find($item->campagne_id)->remuneration,
-                            $item->resultat,
-                            Routeur::find($item->routeur_id)->prix * $item->volume,
-                            date('d-m-Y à H:i:s', strtotime($item->created_at)),
-                            User::find($item->cree_par)->name,
-                            date('d-m-Y à H:i:s', strtotime($item->updated_at)),
-                            User::find($item->modifie_par)->name
-                        );
+    public function applyFilterForStatistics(Request $request){
+        $from = date('Y-m-d', strtotime($request->filtre_date_debut));
+        $to = date('Y-m-d', strtotime($request->filtre_date_fin));
+        $annonceursFull = Resultat::whereBetween('date_envoi', [$from, $to])->get();
+
+        $totalVolume = $annonceursFull->sum("volume");
+        
+        $annonceursFull->transform(function ($item, $key) {
+            $annonceur = new AnnonceurStatsOtherResponse($item->id, Annonceur::find($item->annonceur_id)->nom, Annonceur::find($item->annonceur_id), Campagne::find($item->campagne_id)->remuneration, $item->resultat, Routeur::find($item->routeur_id)->prix * $item->volume, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par)->name);
             return $annonceur;
         });
-        return response()->json(new RESTResponse(200, "OK", $annonceurs));
+        $annonceurs = $annonceursFull->uniqueStrict("nom");
+        $annonceurs->each(function ($item, $key) use($annonceursFull) {
+            $item->resultat = $annonceursFull->where('nom', $item->nom)->sum("resultat");
+            $item->pa = $annonceursFull->where('nom', $item->nom)->sum("pa");
+        });
+        
+        $totalPA = $annonceurs->sum("pa");
+        $totalCA = $annonceurs->sum(function ($item) { return $item->rem * $item->resultat; });
+        $totalMarge = $totalCA - $totalPA;
+
+        $response = array(  'totalVolume'=>$totalVolume, 
+                            'totalPA'=>$totalPA,
+                            'totalCA'=>$totalCA,
+                            'totalMarge'=>$totalMarge,
+                            'data'=>new RESTResponse(200, "OK", $annonceurs));
+        return response()->json($response);
     }
 
     /**

@@ -69,7 +69,7 @@
                     <div class="form-group row">
                         <label for="volume" class="col-sm-5 col-form-label">Volume envoyé *</label>
                         <div class="col-sm-7">
-                            <input type="number" ng-model="volume" min="0" required class="form-control" id="volume" name="volume">
+                            <input type="number" step="1" ng-model="volume" min="0" required class="form-control" id="volume" name="volume">
                         </div>
                     </div>
                     <div class="form-group row">
@@ -106,9 +106,26 @@
             <div class="panel panel-primary">
                 <div class="panel-heading"><h4>Tableau de tous les envois plannifiés</h4></div>
                 <div class="panel-body">
-                    <div class="input-icon right mb10">
-                        <i class="fa fa-search"></i>
-                        <input type="text" ng-model="filterOptions.filterText" class="form-control" placeholder="Filtre">
+                    <div class="row" style="margin: 10px 0;">
+                        <div class="col-lg-8 col-sm-12">
+                            <button class="btn btn-default" daterangepicker="filtre_date_options" date-begin="filter_data.filtre_date_debut" date-end="filter_data.filtre_date_fin">
+                                <i class="fa fa-calendar"></i> <span style="margin-left: 5px">{{filter_data.filtre_date_debut}} - {{filter_data.filtre_date_fin}}</span> <b class="caret"></b>
+                            </button>
+                            <button style="margin: 0 5px;" type="button" class="btn btn-primary" ng-click="validerFiltre()">Valider Filtre</button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-9 col-sm-12">
+                            <div class="input-icon right mb10">
+                                <i class="fa fa-search"></i>
+                                <input type="text" ng-model="filterOptions.filterText" class="form-control" placeholder="Filtre">
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <select class="form-control" placeholder="Nombre d'éléments par page" ng-change="pageSizeChange()" ng-model="pagingOptions.pageSize">
+                                <option ng-repeat="size in pagingOptions.pageSizes" value="{{ size }}">{{ size }}</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="table-responsive table-vertical">
                         <table id="planningsTab" class="table table-striped table-bordered table-hover table-responsive">
@@ -206,7 +223,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <pager total-items="totalServerItems" ng-model="pagingOptions.currentPage" previous-text="Précédent" next-text="Suivant"></pager>
+                    <pagination boundary-links="true" rotate="false"  total-items="totalServerItems" ng-model="pagingOptions.currentPage" previous-text="Précédent" next-text="Suivant" first-text="Première" last-text="Dernière"></pagination>
                 </div>
             </div>
         </div>

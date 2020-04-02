@@ -5,8 +5,7 @@
     <h1>Tableau de Bord</h1>
 </div>
 
-
-<div class="container-fluid" ng-controller="DashboardController">
+<div class="container-fluid" ng-controller="IndexController">
     <div class="row">
         <div class="col-md-12">
             <div class="row">
@@ -17,7 +16,7 @@
                         </div>
                         <div class="tiles-body">
                             <div class="pull-left"><i class="fa fa-money"></i></div>
-                            <div class="pull-right">1500 €</div>
+                            <div class="pull-right">{{stats.ca_journalier+' €'}}</div>
                         </div>
                     </div>
                 </div>
@@ -28,7 +27,7 @@
                         </div>
                         <div class="tiles-body">
                             <div class="pull-left"><i class="fa fa-money"></i></div>
-                            <div class="pull-right">12000 €</div>
+                            <div class="pull-right">{{stats.ca_hebdomadaire+' €'}}</div>
                         </div>
                     </div>
                 </div>
@@ -39,7 +38,7 @@
                         </div>
                         <div class="tiles-body">
                             <div class="pull-left"><i class="fa fa-money"></i></div>
-                            <div class="pull-right">32500 €</div>
+                            <div class="pull-right">{{stats.ca_mensuel+' €'}}</div>
                         </div>
                     </div>
                 </div>
@@ -50,7 +49,7 @@
                         </div>
                         <div class="tiles-body">
                             <div class="pull-left"><i class="fa fa-money"></i></div>
-                            <div class="pull-right">324000 €</div>
+                            <div class="pull-right">{{stats.ca_annuel+' €'}}</div>
                         </div>
                     </div>
                 </div>
@@ -63,7 +62,7 @@
                         </div>
                         <div class="tiles-body">
                             <div class="pull-left"><i class="fa fa-shopping-cart"></i></div>
-                            <div class="pull-right">124</div>
+                            <div class="pull-right">{{stats.volume_journalier}}</div>
                         </div>
                     </div>
                 </div>
@@ -74,7 +73,7 @@
                         </div>
                         <div class="tiles-body">
                             <div class="pull-left"><i class="fa fa-shopping-cart"></i></div>
-                            <div class="pull-right">1253</div>
+                            <div class="pull-right">{{stats.volume_hebdomadaire}}</div>
                         </div>
                     </div>
                 </div>
@@ -85,7 +84,7 @@
                         </div>
                         <div class="tiles-body">
                             <div class="pull-left"><i class="fa fa-shopping-cart"></i></div>
-                            <div class="pull-right">4207</div>
+                            <div class="pull-right">{{stats.volume_mensuel}}</div>
                         </div>
                     </div>
                 </div>
@@ -96,7 +95,7 @@
                         </div>
                         <div class="tiles-body">
                             <div class="pull-left"><i class="fa fa-shopping-cart"></i></div>
-                            <div class="pull-right">41237</div>
+                            <div class="pull-right">{{stats.volume_annuel}}</div>
                         </div>
                     </div>
                 </div>

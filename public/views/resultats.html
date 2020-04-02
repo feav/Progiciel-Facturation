@@ -14,43 +14,52 @@
                 <div class="panel panel-primary">
                     <div class="panel-heading"><h4>Tableau des Résultats</h4></div>
                     <div class="panel-body">
-                        <div class="row">
-                            <div class="col-lg-4 col-sm-6">
+                        <div class="row" style="margin: 10px 0;">
+                            <div class="col-lg-4 col-sm-6" style="margin: 5px 0;">
                                 <!-- <input type="text" placeholder="Filtre date" name="filtre_date" id="filtre_date" class="form-control" daterangepicker=""> -->
                                 <button class="btn btn-default" daterangepicker="filtre_date_options" date-begin="filter_data.filtre_date_debut" date-end="filter_data.filtre_date_fin">
                                     <i class="fa fa-calendar"></i> <span style="margin-left: 5px">{{filter_data.filtre_date_debut}} - {{filter_data.filtre_date_fin}}</span> <b class="caret"></b>
                                 </button>
                             </div>
-                            <div class="col-lg-2 col-sm-6">
+                            <div class="col-lg-2 col-sm-6" style="margin: 5px 0;">
                                 <select class="form-control" id="filtre_routeur" name="filtre_routeur" ng-model="filter_data.filtre_routeur">
                                     <option ng-repeat="routeur in routeurs" value="{{ routeur.id }}">{{ routeur.nom }}</option>
                                 </select>
                             </div>
-                            <div class="col-lg-2 col-sm-6">
+                            <div class="col-lg-2 col-sm-6" style="margin: 5px 0;">
                                 <select class="form-control" id="filtre_base" name="filtre_base" ng-model="filter_data.filtre_base">
                                     <option ng-repeat="base in bases" value="{{ base.id }}">{{ base.nom }}</option>
                                 </select>
                             </div>
-                            <div class="col-lg-2 col-sm-6">
+                            <div class="col-lg-2 col-sm-6" style="margin: 5px 0;">
                                 <select class="form-control" id="filtre_annonceur" name="filtre_annonceur" ng-model="filter_data.filtre_annonceur">
                                     <option ng-repeat="annonceur in annonceurs" value="{{ annonceur.id }}">{{ annonceur.nom }}</option>
                                 </select>
                             </div>
-                            <div class="col-lg-2 col-sm-6">
+                            <div class="col-lg-2 col-sm-6" style="margin: 5px 0;">
                                 <select class="form-control" id="filtre_campagne" name="filtre_campagne" ng-model="filter_data.filtre_campagne">
                                     <option ng-repeat="campagne in campagnes" value="{{ campagne.id }}">{{ campagne.nom }}</option>
                                 </select>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-lg-4 col-sm-12 pull-right" style="margin: 10px 0;">
+                        <div class="row" style="margin: 10px 0;">
+                            <div class="col-lg-4 col-sm-12 pull-right">
                                 <button type="button" class="btn btn-default" ng-click="viderLesChamps()">Vider les champs</button>
                                 <button type="button" class="btn btn-primary" ng-click="validerFiltre()">Valider Filtre</button>
                             </div>
                         </div>
-                        <div class="input-icon right mb10">
-                            <i class="fa fa-search"></i>
-                            <input type="text" ng-model="filterOptions.filterText" class="form-control" placeholder="Filtre">
+                        <div class="row" style="margin: 10px 0;">
+                            <!-- <div class="col-lg-9 col-sm-12">
+                                <div class="input-icon right mb10">
+                                    <i class="fa fa-search"></i>
+                                    <input type="text" ng-model="filterOptions.filterText" class="form-control" placeholder="Filtre">
+                                </div>
+                            </div> -->
+                            <div class="col-lg-3 col-sm-12 pull-right">
+                                <select class="form-control" placeholder="Nombre d'éléments par page" ng-change="pageSizeChange()" ng-model="pagingOptions.pageSize">
+                                    <option ng-repeat="size in pagingOptions.pageSizes" value="{{ size }}">{{ size }}</option>
+                                </select>
+                            </div>
                         </div>
                         <div class="table-responsive table-vertical">
                             <table id="resultatsTab" class="table table-striped table-bordered table-hover table-responsive">
@@ -153,7 +162,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        <pager total-items="totalServerItems" ng-model="pagingOptions.currentPage" previous-text="Précédent" next-text="Suivant"></pager>
+                        <pagination boundary-links="true" rotate="false"  total-items="totalServerItems" ng-model="pagingOptions.currentPage" previous-text="Précédent" next-text="Suivant" first-text="Première" last-text="Dernière"></pagination>
                     </div>
                 </div>
             </div>

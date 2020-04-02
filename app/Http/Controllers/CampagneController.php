@@ -2,13 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Base;
+use App\Resultat;
 use App\Campagne;
-use Illuminate\Http\Request;
-use App\RESTResponse;
+use App\Routeur;
 use App\Annonceur;
 use App\User;
+use Illuminate\Http\Request;
+use App\RESTResponse;
+use App\RESTPaginateResponse;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\OthersResponses\CampagneOtherResponse;
+use App\Http\Controllers\OthersResponses\CampagneStatsOtherResponse;
 
 class CampagneController extends Controller
 {
@@ -22,23 +27,129 @@ class CampagneController extends Controller
     {
         $campagnes = Campagne::all();
         $campagnes->transform(function ($item, $key) {
-            $campagne = new CampagneOtherResponse
-                        (
-                            $item->id, 
-                            $item->nom,
-                            $item->type_remuneration,
-                            $item->remuneration, 
-                            Annonceur::find($item->annonceur_id),
-                            date('d-m-Y à H:i:s', strtotime($item->created_at)),
-                            User::find($item->cree_par)->name,
-                            date('d-m-Y à H:i:s', strtotime($item->updated_at)),
-                            User::find($item->modifie_par)->name
-                        );
+            $campagne = new CampagneOtherResponse ($item->id, $item->nom, $item->type_remuneration, $item->remuneration, Annonceur::find($item->annonceur_id), date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par)->name);
             return $campagne;
         });
         return response()->json(new RESTResponse(200, "OK", $campagnes));
     }
 
+    /**
+     * Display a listing of the resource by page.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function indexPaginate($per_page = 15){
+        $campagnes = Campagne::paginate($per_page);
+        $campagnes->transform(function ($item, $key) {
+            $campagne = new CampagneOtherResponse ($item->id, $item->nom, $item->type_remuneration, $item->remuneration, Annonceur::find($item->annonceur_id), date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par)->name);
+            return $campagne;
+        });
+        return response()
+                ->json(new RESTPaginateResponse($campagnes->currentPage(), $campagnes->items(), $campagnes->url(1), $campagnes->lastPage(), $campagnes->url($campagnes->lastPage()), $campagnes->nextPageUrl(), $campagnes->perPage(), $campagnes->previousPageUrl(), $campagnes->count(), $campagnes->total()));
+	}
+	
+	/**
+     * Display a listing of the resource using search_text by page.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function indexSearchPaginate($per_page = 15, $search_text=""){
+        $campagnes = Campagne::where('nom', 'like', '%' . $search_text . '%')->paginate($per_page);
+        $campagnes->transform(function ($item, $key) {
+            $campagne = new CampagneOtherResponse ($item->id, $item->nom, $item->type_remuneration, $item->remuneration, Annonceur::find($item->annonceur_id), date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par)->name);
+            return $campagne;
+        });
+        return response()
+                ->json(new RESTPaginateResponse($campagnes->currentPage(), $campagnes->items(), $campagnes->url(1), $campagnes->lastPage(), $campagnes->url($campagnes->lastPage()), $campagnes->nextPageUrl(), $campagnes->perPage(), $campagnes->previousPageUrl(), $campagnes->count(), $campagnes->total()));
+	}
+	
+	/**
+     * Display a listing of the resource for statistics by page.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function indexForStatistics(){
+        //$campagnes = Resultat::paginate($per_page);
+        $campagnesFull = Resultat::all();
+
+        $totalVolume = $campagnesFull->sum("volume");
+        
+        $campagnesFull->transform(function ($item, $key) {
+            $campagne = new CampagneStatsOtherResponse($item->id, Campagne::find($item->campagne_id)->nom, Annonceur::find($item->annonceur_id), Campagne::find($item->campagne_id)->remuneration, $item->resultat, Routeur::find($item->routeur_id)->prix * $item->volume, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par)->name);
+            return $campagne;
+        });
+        $campagnes = $campagnesFull->uniqueStrict("nom");
+        $campagnes->each(function ($item, $key) use($campagnesFull) {
+            $item->resultat = $campagnesFull->where('nom', $item->nom)->sum("resultat");
+            $item->pa = $campagnesFull->where('nom', $item->nom)->sum("pa");
+        });
+        
+        $totalPA = $campagnes->sum("pa");
+        $totalCA = $campagnes->sum(function ($item) { return $item->rem * $item->resultat; });
+        $totalMarge = $totalCA - $totalPA;
+
+        $response = array(  'totalVolume'=>$totalVolume, 
+                            'totalPA'=>$totalPA,
+                            'totalCA'=>$totalCA,
+                            'totalMarge'=>$totalMarge,
+                            'data'=>new RESTResponse(200, "OK", $campagnes));
+        return response()->json($response);
+        // return response()
+        //         ->json(new RESTPaginateResponse($campagnes->currentPage(), $campagnes->items(), $campagnes->url(1), $campagnes->lastPage(), $campagnes->url($campagnes->lastPage()), $campagnes->nextPageUrl(), $campagnes->perPage(), $campagnes->previousPageUrl(), $campagnes->count(), $campagnes->total()));
+	}
+	
+	/**
+     * Display a listing of the resource for statistics using search_text by page.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function indexSearchPaginateForStatistics($per_page = 15, $search_text=""){
+        $campagnes = Resultat::whereHas('campagne', function ($query) use($search_text) {
+            $query->where('nom', 'like', '%' . $search_text . '%');
+        })->paginate($per_page);
+        $campagnes->transform(function ($item, $key) {
+            $campagne = new CampagneStatsOtherResponse($item->id, Campagne::find($item->campagne_id)->nom, Annonceur::find($item->annonceur_id), Campagne::find($item->campagne_id)->remuneration, $item->resultat, Routeur::find($item->routeur_id)->prix * $item->volume, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par)->name);
+            return $campagne;
+        });
+        return response()
+                ->json(new RESTPaginateResponse($campagnes->currentPage(), $campagnes->items(), $campagnes->url(1), $campagnes->lastPage(), $campagnes->url($campagnes->lastPage()), $campagnes->nextPageUrl(), $campagnes->perPage(), $campagnes->previousPageUrl(), $campagnes->count(), $campagnes->total()));
+    }
+
+    /**
+     * Apply filter to retrieve correct data.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function applyFilterForStatistics(Request $request){
+        $from = date('Y-m-d', strtotime($request->filtre_date_debut));
+        $to = date('Y-m-d', strtotime($request->filtre_date_fin));
+        $campagnesFull = Resultat::whereBetween('date_envoi', [$from, $to])->get();
+
+        $totalVolume = $campagnesFull->sum("volume");
+        
+        $campagnesFull->transform(function ($item, $key) {
+            $campagne = new CampagneStatsOtherResponse($item->id, Campagne::find($item->campagne_id)->nom, Annonceur::find($item->annonceur_id), Campagne::find($item->campagne_id)->remuneration, $item->resultat, Routeur::find($item->routeur_id)->prix * $item->volume, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par)->name);
+            return $campagne;
+        });
+        $campagnes = $campagnesFull->uniqueStrict("nom");
+        $campagnes->each(function ($item, $key) use($campagnesFull) {
+            $item->resultat = $campagnesFull->where('nom', $item->nom)->sum("resultat");
+            $item->pa = $campagnesFull->where('nom', $item->nom)->sum("pa");
+        });
+        
+        $totalPA = $campagnes->sum("pa");
+        $totalCA = $campagnes->sum(function ($item) { return $item->rem * $item->resultat; });
+        $totalMarge = $totalCA - $totalPA;
+
+        $response = array(  'totalVolume'=>$totalVolume, 
+                            'totalPA'=>$totalPA,
+                            'totalCA'=>$totalCA,
+                            'totalMarge'=>$totalMarge,
+                            'data'=>new RESTResponse(200, "OK", $campagnes));
+        return response()->json($response);
+    }
+    
     /**
      * Display a listing of the resource by Annonceur
      *

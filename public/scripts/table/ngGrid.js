@@ -62,42 +62,48 @@ angular
             filterOptions: $scope.filterOptions
         };
     }])
+    .controller('IndexController', ['$scope', '$http', function ($scope, $http) {
+        $scope.stats = null;
+        $http.get('statisticsForDashboard').success(function (resp) { $scope.stats = resp });
+    }])
     .controller('RouteursController', ['$scope', '$filter', '$http', 'pinesNotifications', function ($scope, $filter, $http, pinesNotifications) {
         $scope.filterOptions = {
             filterText: "",
             useExternalFilter: true
         }; 
         $scope.totalServerItems = 0;
+        $scope.totalCurrentPageItems = 0;
 
         $scope.pagingOptions = {
-            pageSizes: [25, 50, 100],
-            pageSize: 25,
-            currentPage: 1
+            pageSizes: [15, 25, 50, 100],
+            pageSize: 15,
+            currentPage: 1,
+            maxSize: 5
         };  
-        $scope.setPagingData = function(data, page, pageSize){  
-            var pagedData = data.slice((page - 1) * pageSize, page * pageSize);
-            $scope.routeurs = pagedData;
-            $scope.totalServerItems = data.length;
-            $scope.enablePaging = true;
-            $scope.showFooter = true;
+        $scope.setPagingData = function(data){  
+            $scope.routeurs = data.body;
+            $scope.totalServerItems = data.total;
+            $scope.totalCurrentPageItems = data.total_current_page;
             if (!$scope.$$phase) {
                 $scope.$apply();
             }
         };
+
+        $scope.pageSizeChange = function(){  
+            $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);
+        };
+
         $scope.getPagedDataAsync = function (pageSize, page, searchText) {
             setTimeout(function () {
                 var data;
                 if (searchText) {
                     var ft = searchText.toLowerCase();
-                    $http.get('routeurs').success(function (largeLoad) {        
-                        data = largeLoad.body.filter(function(item) {
-                            return JSON.stringify(item).toLowerCase().indexOf(ft) != -1;
-                        });
-                        $scope.setPagingData(data,page,pageSize);
-                    });            
+                    $http.get('routeurs/paginate/'+pageSize+'/searchText/'+searchText+'?page='+page).success(function (resp) {        
+                        $scope.setPagingData(resp);
+                    });
                 } else {
-                    $http.get('routeurs').success(function (largeLoad) {
-                        $scope.setPagingData(largeLoad.body,page,pageSize);
+                    $http.get('routeurs/paginate/'+pageSize+'?page='+page).success(function (resp) {
+                        $scope.setPagingData(resp);
                     });
                 }
             }, 100);
@@ -158,37 +164,38 @@ angular
             useExternalFilter: true
         }; 
         $scope.totalServerItems = 0;
+        $scope.totalCurrentPageItems = 0;
         $scope.routeurs = [];
         
         $scope.pagingOptions = {
-            pageSizes: [25, 50, 100],
-            pageSize: 25,
-            currentPage: 1
+            pageSizes: [15, 25, 50, 100],
+            pageSize: 15,
+            currentPage: 1,
+            maxSize: 5
         };  
-        $scope.setPagingData = function(data, page, pageSize){  
-            var pagedData = data.slice((page - 1) * pageSize, page * pageSize);
-            $scope.bases = pagedData;
-            $scope.totalServerItems = data.length;
-            $scope.enablePaging = true;
-            $scope.showFooter = true;
+        $scope.setPagingData = function(data){  
+            $scope.bases = data.body;
+            $scope.totalServerItems = data.total;
+            $scope.totalCurrentPageItems = data.total_current_page;
             if (!$scope.$$phase) {
                 $scope.$apply();
             }
         };
+
+        $scope.pageSizeChange = function(){  
+            $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);
+        };
+        
         $scope.getPagedDataAsync = function (pageSize, page, searchText) {
             setTimeout(function () {
-                var data;
                 if (searchText) {
                     var ft = searchText.toLowerCase();
-                    $http.get('bases').success(function (largeLoad) {        
-                        data = largeLoad.body.filter(function(item) {
-                            return JSON.stringify(item).toLowerCase().indexOf(ft) != -1;
-                        });
-                        $scope.setPagingData(data,page,pageSize);
-                    });            
+                    $http.get('bases/paginate/'+pageSize+'/searchText/'+searchText+'?page='+page).success(function (resp) {        
+                        $scope.setPagingData(resp);
+                    });
                 } else {
-                    $http.get('bases').success(function (largeLoad) {
-                        $scope.setPagingData(largeLoad.body,page,pageSize);
+                    $http.get('bases/paginate/'+pageSize+'?page='+page).success(function (resp) {
+                        $scope.setPagingData(resp);
                     });
                 }
             }, 100);
@@ -250,36 +257,38 @@ angular
             useExternalFilter: true
         }; 
         $scope.totalServerItems = 0;
-        
+        $scope.totalCurrentPageItems = 0;
+
         $scope.pagingOptions = {
-            pageSizes: [25, 50, 100],
-            pageSize: 25,
-            currentPage: 1
+            pageSizes: [15, 25, 50, 100],
+            pageSize: 15,
+            currentPage: 1,
+            maxSize: 5
         };  
-        $scope.setPagingData = function(data, page, pageSize){  
-            var pagedData = data.slice((page - 1) * pageSize, page * pageSize);
-            $scope.annonceurs = pagedData;
-            $scope.totalServerItems = data.length;
-            $scope.enablePaging = true;
-            $scope.showFooter = true;
+        $scope.setPagingData = function(data){  
+            $scope.annonceurs = data.body;
+            $scope.totalServerItems = data.total;
+            $scope.totalCurrentPageItems = data.total_current_page;
             if (!$scope.$$phase) {
                 $scope.$apply();
             }
         };
+
+        $scope.pageSizeChange = function(){  
+            $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);
+        };
+
         $scope.getPagedDataAsync = function (pageSize, page, searchText) {
             setTimeout(function () {
                 var data;
                 if (searchText) {
                     var ft = searchText.toLowerCase();
-                    $http.get('annonceurs').success(function (largeLoad) {        
-                        data = largeLoad.body.filter(function(item) {
-                            return JSON.stringify(item).toLowerCase().indexOf(ft) != -1;
-                        });
-                        $scope.setPagingData(data,page,pageSize);
-                    });            
+                    $http.get('annonceurs/paginate/'+pageSize+'/searchText/'+searchText+'?page='+page).success(function (resp) {        
+                        $scope.setPagingData(resp);
+                    });
                 } else {
-                    $http.get('annonceurs').success(function (largeLoad) {
-                        $scope.setPagingData(largeLoad.body,page,pageSize);
+                    $http.get('annonceurs/paginate/'+pageSize+'?page='+page).success(function (resp) {
+                        $scope.setPagingData(resp);
                     });
                 }
             }, 100);
@@ -341,36 +350,38 @@ angular
         }; 
         $scope.totalServerItems = 0;
         $scope.annonceurs = [];
-        
+        $scope.totalCurrentPageItems = 0;
+
         $scope.pagingOptions = {
-            pageSizes: [25, 50, 100],
-            pageSize: 25,
-            currentPage: 1
+            pageSizes: [15, 25, 50, 100],
+            pageSize: 15,
+            currentPage: 1,
+            maxSize: 5
         };  
-        $scope.setPagingData = function(data, page, pageSize){  
-            var pagedData = data.slice((page - 1) * pageSize, page * pageSize);
-            $scope.campagnes = pagedData;
-            $scope.totalServerItems = data.length;
-            $scope.enablePaging = true;
-            $scope.showFooter = true;
+        $scope.setPagingData = function(data){  
+            $scope.campagnes = data.body;
+            $scope.totalServerItems = data.total;
+            $scope.totalCurrentPageItems = data.total_current_page;
             if (!$scope.$$phase) {
                 $scope.$apply();
             }
         };
+
+        $scope.pageSizeChange = function(){  
+            $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);
+        };
+
         $scope.getPagedDataAsync = function (pageSize, page, searchText) {
             setTimeout(function () {
                 var data;
                 if (searchText) {
                     var ft = searchText.toLowerCase();
-                    $http.get('campagnes').success(function (largeLoad) {        
-                        data = largeLoad.body.filter(function(item) {
-                            return JSON.stringify(item).toLowerCase().indexOf(ft) != -1;
-                        });
-                        $scope.setPagingData(data,page,pageSize);
-                    });            
+                    $http.get('campagnes/paginate/'+pageSize+'/searchText/'+searchText+'?page='+page).success(function (resp) {        
+                        $scope.setPagingData(resp);
+                    });
                 } else {
-                    $http.get('campagnes').success(function (largeLoad) {
-                        $scope.setPagingData(largeLoad.body,page,pageSize);
+                    $http.get('campagnes/paginate/'+pageSize+'?page='+page).success(function (resp) {
+                        $scope.setPagingData(resp);
                     });
                 }
             }, 100);
@@ -433,6 +444,7 @@ angular
             useExternalFilter: true
         }; 
         $scope.totalServerItems = 0;
+        $scope.totalCurrentPageItems = 0;
         $scope.routeurs = [];
         $scope.bases = [];
         $scope.annonceurs = [];
@@ -444,6 +456,22 @@ angular
         $scope.campagne = null;
         $scope.routeur = null;
         $scope.base = null;
+
+        $scope.filter_data = {
+            filtre_date_debut : moment().subtract('days', 30).format('D MMMM YYYY'),
+            filtre_date_fin : moment().format('D MMMM YYYY')
+        };
+
+        $scope.filtre_date_options = {
+            opens: 'right',
+            startDate: moment().subtract('days', 30),
+            endDate: moment(),
+            ranges: {
+                'Ce Jour': [moment(), moment()],
+                'Cette Semaine': [moment().startOf('week').add('days', 1), moment().endOf('week').add('days', 1)],
+                'Ce mois': [moment().startOf('month'), moment().endOf('month')]
+            }
+        };
 
         $scope.annonceurChange = function(){
             $http.get('campagnes/parAnnonceur/'+$scope.annonceur).success(function (rep) {
@@ -457,35 +485,46 @@ angular
             });
         }
 
+        $scope.validerFiltre = function (){
+            $http.post('plannings/applyFilter/'+$scope.pagingOptions.pageSize+'?page='+$scope.pagingOptions.currentPage, $scope.filter_data)
+            .success(function (resp) {
+                $scope.setPagingData(resp, $scope.pagingOptions.currentPage, $scope.pagingOptions.pageSize);
+            })
+            .error(function (res,status,err) {
+                $scope.notif('Plannings', 'Une erreur est survenue durant le filtrage !', 'error');
+            });
+        }
+
         $scope.pagingOptions = {
-            pageSizes: [25, 50, 100],
-            pageSize: 25,
-            currentPage: 1
-        };  
-        $scope.setPagingData = function(data, page, pageSize){  
-            var pagedData = data.slice((page - 1) * pageSize, page * pageSize);
-            $scope.plannings = pagedData;
-            $scope.totalServerItems = data.length;
-            $scope.enablePaging = true;
-            $scope.showFooter = true;
+            pageSizes: [15, 25, 50, 100],
+            pageSize: 15,
+            currentPage: 1,
+            maxSize: 5
+        };
+
+        $scope.setPagingData = function(data){  
+            $scope.plannings = data.body;
+            $scope.totalServerItems = data.total;
+            $scope.totalCurrentPageItems = data.total_current_page;
             if (!$scope.$$phase) {
                 $scope.$apply();
             }
         };
+
+        $scope.pageSizeChange = function(){  
+            $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);
+        };
+
         $scope.getPagedDataAsync = function (pageSize, page, searchText) {
             setTimeout(function () {
-                var data;
                 if (searchText) {
                     var ft = searchText.toLowerCase();
-                    $http.get('plannings').success(function (largeLoad) {        
-                        data = largeLoad.body.filter(function(item) {
-                            return JSON.stringify(item).toLowerCase().indexOf(ft) != -1;
-                        });
-                        $scope.setPagingData(data,page,pageSize);
-                    });            
+                    $http.get('plannings/paginate/'+pageSize+'/searchText/'+searchText+'?page='+page).success(function (resp) {        
+                        $scope.setPagingData(resp);
+                    });
                 } else {
-                    $http.get('plannings').success(function (largeLoad) {
-                        $scope.setPagingData(largeLoad.body,page,pageSize);
+                    $http.get('plannings/paginate/'+pageSize+'?page='+page).success(function (resp) {
+                        $scope.setPagingData(resp);
                     });
                 }
             }, 100);
@@ -560,6 +599,7 @@ angular
         };
 
         $scope.totalServerItems = 0;
+        $scope.totalCurrentPageItems = 0;
         $scope.routeurs = [];
         $scope.bases = [];
         $scope.annonceurs = [];
@@ -572,9 +612,9 @@ angular
         };
 
         $scope.validerFiltre = function (){
-            $http.post('resultats/applyFilter', $scope.filter_data)
+            $http.post('resultats/applyFilter/'+$scope.pagingOptions.pageSize+'?page='+$scope.pagingOptions.currentPage, $scope.filter_data)
             .success(function (resp) {
-                $scope.setPagingData(resp.body, $scope.pagingOptions.currentPage, $scope.pagingOptions.pageSize);
+                $scope.setPagingData(resp, $scope.pagingOptions.currentPage, $scope.pagingOptions.pageSize);
             })
             .error(function (res,status,err) {
                 $scope.notif('Résultat', 'Une erreur est survenue durant le filtrage !', 'error');
@@ -589,34 +629,34 @@ angular
         }
         
         $scope.pagingOptions = {
-            pageSizes: [25, 50, 100],
-            pageSize: 25,
-            currentPage: 1
+            pageSizes: [15, 25, 50, 100],
+            pageSize: 15,
+            currentPage: 1,
+            maxSize: 5
         };  
-        $scope.setPagingData = function(data, page, pageSize){  
-            var pagedData = data.slice((page - 1) * pageSize, page * pageSize);
-            $scope.resultats = pagedData;
-            $scope.totalServerItems = data.length;
-            $scope.enablePaging = true;
-            $scope.showFooter = true;
+        $scope.setPagingData = function(data){  
+            $scope.resultats = data.body;
+            $scope.totalServerItems = data.total;
+            $scope.totalCurrentPageItems = data.total_current_page;
             if (!$scope.$$phase) {
                 $scope.$apply();
             }
         };
+
+        $scope.pageSizeChange = function(){  
+            $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);
+        };
+
         $scope.getPagedDataAsync = function (pageSize, page, searchText) {
             setTimeout(function () {
-                var data;
                 if (searchText) {
                     var ft = searchText.toLowerCase();
-                    $http.get('resultats').success(function (largeLoad) {        
-                        data = largeLoad.body.filter(function(item) {
-                            return JSON.stringify(item).toLowerCase().indexOf(ft) != -1;
-                        });
-                        $scope.setPagingData(data,page,pageSize);
-                    });            
+                    $http.get('resultats/paginate/'+pageSize+'/searchText/'+searchText+'?page='+page).success(function (resp) {        
+                        $scope.setPagingData(resp);
+                    });
                 } else {
-                    $http.get('resultats').success(function (largeLoad) {
-                        $scope.setPagingData(largeLoad.body,page,pageSize);
+                    $http.get('resultats/paginate/'+pageSize+'?page='+page).success(function (resp) {
+                        $scope.setPagingData(resp);
                     });
                 }
             }, 100);
@@ -641,14 +681,14 @@ angular
         
         $scope.saveResultat = function(data, id) {
             $http.put('resultats/'+id, data)
-            .success(function (resp) {
-                $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
-                $scope.notif('Résultat', 'Résultat modifié avec succès !', 'success');
-            })
-            .error(function (res,status,err) {
-                $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
-                $scope.notif('Résultat', 'Une erreur est survenue durant la mise à jour !', 'error');
-            });
+                .success(function (resp) {
+                    $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
+                    $scope.notif('Résultat', 'Résultat modifié avec succès !', 'success');
+                })
+                .error(function (res,status,err) {
+                    $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
+                    $scope.notif('Résultat', 'Une erreur est survenue durant la mise à jour !', 'error');
+                });
         };
         
         $scope.notif = function (titre, message, type) {
@@ -665,37 +705,38 @@ angular
             useExternalFilter: true
         }; 
         $scope.totalServerItems = 0;
+        $scope.totalCurrentPageItems = 0;
         $scope.roles = [];
         
         $scope.pagingOptions = {
-            pageSizes: [25, 50, 100],
-            pageSize: 25,
-            currentPage: 1
+            pageSizes: [15, 25, 50, 100],
+            pageSize: 15,
+            currentPage: 1,
+            maxSize: 5
         };  
-        $scope.setPagingData = function(data, page, pageSize){  
-            var pagedData = data.slice((page - 1) * pageSize, page * pageSize);
-            $scope.users = pagedData;
-            $scope.totalServerItems = data.length;
-            $scope.enablePaging = true;
-            $scope.showFooter = true;
+        $scope.setPagingData = function(data){  
+            $scope.users = data.body;
+            $scope.totalServerItems = data.total;
+            $scope.totalCurrentPageItems = data.total_current_page;
             if (!$scope.$$phase) {
                 $scope.$apply();
             }
         };
+
+        $scope.pageSizeChange = function(){  
+            $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);
+        };
+
         $scope.getPagedDataAsync = function (pageSize, page, searchText) {
             setTimeout(function () {
-                var data;
                 if (searchText) {
                     var ft = searchText.toLowerCase();
-                    $http.get('users').success(function (largeLoad) {        
-                        data = largeLoad.body.filter(function(item) {
-                            return JSON.stringify(item).toLowerCase().indexOf(ft) != -1;
-                        });
-                        $scope.setPagingData(data,page,pageSize);
-                    });            
+                    $http.get('users/paginate/'+pageSize+'/searchText/'+searchText+'?page='+page).success(function (resp) {        
+                        $scope.setPagingData(resp);
+                    });
                 } else {
-                    $http.get('users').success(function (largeLoad) {
-                        $scope.setPagingData(largeLoad.body,page,pageSize);
+                    $http.get('users/paginate/'+pageSize+'?page='+page).success(function (resp) {
+                        $scope.setPagingData(resp);
                     });
                 }
             }, 100);
@@ -757,83 +798,71 @@ angular
             useExternalFilter: true
         }; 
         $scope.totalServerItems = 0;
+        $scope.totalCurrentPageItems = 0;
         $scope.tab = [];
-        $scope.copyTab = [];
-        $scope.filtre_delai_debut = null;
-        $scope.filtre_delai_fin = null;
 
-        $scope.validerFiltre = function (){
-            if($scope.filtre_delai_debut < 0 || $scope.filtre_delai_fin < 0){
-                $scope.notif('Résultats par Annonceurs', 'Aucune des deux valeurs ne doit être inférieure à 0 !', 'error');
-            }else if($scope.filtre_delai_debut > $scope.filtre_delai_fin){
-                $scope.notif('Résultats par Annonceurs', 'Le premier nombre doit être inférieur au deuxième !', 'error');
-            }else if($scope.filtre_delai_debut == null && $scope.filtre_delai_fin == null){
-                $scope.setPagingData($scope.copyTab, $scope.pagingOptions.currentPage, $scope.pagingOptions.pageSize);
-            }else if($scope.filtre_delai_debut == null && $scope.filtre_delai_fin != null && $scope.filtre_delai_fin > 0){
-                var tempTab = [];
-                for(var i=0; i<$scope.copyTab.length; i++)
-                    if($scope.copyTab[i].annonceur.delai_paiement <= $scope.filtre_delai_fin)
-                        tempTab.push($scope.copyTab[i]);
-                $scope.setPagingData(tempTab, $scope.pagingOptions.currentPage, $scope.pagingOptions.pageSize);
-            }else if($scope.filtre_delai_debut != null && $scope.filtre_delai_debut > 0 && $scope.filtre_delai_fin == null){
-                var tempTab = [];
-                for(var i=0; i<$scope.copyTab.length; i++)
-                    if($scope.copyTab[i].annonceur.delai_paiement >= $scope.filtre_delai_debut)
-                        tempTab.push($scope.copyTab[i]);
-                $scope.setPagingData(tempTab, $scope.pagingOptions.currentPage, $scope.pagingOptions.pageSize);
-            }else{
-                var tempTab = [];
-                for(var i=0; i<$scope.copyTab.length; i++)
-                    if($scope.copyTab[i].annonceur.delai_paiement >= $scope.filtre_delai_debut && $scope.copyTab[i].annonceur.delai_paiement <= $scope.filtre_delai_fin)
-                        tempTab.push($scope.copyTab[i]);
-                $scope.setPagingData(tempTab, $scope.pagingOptions.currentPage, $scope.pagingOptions.pageSize);
-                // var data_to_send = {
-                //     filtre_delai_debut: $scope.filtre_delai_debut,
-                //     filtre_delai_fin: $scope.filtre_delai_fin
-                // }
-                // $http.post('annonceurs/applyFilter', data_to_send)
-                // .success(function (resp) {
-                //     $scope.setPagingData(resp.body, $scope.pagingOptions.currentPage, $scope.pagingOptions.pageSize);
-                //     console.log(resp);
-                //     $scope.notif('Statistiques par Annonceurs', 'Filtrage effectué avec succès !', 'success');
-                // })
-                // .error(function (res,status,err) {
-                //     $scope.notif('Statistiques par Annonceurs', 'Une erreur est survenue durant le filtrage !', 'error');
-                // });
+        $scope.filter_data = {
+            filtre_date_debut : moment().subtract('days', 30).format('D MMMM YYYY'),
+            filtre_date_fin : moment().format('D MMMM YYYY')
+        };
+
+        $scope.filtre_date_options = {
+            opens: 'right',
+            startDate: moment().subtract('days', 30),
+            endDate: moment(),
+            ranges: {
+                '30 derniers jours': [moment().subtract('days', 30), moment()],
+                '60 derniers jours': [moment().subtract('days', 60), moment()],
+                '90 derniers jours': [moment().subtract('days', 90), moment()]
             }
+        };
+        
+        $scope.validerFiltre = function (){
+            $http.post('annonceurs/applyFilterForStatistics', $scope.filter_data)
+            .success(function (resp) {
+                $scope.setPagingData(resp, $scope.pagingOptions.currentPage, $scope.pagingOptions.pageSize);
+                $scope.notif('Statistiques par Annonceurs', 'Filtrage effectué avec succès !', 'success');
+            })
+            .error(function (res,status,err) {
+                $scope.notif('Statistiques par Annonceurs', 'Une erreur est survenue durant le filtrage !', 'error');
+            });
         }
         
         $scope.pagingOptions = {
-            pageSizes: [25, 50, 100],
-            pageSize: 25,
-            currentPage: 1
-        };  
-        $scope.setPagingData = function(data, page, pageSize){  
-            var pagedData = data.slice((page - 1) * pageSize, page * pageSize);
+            pageSizes: [15, 25, 50, 100],
+            pageSize: 15,
+            currentPage: 1,
+            maxSize: 5
+        };
+
+        $scope.setPagingData = function(resp, page, pageSize){  
+            var pagedData = resp.data.body.slice((page - 1) * pageSize, page * pageSize);
             $scope.tab = pagedData;
-            $scope.totalServerItems = data.length;
-            $scope.enablePaging = true;
-            $scope.showFooter = true;
+            $scope.totalServerItems = resp.data.body.length;
+            $scope.totalVolume = resp.totalVolume;
+            $scope.totalPA = resp.totalPA;
+            $scope.totalCA = resp.totalCA;
+            $scope.totalMarge = resp.totalMarge;
             if (!$scope.$$phase) {
                 $scope.$apply();
             }
         };
+
+        $scope.pageSizeChange = function(){  
+            $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
+        };
+
         $scope.getPagedDataAsync = function (pageSize, page, searchText) {
             setTimeout(function () {
                 var data;
                 if (searchText) {
                     var ft = searchText.toLowerCase();
-                    $http.get('annonceurs/forStatistics').success(function (largeLoad) {        
-                        data = largeLoad.body.filter(function(item) {
-                            return JSON.stringify(item).toLowerCase().indexOf(ft) != -1;
-                        });
-                        $scope.copyTab = data;
-                        $scope.setPagingData(data, page, pageSize);
-                    });            
+                    $http.get('annonceurs/forStatistics/searchText/'+searchText).success(function (resp) {        
+                        $scope.setPagingData(resp, page, pageSize);
+                    });
                 } else {
-                    $http.get('annonceurs/forStatistics').success(function (largeLoad) {
-                        $scope.copyTab = largeLoad.body;
-                        $scope.setPagingData(largeLoad.body, page, pageSize);
+                    $http.get('annonceurs/forStatistics/').success(function (resp) {
+                        $scope.setPagingData(resp, page, pageSize);
                     });
                 }
             }, 100);
@@ -843,7 +872,7 @@ angular
         
         $scope.$watch('pagingOptions', function (newVal, oldVal) {
             if (newVal !== oldVal && newVal.currentPage !== oldVal.currentPage) {
-              $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);
+              $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
             }
         }, true);
         $scope.$watch('filterOptions', function (newVal, oldVal) {
@@ -866,70 +895,71 @@ angular
             useExternalFilter: true
         }; 
         $scope.totalServerItems = 0;
+        $scope.totalCurrentPageItems = 0;
         $scope.tab = [];
-        $scope.copyTab = [];
-        $scope.filtre_delai_debut = null;
-        $scope.filtre_delai_fin = null;
 
-        $scope.validerFiltre = function (){
-            if($scope.filtre_delai_debut < 0 || $scope.filtre_delai_fin < 0){
-                $scope.notif('Résultats par Bases', 'Aucune des deux valeurs ne doit être inférieure à 0 !', 'error');
-            }else if($scope.filtre_delai_debut > $scope.filtre_delai_fin){
-                $scope.notif('Résultats par Bases', 'Le premier nombre doit être inférieur au deuxième !', 'error');
-            }else if($scope.filtre_delai_debut == null && $scope.filtre_delai_fin == null){
-                $scope.setPagingData($scope.copyTab, $scope.pagingOptions.currentPage, $scope.pagingOptions.pageSize);
-            }else if($scope.filtre_delai_debut == null && $scope.filtre_delai_fin != null && $scope.filtre_delai_fin > 0){
-                var tempTab = [];
-                for(var i=0; i<$scope.copyTab.length; i++)
-                    if($scope.copyTab[i].annonceur.delai_paiement <= $scope.filtre_delai_fin)
-                        tempTab.push($scope.copyTab[i]);
-                $scope.setPagingData(tempTab, $scope.pagingOptions.currentPage, $scope.pagingOptions.pageSize);
-            }else if($scope.filtre_delai_debut != null && $scope.filtre_delai_debut > 0 && $scope.filtre_delai_fin == null){
-                var tempTab = [];
-                for(var i=0; i<$scope.copyTab.length; i++)
-                    if($scope.copyTab[i].annonceur.delai_paiement >= $scope.filtre_delai_debut)
-                        tempTab.push($scope.copyTab[i]);
-                $scope.setPagingData(tempTab, $scope.pagingOptions.currentPage, $scope.pagingOptions.pageSize);
-            }else{
-                var tempTab = [];
-                for(var i=0; i<$scope.copyTab.length; i++)
-                    if($scope.copyTab[i].annonceur.delai_paiement >= $scope.filtre_delai_debut && $scope.copyTab[i].annonceur.delai_paiement <= $scope.filtre_delai_fin)
-                        tempTab.push($scope.copyTab[i]);
-                $scope.setPagingData(tempTab, $scope.pagingOptions.currentPage, $scope.pagingOptions.pageSize);
+        $scope.filter_data = {
+            filtre_date_debut : moment().subtract('days', 30).format('D MMMM YYYY'),
+            filtre_date_fin : moment().format('D MMMM YYYY')
+        };
+
+        $scope.filtre_date_options = {
+            opens: 'right',
+            startDate: moment().subtract('days', 30),
+            endDate: moment(),
+            ranges: {
+                '30 derniers jours': [moment().subtract('days', 30), moment()],
+                '60 derniers jours': [moment().subtract('days', 60), moment()],
+                '90 derniers jours': [moment().subtract('days', 90), moment()]
             }
+        };
+        
+        $scope.validerFiltre = function (){
+            $http.post('bases/applyFilterForStatistics', $scope.filter_data)
+            .success(function (resp) {
+                $scope.setPagingData(resp, $scope.pagingOptions.currentPage, $scope.pagingOptions.pageSize);
+                $scope.notif('Statistiques par Bases', 'Filtrage effectué avec succès !', 'success');
+            })
+            .error(function (res,status,err) {
+                $scope.notif('Statistiques par Bases', 'Une erreur est survenue durant le filtrage !', 'error');
+            });
         }
         
         $scope.pagingOptions = {
-            pageSizes: [25, 50, 100],
-            pageSize: 25,
-            currentPage: 1
-        };  
-        $scope.setPagingData = function(data, page, pageSize){  
-            var pagedData = data.slice((page - 1) * pageSize, page * pageSize);
+            pageSizes: [15, 25, 50, 100],
+            pageSize: 15,
+            currentPage: 1,
+            maxSize: 5
+        };
+
+        $scope.setPagingData = function(resp, page, pageSize){  
+            var pagedData = resp.data.body.slice((page - 1) * pageSize, page * pageSize);
             $scope.tab = pagedData;
-            $scope.totalServerItems = data.length;
-            $scope.enablePaging = true;
-            $scope.showFooter = true;
+            $scope.totalServerItems = resp.data.body.length;
+            $scope.totalVolume = resp.totalVolume;
+            $scope.totalPA = resp.totalPA;
+            $scope.totalCA = resp.totalCA;
+            $scope.totalMarge = resp.totalMarge;
             if (!$scope.$$phase) {
                 $scope.$apply();
             }
         };
+
+        $scope.pageSizeChange = function(){  
+            $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
+        };
+
         $scope.getPagedDataAsync = function (pageSize, page, searchText) {
             setTimeout(function () {
                 var data;
                 if (searchText) {
                     var ft = searchText.toLowerCase();
-                    $http.get('bases/forStatistics').success(function (largeLoad) {        
-                        data = largeLoad.body.filter(function(item) {
-                            return JSON.stringify(item).toLowerCase().indexOf(ft) != -1;
-                        });
-                        $scope.copyTab = data;
-                        $scope.setPagingData(data, page, pageSize);
-                    });            
+                    $http.get('bases/forStatistics/searchText/'+searchText).success(function (resp) {        
+                        $scope.setPagingData(resp, page, pageSize);
+                    });
                 } else {
-                    $http.get('bases/forStatistics').success(function (largeLoad) {
-                        $scope.copyTab = largeLoad.body;
-                        $scope.setPagingData(largeLoad.body, page, pageSize);
+                    $http.get('bases/forStatistics/').success(function (resp) {
+                        $scope.setPagingData(resp, page, pageSize);
                     });
                 }
             }, 100);
@@ -939,7 +969,7 @@ angular
         
         $scope.$watch('pagingOptions', function (newVal, oldVal) {
             if (newVal !== oldVal && newVal.currentPage !== oldVal.currentPage) {
-              $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);
+              $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
             }
         }, true);
         $scope.$watch('filterOptions', function (newVal, oldVal) {
@@ -962,70 +992,71 @@ angular
             useExternalFilter: true
         }; 
         $scope.totalServerItems = 0;
+        $scope.totalCurrentPageItems = 0;
         $scope.tab = [];
-        $scope.copyTab = [];
-        $scope.filtre_delai_debut = null;
-        $scope.filtre_delai_fin = null;
+        
+        $scope.filter_data = {
+            filtre_date_debut : moment().subtract('days', 30).format('D MMMM YYYY'),
+            filtre_date_fin : moment().format('D MMMM YYYY')
+        };
 
-        $scope.validerFiltre = function (){
-            if($scope.filtre_delai_debut < 0 || $scope.filtre_delai_fin < 0){
-                $scope.notif('Résultats par Routeurs', 'Aucune des deux valeurs ne doit être inférieure à 0 !', 'error');
-            }else if($scope.filtre_delai_debut > $scope.filtre_delai_fin){
-                $scope.notif('Résultats par Routeurs', 'Le premier nombre doit être inférieur au deuxième !', 'error');
-            }else if($scope.filtre_delai_debut == null && $scope.filtre_delai_fin == null){
-                $scope.setPagingData($scope.copyTab, $scope.pagingOptions.currentPage, $scope.pagingOptions.pageSize);
-            }else if($scope.filtre_delai_debut == null && $scope.filtre_delai_fin != null && $scope.filtre_delai_fin > 0){
-                var tempTab = [];
-                for(var i=0; i<$scope.copyTab.length; i++)
-                    if($scope.copyTab[i].annonceur.delai_paiement <= $scope.filtre_delai_fin)
-                        tempTab.push($scope.copyTab[i]);
-                $scope.setPagingData(tempTab, $scope.pagingOptions.currentPage, $scope.pagingOptions.pageSize);
-            }else if($scope.filtre_delai_debut != null && $scope.filtre_delai_debut > 0 && $scope.filtre_delai_fin == null){
-                var tempTab = [];
-                for(var i=0; i<$scope.copyTab.length; i++)
-                    if($scope.copyTab[i].annonceur.delai_paiement >= $scope.filtre_delai_debut)
-                        tempTab.push($scope.copyTab[i]);
-                $scope.setPagingData(tempTab, $scope.pagingOptions.currentPage, $scope.pagingOptions.pageSize);
-            }else{
-                var tempTab = [];
-                for(var i=0; i<$scope.copyTab.length; i++)
-                    if($scope.copyTab[i].annonceur.delai_paiement >= $scope.filtre_delai_debut && $scope.copyTab[i].annonceur.delai_paiement <= $scope.filtre_delai_fin)
-                        tempTab.push($scope.copyTab[i]);
-                $scope.setPagingData(tempTab, $scope.pagingOptions.currentPage, $scope.pagingOptions.pageSize);
+        $scope.filtre_date_options = {
+            opens: 'right',
+            startDate: moment().subtract('days', 30),
+            endDate: moment(),
+            ranges: {
+                '30 derniers jours': [moment().subtract('days', 30), moment()],
+                '60 derniers jours': [moment().subtract('days', 60), moment()],
+                '90 derniers jours': [moment().subtract('days', 90), moment()]
             }
+        };
+        
+        $scope.validerFiltre = function (){
+            $http.post('routeurs/applyFilterForStatistics', $scope.filter_data)
+            .success(function (resp) {
+                $scope.setPagingData(resp, $scope.pagingOptions.currentPage, $scope.pagingOptions.pageSize);
+                $scope.notif('Statistiques par Routeurs', 'Filtrage effectué avec succès !', 'success');
+            })
+            .error(function (res,status,err) {
+                $scope.notif('Statistiques par Routeurs', 'Une erreur est survenue durant le filtrage !', 'error');
+            });
         }
         
         $scope.pagingOptions = {
-            pageSizes: [25, 50, 100],
-            pageSize: 25,
-            currentPage: 1
-        };  
-        $scope.setPagingData = function(data, page, pageSize){  
-            var pagedData = data.slice((page - 1) * pageSize, page * pageSize);
+            pageSizes: [15, 25, 50, 100],
+            pageSize: 15,
+            currentPage: 1,
+            maxSize: 5
+        };
+
+        $scope.setPagingData = function(resp, page, pageSize){  
+            var pagedData = resp.data.body.slice((page - 1) * pageSize, page * pageSize);
             $scope.tab = pagedData;
-            $scope.totalServerItems = data.length;
-            $scope.enablePaging = true;
-            $scope.showFooter = true;
+            $scope.totalServerItems = resp.data.body.length;
+            $scope.totalVolume = resp.totalVolume;
+            $scope.totalPA = resp.totalPA;
+            $scope.totalCA = resp.totalCA;
+            $scope.totalMarge = resp.totalMarge;
             if (!$scope.$$phase) {
                 $scope.$apply();
             }
         };
+
+        $scope.pageSizeChange = function(){  
+            $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
+        };
+
         $scope.getPagedDataAsync = function (pageSize, page, searchText) {
             setTimeout(function () {
                 var data;
                 if (searchText) {
                     var ft = searchText.toLowerCase();
-                    $http.get('routeurs/forStatistics').success(function (largeLoad) {        
-                        data = largeLoad.body.filter(function(item) {
-                            return JSON.stringify(item).toLowerCase().indexOf(ft) != -1;
-                        });
-                        $scope.copyTab = data;
-                        $scope.setPagingData(data, page, pageSize);
-                    });            
+                    $http.get('routeurs/forStatistics/searchText/'+searchText).success(function (resp) {        
+                        $scope.setPagingData(resp, page, pageSize);
+                    });
                 } else {
-                    $http.get('routeurs/forStatistics').success(function (largeLoad) {
-                        $scope.copyTab = largeLoad.body;
-                        $scope.setPagingData(largeLoad.body, page, pageSize);
+                    $http.get('routeurs/forStatistics/').success(function (resp) {
+                        $scope.setPagingData(resp, page, pageSize);
                     });
                 }
             }, 100);
@@ -1035,7 +1066,7 @@ angular
         
         $scope.$watch('pagingOptions', function (newVal, oldVal) {
             if (newVal !== oldVal && newVal.currentPage !== oldVal.currentPage) {
-              $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);
+              $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
             }
         }, true);
         $scope.$watch('filterOptions', function (newVal, oldVal) {
@@ -1052,61 +1083,82 @@ angular
             });
         };
     }])
-    .controller('StatsGlobalesController', ['$scope', '$filter', '$http', 'pinesNotifications', function ($scope, $filter, $http, pinesNotifications) {
+    .controller('StatsParCampagnesController', ['$scope', '$filter', '$http', 'pinesNotifications', function ($scope, $filter, $http, pinesNotifications) {
         $scope.filterOptions = {
             filterText: "",
             useExternalFilter: true
         }; 
+        
         $scope.totalServerItems = 0;
+        $scope.totalCurrentPageItems = 0;
         $scope.tab = [];
-        $scope.filtre_delai_debut = null;
-        $scope.filtre_delai_fin = null;
+        $scope.totalVolume = 0;
+        $scope.totalPA = 0;
+        $scope.totalCA = 0;
+        $scope.totalMarge = 0;
 
+        $scope.filter_data = {
+            filtre_date_debut : moment().subtract('days', 30).format('D MMMM YYYY'),
+            filtre_date_fin : moment().format('D MMMM YYYY')
+        };
+
+        $scope.filtre_date_options = {
+            opens: 'right',
+            startDate: moment().subtract('days', 30),
+            endDate: moment(),
+            ranges: {
+                '30 derniers jours': [moment().subtract('days', 30), moment()],
+                '60 derniers jours': [moment().subtract('days', 60), moment()],
+                '90 derniers jours': [moment().subtract('days', 90), moment()]
+            }
+        };
+        
         $scope.validerFiltre = function (){
-            console.log("validerFiltre");
-            console.log("filtre_delai_debut: "+$scope.filtre_delai_debut);
-            console.log("filtre_delai_fin: "+$scope.filtre_delai_fin);
-            // $http.get('resultats/'+id)
-            // .success(function (resp) {
-            //     $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
-            //     $scope.notif('Résultat', 'Filtrage effectué avec succès !', 'success');
-            // })
-            // .error(function (res,status,err) {
-            //     $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
-            //     $scope.notif('Résultat', 'Une erreur est survenue durant le filtrage !', 'error');
-            // });
-            $scope.notif('Statistiques Globales', 'Filtrage effectué avec succès !', 'success');
+            $http.post('campagnes/applyFilterForStatistics', $scope.filter_data)
+            .success(function (resp) {
+                $scope.setPagingData(resp, $scope.pagingOptions.currentPage, $scope.pagingOptions.pageSize);
+                $scope.notif('Statistiques par Campagnes', 'Filtrage effectué avec succès !', 'success');
+            })
+            .error(function (res,status,err) {
+                $scope.notif('Statistiques par Campagnes', 'Une erreur est survenue durant le filtrage !', 'error');
+            });
         }
         
         $scope.pagingOptions = {
-            pageSizes: [25, 50, 100],
-            pageSize: 25,
-            currentPage: 1
-        };  
-        $scope.setPagingData = function(data, page, pageSize){  
-            var pagedData = data.slice((page - 1) * pageSize, page * pageSize);
+            pageSizes: [15, 25, 50, 100],
+            pageSize: 15,
+            currentPage: 1,
+            maxSize: 5
+        };
+
+        $scope.setPagingData = function(resp, page, pageSize){  
+            var pagedData = resp.data.body.slice((page - 1) * pageSize, page * pageSize);
             $scope.tab = pagedData;
-            $scope.totalServerItems = data.length;
-            $scope.enablePaging = true;
-            $scope.showFooter = true;
+            $scope.totalServerItems = resp.data.body.length;
+            $scope.totalVolume = resp.totalVolume;
+            $scope.totalPA = resp.totalPA;
+            $scope.totalCA = resp.totalCA;
+            $scope.totalMarge = resp.totalMarge;
             if (!$scope.$$phase) {
                 $scope.$apply();
             }
         };
+
+        $scope.pageSizeChange = function(){  
+            $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
+        };
+
         $scope.getPagedDataAsync = function (pageSize, page, searchText) {
             setTimeout(function () {
                 var data;
                 if (searchText) {
                     var ft = searchText.toLowerCase();
-                    $http.get('routeurs/forStatistics').success(function (largeLoad) {        
-                        data = largeLoad.body.filter(function(item) {
-                            return JSON.stringify(item).toLowerCase().indexOf(ft) != -1;
-                        });
-                        $scope.setPagingData(data,page,pageSize);
-                    });            
+                    $http.get('campagnes/forStatistics/searchText/'+searchText).success(function (resp) {        
+                        $scope.setPagingData(resp, page, pageSize);
+                    });
                 } else {
-                    $http.get('routeurs/forStatistics').success(function (largeLoad) {
-                        $scope.setPagingData(largeLoad.body,page,pageSize);
+                    $http.get('campagnes/forStatistics/').success(function (resp) {
+                        $scope.setPagingData(resp, page, pageSize);
                     });
                 }
             }, 100);
@@ -1116,7 +1168,7 @@ angular
         
         $scope.$watch('pagingOptions', function (newVal, oldVal) {
             if (newVal !== oldVal && newVal.currentPage !== oldVal.currentPage) {
-              $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);
+              $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
             }
         }, true);
         $scope.$watch('filterOptions', function (newVal, oldVal) {

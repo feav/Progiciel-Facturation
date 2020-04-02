@@ -6,6 +6,7 @@ use App\Resultat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use App\RESTResponse;
+use App\RESTPaginateResponse;
 use App\Base;
 use App\Campagne;
 use App\Routeur;
@@ -24,27 +25,51 @@ class ResultatController extends Controller
      */
     public function index()
     {
-        $resultats = Resultat::all();
+        
+    }
+
+    /**
+     * Display a listing of the resource by page.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function indexPaginate($per_page = 15)
+    {
+        $resultats = Resultat::paginate($per_page);
         $resultats->transform(function ($item, $key) {
-            $resultat = new ResultatResponse(
-                $item->id, 
-                date('d-m-Y', strtotime($item->date_envoi)),
-                $item->heure_envoi, 
-                Routeur::find($item->routeur_id)->nom, 
-                Base::find($item->base_id)->nom, 
-                Annonceur::find($item->annonceur_id)->nom, 
-                Campagne::find($item->campagne_id)->nom, 
-                $item->volume, 
-                $item->resultat,
-                date('d-m-Y à H:i:s', strtotime($item->created_at)),
-                User::find($item->cree_par)->name,
-                date('d-m-Y à H:i:s', strtotime($item->updated_at)),
-                User::find($item->modifie_par)->name
-            );
+            $resultat = new ResultatResponse($item->id, date('d-m-Y', strtotime($item->date_envoi)), $item->heure_envoi, Routeur::find($item->routeur_id)->nom, Base::find($item->base_id)->nom, Annonceur::find($item->annonceur_id)->nom, Campagne::find($item->campagne_id)->nom, $item->volume, $item->resultat, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par)->name);
             return $resultat;
         });
-        return response()->json(new RESTResponse(200, "OK", $resultats));
+        return response()
+                ->json(new RESTPaginateResponse($resultats->currentPage(), $resultats->items(), $resultats->url(1), $resultats->lastPage(), $resultats->url($resultats->lastPage()), $resultats->nextPageUrl(), $resultats->perPage(), $resultats->previousPageUrl(), $resultats->count(), $resultats->total()));
     }
+
+    /**
+     * Display a listing of the resource using search_text by page.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function indexSearchPaginate($per_page = 15, $search_text=""){
+        $resultats = Resultat::whereHas('campagne', function ($query) use($search_text) {
+            $query->where('nom', 'like', '%' . $search_text . '%');
+        })->orWhereHas('base', function ($query) use($search_text) {
+            $query->where('nom', 'like', '%' . $search_text . '%');
+        })->orWhereHas('base', function ($query) use($search_text) {
+            $query->whereHas('routeur', function($query) use($search_text){
+                $query->where('nom', 'like', '%' . $search_text . '%');
+            });
+        })->orWhereHas('campagne', function ($query) use($search_text) {
+            $query->whereHas('annonceur', function($query) use($search_text){
+                $query->where('nom', 'like', '%' . $search_text . '%');
+            });
+        })->paginate($per_page);
+        $resultats->transform(function ($item, $key) {
+            $resultat = new ResultatResponse($item->id, date('d-m-Y', strtotime($item->date_envoi)), $item->heure_envoi, Routeur::find($item->routeur_id)->nom, Base::find($item->base_id)->nom, Annonceur::find($item->annonceur_id)->nom, Campagne::find($item->campagne_id)->nom, $item->volume, $item->resultat, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par)->name);
+            return $resultat;
+        });
+        return response()
+                ->json(new RESTPaginateResponse($resultats->currentPage(), $resultats->items(), $resultats->url(1), $resultats->lastPage(), $resultats->url($resultats->lastPage()), $resultats->nextPageUrl(), $resultats->perPage(), $resultats->previousPageUrl(), $resultats->count(), $resultats->total()));
+	}
 
     /**
      * Apply filter to retrieve correct data.
@@ -52,87 +77,87 @@ class ResultatController extends Controller
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function applyFilter(Request $request){
+    public function applyFilter($per_page = 15, Request $request){
         $from = date('Y-m-d', strtotime($request->filtre_date_debut));
         $to = date('Y-m-d', strtotime($request->filtre_date_fin));
         
         $resultats;
 
         if($request->filtre_annonceur==null && $request->filtre_routeur==null && $request->filtre_campagne==null && $request->filtre_base==null){
-            $resultats = Resultat::whereBetween('date_envoi', [$from, $to])->get();
+            $resultats = Resultat::whereBetween('date_envoi', [$from, $to])->paginate($per_page);
         }else if($request->filtre_annonceur!=null && $request->filtre_routeur==null && $request->filtre_campagne==null && $request->filtre_base==null){
             $resultats = Resultat::where([ 'annonceur_id' => $request->filtre_annonceur ])
-                                    ->whereBetween('date_envoi', [$from, $to])->get();
+                                    ->whereBetween('date_envoi', [$from, $to])->paginate($per_page);
         }else if($request->filtre_annonceur==null && $request->filtre_routeur!=null && $request->filtre_campagne==null && $request->filtre_base==null){
             $resultats = Resultat::where([ 'routeur_id' => $request->filtre_routeur ])
-                                    ->whereBetween('date_envoi', [$from, $to])->get();
+                                    ->whereBetween('date_envoi', [$from, $to])->paginate($per_page);
         }else if($request->filtre_annonceur==null && $request->filtre_routeur==null && $request->filtre_campagne!=null && $request->filtre_base==null){
             $resultats = Resultat::where([ 'campagne_id' => $request->filtre_campagne ])
-                                    ->whereBetween('date_envoi', [$from, $to])->get();
+                                    ->whereBetween('date_envoi', [$from, $to])->paginate($per_page);
         }else if($request->filtre_annonceur==null && $request->filtre_routeur==null && $request->filtre_campagne==null && $request->filtre_base!=null){
             $resultats = Resultat::where([ 'base_id' => $request->filtre_base ])
-                                    ->whereBetween('date_envoi', [$from, $to])->get();
+                                    ->whereBetween('date_envoi', [$from, $to])->paginate($per_page);
         }else if($request->filtre_annonceur==null && $request->filtre_routeur!=null && $request->filtre_campagne!=null && $request->filtre_base!=null){
             $resultats = Resultat::where([
                 'routeur_id' => $request->filtre_routeur,
                 'campagne_id' => $request->filtre_campagne,
                 'base_id' => $request->filtre_base
-            ])->whereBetween('date_envoi', [$from, $to])->get();
+            ])->whereBetween('date_envoi', [$from, $to])->paginate($per_page);
         }else if($request->filtre_annonceur!=null && $request->filtre_routeur==null && $request->filtre_campagne!=null && $request->filtre_base!=null){
             $resultats = Resultat::where([
                 'annonceur_id' => $request->filtre_annonceur,
                 'campagne_id' => $request->filtre_campagne,
                 'base_id' => $request->filtre_base
-            ])->whereBetween('date_envoi', [$from, $to])->get();
+            ])->whereBetween('date_envoi', [$from, $to])->paginate($per_page);
         }else if($request->filtre_annonceur!=null && $request->filtre_routeur!=null && $request->filtre_campagne==null && $request->filtre_base!=null){
             $resultats = Resultat::where([
                 'annonceur_id' => $request->filtre_annonceur,
                 'routeur_id' => $request->filtre_routeur,
                 'base_id' => $request->filtre_base
-            ])->whereBetween('date_envoi', [$from, $to])->get();
+            ])->whereBetween('date_envoi', [$from, $to])->paginate($per_page);
         }else if($request->filtre_annonceur!=null && $request->filtre_routeur!=null && $request->filtre_campagne!=null && $request->filtre_base==null){
             $resultats = Resultat::where([
                 'annonceur_id' => $request->filtre_annonceur,
                 'routeur_id' => $request->filtre_routeur,
                 'campagne_id' => $request->filtre_campagne
-            ])->whereBetween('date_envoi', [$from, $to])->get();
+            ])->whereBetween('date_envoi', [$from, $to])->paginate($per_page);
         }else if($request->filtre_annonceur==null && $request->filtre_routeur==null && $request->filtre_campagne!=null && $request->filtre_base!=null){
             $resultats = Resultat::where([
                 'campagne_id' => $request->filtre_campagne,
                 'base_id' => $request->filtre_base
-            ])->whereBetween('date_envoi', [$from, $to])->get();
+            ])->whereBetween('date_envoi', [$from, $to])->paginate($per_page);
         }else if($request->filtre_annonceur==null && $request->filtre_routeur!=null && $request->filtre_campagne==null && $request->filtre_base!=null){
             $resultats = Resultat::where([
                 'routeur_id' => $request->filtre_routeur,
                 'base_id' => $request->filtre_base
-            ])->whereBetween('date_envoi', [$from, $to])->get();
+            ])->whereBetween('date_envoi', [$from, $to])->paginate($per_page);
         }else if($request->filtre_annonceur==null && $request->filtre_routeur!=null && $request->filtre_campagne!=null && $request->filtre_base==null){
             $resultats = Resultat::where([
                 'routeur_id' => $request->filtre_routeur,
                 'campagne_id' => $request->filtre_campagne
-            ])->whereBetween('date_envoi', [$from, $to])->get();
+            ])->whereBetween('date_envoi', [$from, $to])->paginate($per_page);
         }else if($request->filtre_annonceur!=null && $request->filtre_routeur==null && $request->filtre_campagne==null && $request->filtre_base!=null){
             $resultats = Resultat::where([
                 'annonceur_id' => $request->filtre_annonceur,
                 'base_id' => $request->filtre_base
-            ])->whereBetween('date_envoi', [$from, $to])->get();
+            ])->whereBetween('date_envoi', [$from, $to])->paginate($per_page);
         }else if($request->filtre_annonceur!=null && $request->filtre_routeur==null && $request->filtre_campagne!=null && $request->filtre_base==null){
             $resultats = Resultat::where([
                 'annonceur_id' => $request->filtre_annonceur,
                 'campagne_id' => $request->filtre_campagne
-            ])->whereBetween('date_envoi', [$from, $to])->get();
+            ])->whereBetween('date_envoi', [$from, $to])->paginate($per_page);
         }else if($request->filtre_annonceur!=null && $request->filtre_routeur!=null && $request->filtre_campagne==null && $request->filtre_base==null){
             $resultats = Resultat::where([
                 'annonceur_id' => $request->filtre_annonceur,
                 'routeur_id' => $request->filtre_routeur,
-            ])->whereBetween('date_envoi', [$from, $to])->get();
+            ])->whereBetween('date_envoi', [$from, $to])->paginate($per_page);
         }else {
             $resultats = Resultat::where([
                 'annonceur_id' => $request->filtre_annonceur,
                 'routeur_id' => $request->filtre_routeur,
                 'campagne_id' => $request->filtre_campagne,
                 'base_id' => $request->filtre_base
-            ])->whereBetween('date_envoi', [$from, $to])->get();
+            ])->whereBetween('date_envoi', [$from, $to])->paginate($per_page);
         }
 
         $resultats->transform(function ($item, $key) {
@@ -153,7 +178,8 @@ class ResultatController extends Controller
             );
             return $resultat;
         });
-        return response()->json(new RESTResponse(200, "OK", $resultats));
+        return response()
+                ->json(new RESTPaginateResponse($resultats->currentPage(), $resultats->items(), $resultats->url(1), $resultats->lastPage(), $resultats->url($resultats->lastPage()), $resultats->nextPageUrl(), $resultats->perPage(), $resultats->previousPageUrl(), $resultats->count(), $resultats->total()));
     }
 
     /**

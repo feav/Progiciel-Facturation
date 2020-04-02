@@ -62,9 +62,18 @@
             <div class="panel panel-primary">
                 <div class="panel-heading"><h4>Tableau de toutes les Bases enregistrées</h4></div>
                 <div class="panel-body">
-                    <div class="input-icon right mb10">
-                        <i class="fa fa-search"></i>
-                        <input type="text" ng-model="filterOptions.filterText" class="form-control" placeholder="Filtre">
+                    <div class="row">
+                        <div class="col-lg-9 col-sm-12">
+                            <div class="input-icon right mb10">
+                                <i class="fa fa-search"></i>
+                                <input type="text" ng-model="filterOptions.filterText" class="form-control" placeholder="Filtre">
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <select class="form-control" placeholder="Nombre d'éléments par page" ng-change="pageSizeChange()" ng-model="pagingOptions.pageSize">
+                                <option ng-repeat="size in pagingOptions.pageSizes" value="{{ size }}">{{ size }}</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="table-responsive table-vertical">
                         <table id="basesTab" class="table table-striped table-bordered table-hover table-responsive">
@@ -132,7 +141,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <pager total-items="totalServerItems" ng-model="pagingOptions.currentPage" previous-text="Précédent" next-text="Suivant"></pager>
+                    <pagination boundary-links="true" rotate="false"  total-items="totalServerItems" ng-model="pagingOptions.currentPage" previous-text="Précédent" next-text="Suivant" first-text="Première" last-text="Dernière"></pagination>
                 </div>
             </div>
         </div>

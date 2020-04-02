@@ -19,7 +19,7 @@ class CreatePlanningsTable extends Migration
             $table->foreignId('campagne_id');
             $table->unsignedBigInteger('routeur_id');
             $table->foreignId('base_id');
-            $table->float('volume');
+            $table->unsignedBigInteger('volume');
             $table->date('date_envoi');
             $table->time('heure_envoi');
             $table->unsignedBigInteger('cree_par');

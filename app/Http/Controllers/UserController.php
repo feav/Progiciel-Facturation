@@ -6,6 +6,7 @@ use App\User;
 use App\Role;
 use Illuminate\Http\Request;
 use App\RESTResponse;
+use App\RESTPaginateResponse;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\OthersResponses\UserResponse;
 
@@ -20,22 +21,41 @@ class UserController extends Controller
     {
         $users = User::all();
         $users->transform(function ($item, $key) {
-            $user = new UserResponse
-                        (
-                            $item->id, 
-                            $item->name,
-                            $item->email,
-                            $item->password, 
-                            Role::find($item->role_id),
-                            date('d-m-Y à H:i:s', strtotime($item->created_at)),
-                            User::find($item->cree_par)->name,
-                            date('d-m-Y à H:i:s', strtotime($item->updated_at)),
-                            User::find($item->modifie_par)->name
-                        );
+            $user = new UserResponse($item->id, $item->name, $item->email, $item->password, Role::find($item->role_id), date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par)->name);
             return $user;
         });
-        return response()->json(new RESTResponse(200, "OK", $users));
+        return response()->json($users);
     }
+
+    /**
+     * Display a listing of the resource by page.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function indexPaginate($per_page = 15){
+        $users = User::paginate($per_page);
+        $users->transform(function ($item, $key) {
+            $user = new UserResponse($item->id, $item->name, $item->email, $item->password, Role::find($item->role_id), date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par)->name);
+            return $user;
+        });
+        return response()
+                ->json(new RESTPaginateResponse($users->currentPage(), $users->items(), $users->url(1), $users->lastPage(), $users->url($users->lastPage()), $users->nextPageUrl(), $users->perPage(), $users->previousPageUrl(), $users->count(), $users->total()));
+	}
+	
+	/**
+     * Display a listing of the resource using search_text by page.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function indexSearchPaginate($per_page = 15, $search_text=""){
+        $users = User::where('name', 'like', '%' . $search_text . '%')->paginate($per_page);
+        $users->transform(function ($item, $key) {
+            $user = new UserResponse($item->id, $item->name, $item->email, $item->password, Role::find($item->role_id), date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par)->name);
+            return $user;
+        });
+        return response()
+                ->json(new RESTPaginateResponse($users->currentPage(), $users->items(), $users->url(1), $users->lastPage(), $users->url($users->lastPage()), $users->nextPageUrl(), $users->perPage(), $users->previousPageUrl(), $users->count(), $users->total()));
+	}
 
     /**
      * Store a newly created resource in storage.

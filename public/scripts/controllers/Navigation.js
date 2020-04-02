@@ -58,11 +58,11 @@ angular
                     iconClasses: 'fa fa-users',
                     url: '#/statistiques-par-annonceurs'
                 },
-                // {
-                //     label: 'Globales',
-                //     iconClasses: 'fa fa-tasks',
-                //     url: '#/statistiques-globales'
-                // },
+                {
+                    label: 'Par Campagnes',
+                    iconClasses: 'fa fa-briefcase',
+                    url: '#/statistiques-par-campagnes'
+                },
             ]
         },
         {
