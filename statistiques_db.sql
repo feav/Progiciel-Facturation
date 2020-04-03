@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Apr 02, 2020 at 06:58 AM
+-- Generation Time: Apr 03, 2020 at 12:02 PM
 -- Server version: 5.7.21
 -- PHP Version: 7.2.4
 
@@ -99,8 +99,7 @@ CREATE TABLE `campagnes` (
 
 INSERT INTO `campagnes` (`id`, `nom`, `type_remuneration`, `remuneration`, `annonceur_id`, `cree_par`, `modifie_par`, `created_at`, `updated_at`) VALUES
 (1, 'campagne1', 'liquide', '25.00000000', 1, 1, 1, '2020-03-26 20:18:05', '2020-03-27 05:09:02'),
-(2, 'campagne2', 'argent', '50.35000000', 2, 1, 1, '2020-03-27 07:42:51', '2020-03-27 07:42:51'),
-(3, 'campagne3', 'liquide', '147.89700000', 2, 1, 1, '2020-04-02 05:55:26', '2020-04-02 05:55:26');
+(2, 'campagne2', 'argent', '50.35000000', 2, 1, 1, '2020-03-27 07:42:51', '2020-03-27 07:42:51');
 
 -- --------------------------------------------------------
 
@@ -172,7 +171,8 @@ CREATE TABLE `plannings` (
 INSERT INTO `plannings` (`id`, `annonceur_id`, `campagne_id`, `routeur_id`, `base_id`, `volume`, `date_envoi`, `heure_envoi`, `cree_par`, `modifie_par`, `created_at`, `updated_at`) VALUES
 (1, 1, 1, 1, 1, 25, '2020-03-30', '15:30:30', 1, 1, '2020-03-26 20:35:42', '2020-03-26 20:35:42'),
 (2, 2, 2, 2, 2, 50, '2020-03-30', '15:00:00', 1, 1, '2020-03-27 20:11:16', '2020-03-27 20:11:16'),
-(3, 1, 1, 1, 1, 250, '2020-03-31', '15:00:00', 1, 1, '2020-03-31 11:07:18', '2020-03-31 11:07:18');
+(3, 1, 1, 1, 1, 250, '2020-03-31', '15:00:00', 1, 1, '2020-03-31 11:07:18', '2020-03-31 11:07:18'),
+(4, 2, 2, 1, 1, 505, '2020-04-06', '10:50:00', 1, 1, '2020-04-03 10:54:12', '2020-04-03 10:54:12');
 
 -- --------------------------------------------------------
 
@@ -189,7 +189,7 @@ CREATE TABLE `resultats` (
   `volume` bigint(20) UNSIGNED NOT NULL,
   `date_envoi` date NOT NULL,
   `heure_envoi` time NOT NULL,
-  `resultat` bigint(20) UNSIGNED NOT NULL,
+  `resultat` bigint(20) UNSIGNED NOT NULL DEFAULT '0',
   `cree_par` bigint(20) UNSIGNED NOT NULL,
   `modifie_par` bigint(20) UNSIGNED DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -203,7 +203,8 @@ CREATE TABLE `resultats` (
 INSERT INTO `resultats` (`id`, `annonceur_id`, `campagne_id`, `routeur_id`, `base_id`, `volume`, `date_envoi`, `heure_envoi`, `resultat`, `cree_par`, `modifie_par`, `created_at`, `updated_at`) VALUES
 (1, 1, 1, 1, 1, 25, '2020-03-30', '15:30:30', 25, 1, 1, '2020-03-26 20:35:42', '2020-03-26 22:09:45'),
 (2, 2, 2, 2, 2, 50, '2020-03-30', '15:00:00', 50, 1, 1, '2020-03-27 20:11:16', '2020-03-27 20:14:59'),
-(3, 1, 1, 1, 1, 250, '2020-03-31', '15:00:00', 100, 1, 1, '2020-03-31 11:07:19', '2020-04-01 03:43:21');
+(3, 1, 1, 1, 1, 250, '2020-03-31', '15:00:00', 100, 1, 1, '2020-03-31 11:07:19', '2020-04-01 03:43:21'),
+(4, 2, 2, 1, 1, 505, '2020-04-06', '10:50:00', 0, 1, 1, '2020-04-03 10:54:12', '2020-04-03 10:54:12');
 
 -- --------------------------------------------------------
 
@@ -327,8 +328,7 @@ INSERT INTO `routeurs` (`id`, `nom`, `prix`, `cree_par`, `modifie_par`, `created
 (77, 'routeur77', '25.00000000', 1, 1, '2020-03-26 05:32:00', '2020-03-26 16:32:51'),
 (78, 'routeur78', '50.00000000', 1, 1, '2020-03-26 05:54:24', '2020-03-26 05:54:24'),
 (79, 'routeur79', '25.00000000', 1, 1, '2020-03-26 05:32:00', '2020-03-26 16:32:51'),
-(80, 'routeur80', '50.00000000', 1, 1, '2020-03-26 05:54:24', '2020-03-26 05:54:24'),
-(81, 'routeur81', '100.85423400', 1, 1, '2020-04-02 05:54:44', '2020-04-02 05:54:44');
+(80, 'routeur80', '50.00000000', 1, 1, '2020-03-26 05:54:24', '2020-03-26 05:54:24');
 
 -- --------------------------------------------------------
 
@@ -442,7 +442,7 @@ ALTER TABLE `bases`
 -- AUTO_INCREMENT for table `campagnes`
 --
 ALTER TABLE `campagnes`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `failed_jobs`
@@ -460,13 +460,13 @@ ALTER TABLE `migrations`
 -- AUTO_INCREMENT for table `plannings`
 --
 ALTER TABLE `plannings`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `resultats`
 --
 ALTER TABLE `resultats`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `roles`
@@ -478,7 +478,7 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT for table `routeurs`
 --
 ALTER TABLE `routeurs`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=82;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=81;
 
 --
 -- AUTO_INCREMENT for table `users`

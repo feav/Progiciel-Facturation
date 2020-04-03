@@ -113,37 +113,37 @@
                                 <tr ng-repeat="user in users">
                                     <td data-title="Nom">
                                         <span editable-text="user.nom" e-name="name" e-form="rowform" e-required>
-                                            {{ user.nom || '' }}
+                                            {{ user.nom }}
                                         </span>
                                     </td>
                                     <td data-title="Adresse email">
                                         <span editable-email="user.email" e-name="email" e-form="rowform" e-required>
-                                            {{ user.email || '' }}
+                                            {{ user.email }}
                                         </span>
                                     </td>
                                     <td data-title="Poste">
                                         <span editable-select="user.role.id" e-name="role" e-form="rowform" e-required  e-ng-options="r.id as r.intitule for r in roles">
-                                            {{ user.role.intitule || '' }}
+                                            {{ user.role.intitule }}
                                         </span>
                                     </td>
                                     <td data-title="Créé le">
                                         <span>
-                                            {{ user.cree_le || '' }}
+                                            {{ user.cree_le }}
                                         </span>
                                     </td>
                                     <td data-title="Créé Par">
                                         <span>
-                                            {{ user.cree_par || '' }}
+                                            {{ user.cree_par }}
                                         </span>
                                     </td>
                                     <td data-title="Modifié le">
                                         <span>
-                                            {{ user.modifie_le || '' }}
+                                            {{ user.modifie_le }}
                                         </span>
                                     </td>
                                     <td data-title="Modifié Par">
                                         <span>
-                                            {{ user.modifie_par || '' }}
+                                            {{ user.modifie_par }}
                                         </span>
                                     </td>
                                     <td data-title="Actions" style="white-space: nowrap">

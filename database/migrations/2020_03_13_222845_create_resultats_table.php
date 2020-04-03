@@ -22,7 +22,7 @@ class CreateResultatsTable extends Migration
             $table->unsignedBigInteger('volume');
             $table->date('date_envoi');
             $table->time('heure_envoi');
-            $table->unsignedBigInteger('resultat', 0);
+            $table->unsignedBigInteger('resultat')->default('0');
             $table->unsignedBigInteger('cree_par');
             $table->unsignedBigInteger('modifie_par')->nullable();
             $table->timestamps();

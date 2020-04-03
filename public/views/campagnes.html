@@ -105,42 +105,42 @@
                                 <tr ng-repeat="campagne in campagnes">
                                     <td data-title="Nom">
                                         <span editable-text="campagne.nom" e-name="nom" e-form="rowform" e-required>
-                                            {{ campagne.nom || '' }}
+                                            {{ campagne.nom }}
                                         </span>
                                     </td>
                                     <td data-title="Type de Rémunération">
                                         <span editable-text="campagne.type_remuneration" e-name="type_remuneration" e-form="rowform" e-required>
-                                            {{ campagne.type_remuneration || '' }}
+                                            {{ campagne.type_remuneration }}
                                         </span>
                                     </td>
                                     <td data-title="Rémunération">
                                         <span editable-text="campagne.remuneration" e-name="remuneration" e-form="rowform" e-required>
-                                            {{ campagne.remuneration || '' }}
+                                            {{ campagne.remuneration }}
                                         </span>
                                     </td>
                                     <td data-title="Annonceur">
                                         <span editable-select="campagne.annonceur.id" e-name="annonceur" e-form="rowform" e-required  e-ng-options="a.id as a.nom for a in annonceurs">
-                                            {{ campagne.annonceur.nom || '' }}
+                                            {{ campagne.annonceur.nom }}
                                         </span>
                                     </td>
                                     <td data-title="Créé le">
                                         <span>
-                                            {{ campagne.cree_le || '' }}
+                                            {{ campagne.cree_le }}
                                         </span>
                                     </td>
                                     <td data-title="Créé Par">
                                         <span>
-                                            {{ campagne.cree_par || '' }}
+                                            {{ campagne.cree_par }}
                                         </span>
                                     </td>
                                     <td data-title="Modifié le">
                                         <span>
-                                            {{ campagne.modifie_le || '' }}
+                                            {{ campagne.modifie_le }}
                                         </span>
                                     </td>
                                     <td data-title="Modifié Par">
                                         <span>
-                                            {{ campagne.modifie_par || '' }}
+                                            {{ campagne.modifie_par }}
                                         </span>
                                     </td>
                                     <td data-title="Actions" style="white-space: nowrap">

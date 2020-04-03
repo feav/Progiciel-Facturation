@@ -149,57 +149,57 @@
                                 <tr ng-repeat="planning in plannings">
                                     <td data-title="Date d'envoi">
                                         <span editable-date="planning.date" e-name="date" e-form="rowform" e-required>
-                                            {{ planning.date || '' }}
+                                            {{ planning.date }}
                                         </span>
                                     </td>
                                     <td data-title="Heure d'envoi">
                                         <span editable-time="planning.heure" e-name="heure" e-form="rowform" e-required>
-                                            {{ planning.heure || '' }}
+                                            {{ planning.heure }}
                                         </span>
                                     </td>
                                     <td data-title="Routeur">
                                         <span editable-select="planning.routeur.id" e-name="routeur" e-form="rowform" e-required  e-ng-options="r.id as r.nom for r in routeurs">
-                                            {{ planning.routeur.nom || '' }}
+                                            {{ planning.routeur.nom }}
                                         </span>
                                     </td>
                                     <td data-title="Base">
                                         <span editable-select="planning.base.id" e-name="base" e-form="rowform" e-required  e-ng-options="b.id as b.nom for b in bases">
-                                            {{ planning.base.nom || '' }}
+                                            {{ planning.base.nom }}
                                         </span>
                                     </td>
                                     <td data-title="Annonceur">
                                         <span editable-select="planning.annonceur.id" e-name="annonceur" e-form="rowform" e-required  e-ng-options="a.id as a.nom for a in annonceurs">
-                                            {{ planning.annonceur.nom || '' }}
+                                            {{ planning.annonceur.nom }}
                                         </span>
                                     </td>
                                     <td data-title="Campagne">
                                         <span editable-select="planning.campagne.id" e-name="campagne" e-form="rowform" e-required  e-ng-options="c.id as c.nom for c in campagnes">
-                                            {{ planning.campagne.nom || '' }}
+                                            {{ planning.campagne.nom }}
                                         </span>
                                     </td>
                                     <td data-title="Volume">
                                         <span editable-number="planning.volume" e-name="volume" e-form="rowform" e-required>
-                                            {{ planning.volume || '' }}
+                                            {{ planning.volume }}
                                         </span>
                                     </td>
                                     <td data-title="Créé le">
                                         <span>
-                                            {{ planning.cree_le || '' }}
+                                            {{ planning.cree_le }}
                                         </span>
                                     </td>
                                     <td data-title="Créé Par">
                                         <span>
-                                            {{ planning.cree_par || '' }}
+                                            {{ planning.cree_par }}
                                         </span>
                                     </td>
                                     <td data-title="Modifié le">
                                         <span>
-                                            {{ planning.modifie_le || '' }}
+                                            {{ planning.modifie_le }}
                                         </span>
                                     </td>
                                     <td data-title="Modifié Par">
                                         <span>
-                                            {{ planning.modifie_par || '' }}
+                                            {{ planning.modifie_par }}
                                         </span>
                                     </td>
                                     <td data-title="Actions" style="white-space: nowrap">

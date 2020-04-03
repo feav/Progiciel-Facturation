@@ -125,57 +125,57 @@
                                 <tr ng-repeat="annonceur in annonceurs">
                                     <td data-title="Nom">
                                         <span editable-text="annonceur.nom" e-name="nom" e-form="rowform" e-required>
-                                            {{ annonceur.nom || '' }}
+                                            {{ annonceur.nom }}
                                         </span>
                                     </td>
                                     <td data-title="URL">
                                         <span editable-text="annonceur.url" e-name="url" e-form="rowform">
-                                            {{ annonceur.url || '' }}
+                                            {{ annonceur.url }}
                                         </span>
                                     </td>
                                     <td data-title="Adresse facturation">
                                         <span editable-text="annonceur.adresse_facturation" e-name="adresse_facturation" e-form="rowform" e-required>
-                                            {{ annonceur.adresse_facturation || '' }}
+                                            {{ annonceur.adresse_facturation }}
                                         </span>
                                     </td>
                                     <td data-title="Email Comptabilité">
                                         <span editable-text="annonceur.email_comptabilite" e-name="email_comptabilite" e-form="rowform">
-                                            {{ annonceur.email_comptabilite || '' }}
+                                            {{ annonceur.email_comptabilite }}
                                         </span>
                                     </td>
                                     <td data-title="Email Direction">
                                         <span editable-text="annonceur.email_direction" e-name="email_direction" e-form="rowform">
-                                            {{ annonceur.email_direction || '' }}
+                                            {{ annonceur.email_direction }}
                                         </span>
                                     </td>
                                     <td data-title="Email Production">
                                         <span editable-text="annonceur.email_production" e-name="email_production" e-form="rowform">
-                                            {{ annonceur.email_production || '' }}
+                                            {{ annonceur.email_production }}
                                         </span>
                                     </td>
                                     <td data-title="Délai Paiement">
                                         <span editable-number="annonceur.delai_paiement" e-name="delai_paiement" e-form="rowform" e-required>
-                                            {{ annonceur.delai_paiement + 'jours' || '' }}
+                                            {{ annonceur.delai_paiement + 'jours' }}
                                         </span>
                                     </td>
                                     <td data-title="Créé le">
                                         <span>
-                                            {{ annonceur.cree_le || '' }}
+                                            {{ annonceur.cree_le }}
                                         </span>
                                     </td>
                                     <td data-title="Créé Par">
                                         <span>
-                                            {{ annonceur.cree_par || '' }}
+                                            {{ annonceur.cree_par }}
                                         </span>
                                     </td>
                                     <td data-title="Modifié le">
                                         <span>
-                                            {{ annonceur.modifie_le || '' }}
+                                            {{ annonceur.modifie_le }}
                                         </span>
                                     </td>
                                     <td data-title="Modifié Par">
                                         <span>
-                                            {{ annonceur.modifie_par || '' }}
+                                            {{ annonceur.modifie_par }}
                                         </span>
                                     </td>
                                     <td style="white-space: nowrap" data-title="Actions">
