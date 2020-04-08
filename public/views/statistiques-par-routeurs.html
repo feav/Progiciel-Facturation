@@ -95,9 +95,9 @@
                 </div>
                 <div class="row">
                     <div class="col-lg-3 col-sm-12"><button class="btn btn-orange btn-block" data-pulsate="{onHover:true}">Total Volume: {{ totalVolume }} </button></div>
-                    <div class="col-lg-3 col-sm-12"><button class="btn btn-green btn-block" data-pulsate="{onHover:true}">Total Chiffre d'Affaires: {{ totalCA }} € </button></div>
-                    <div class="col-lg-3 col-sm-12"><button class="btn btn-inverse btn-block" data-pulsate="{onHover:true}">Total Prix d'Achat: {{ totalPA }} €</button></div>
-                    <div class="col-lg-3 col-sm-12"><button class="btn btn-magenta btn-block" data-pulsate="{onHover:true}">Total Prix Marge: {{ totalMarge }} €</button></div>
+                    <div class="col-lg-3 col-sm-12"><button class="btn btn-green btn-block" data-pulsate="{onHover:true}">Total Chiffre d'Affaires: {{ totalCA.toFixed(2) }} € </button></div>
+                    <div class="col-lg-3 col-sm-12"><button class="btn btn-inverse btn-block" data-pulsate="{onHover:true}">Total Prix d'Achat: {{ totalPA.toFixed(2) }} €</button></div>
+                    <div class="col-lg-3 col-sm-12"><button class="btn btn-magenta btn-block" data-pulsate="{onHover:true}">Total Prix Marge: {{ totalMarge.toFixed(2) }} €</button></div>
                 </div>
             </div>
         </div>
