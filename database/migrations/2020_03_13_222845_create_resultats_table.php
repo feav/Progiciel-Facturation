@@ -20,6 +20,7 @@ class CreateResultatsTable extends Migration
             $table->unsignedBigInteger('routeur_id');
             $table->foreignId('base_id');
             $table->unsignedBigInteger('volume');
+            $table->float('remuneration', 8, 2);
             $table->date('date_envoi');
             $table->time('heure_envoi');
             $table->unsignedBigInteger('resultat')->default('0');

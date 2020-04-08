@@ -26,7 +26,7 @@ class AnnonceurController extends Controller
     {
         $annonceurs = Annonceur::all();
         $annonceurs->transform(function ($item, $key) {
-            $annonceur = new AnnonceurOtherResponse ($item->id, $item->nom, $item->url, $item->adresse_facturation, $item->email_comptabilite, $item->email_direction, $item->email_production, $item->delai_paiement, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par)->name);
+            $annonceur = new AnnonceurOtherResponse ($item->id, $item->nom, $item->url, $item->login, $item->password, $item->adresse_facturation, $item->email_comptabilite, $item->email_direction, $item->email_production, $item->delai_paiement, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par)->name);
             return $annonceur;
         });
         return response()->json(new RESTResponse(200, "OK", $annonceurs));
@@ -40,7 +40,7 @@ class AnnonceurController extends Controller
     public function indexPaginate($per_page = 15){
         $annonceurs = Annonceur::paginate($per_page);
         $annonceurs->transform(function ($item, $key) {
-            $annonceur = new AnnonceurOtherResponse ($item->id, $item->nom, $item->url, $item->adresse_facturation, $item->email_comptabilite, $item->email_direction, $item->email_production, $item->delai_paiement, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par)->name);
+            $annonceur = new AnnonceurOtherResponse ($item->id, $item->nom, $item->url, $item->login, $item->password, $item->adresse_facturation, $item->email_comptabilite, $item->email_direction, $item->email_production, $item->delai_paiement, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par)->name);
             return $annonceur;
         });
         return response()
@@ -55,7 +55,7 @@ class AnnonceurController extends Controller
     public function indexSearchPaginate($per_page = 15, $search_text=""){
         $annonceurs = Annonceur::where('nom', 'like', '%' . $search_text . '%')->paginate($per_page);
         $annonceurs->transform(function ($item, $key) {
-            $annonceur = new AnnonceurOtherResponse ($item->id, $item->nom, $item->url, $item->adresse_facturation, $item->email_comptabilite, $item->email_direction, $item->email_production, $item->delai_paiement, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par)->name);
+            $annonceur = new AnnonceurOtherResponse ($item->id, $item->nom, $item->url, $item->login, $item->password, $item->adresse_facturation, $item->email_comptabilite, $item->email_direction, $item->email_production, $item->delai_paiement, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par)->name);
             return $annonceur;
         });
         return response()
@@ -74,7 +74,7 @@ class AnnonceurController extends Controller
         $totalVolume = $annonceursFull->sum("volume");
         
         $annonceursFull->transform(function ($item, $key) {
-            $annonceur = new AnnonceurStatsOtherResponse ($item->id, Annonceur::find($item->annonceur_id)->nom, Annonceur::find($item->annonceur_id), Campagne::find($item->campagne_id)->remuneration, $item->resultat, Routeur::find($item->routeur_id)->prix * $item->volume, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par)->name);
+            $annonceur = new AnnonceurStatsOtherResponse ($item->id, Annonceur::find($item->annonceur_id)->nom, Annonceur::find($item->annonceur_id), $item->remuneration, $item->resultat, Routeur::find($item->routeur_id)->prix * $item->volume, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par)->name);
             return $annonceur;
         });
         $annonceurs = $annonceursFull->uniqueStrict("nom");
@@ -109,7 +109,7 @@ class AnnonceurController extends Controller
             });
         })->paginate($per_page);
         $annonceurs->transform(function ($item, $key) {
-            $annonceur = new AnnonceurStatsOtherResponse ($item->id, Annonceur::find($item->annonceur_id)->nom, Annonceur::find($item->annonceur_id), Campagne::find($item->campagne_id)->remuneration, $item->resultat, Routeur::find($item->routeur_id)->prix * $item->volume, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par)->name);
+            $annonceur = new AnnonceurStatsOtherResponse ($item->id, Annonceur::find($item->annonceur_id)->nom, Annonceur::find($item->annonceur_id), $item->remuneration, $item->resultat, Routeur::find($item->routeur_id)->prix * $item->volume, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par)->name);
             return $annonceur;
         });
         return response()
@@ -130,7 +130,7 @@ class AnnonceurController extends Controller
         $totalVolume = $annonceursFull->sum("volume");
         
         $annonceursFull->transform(function ($item, $key) {
-            $annonceur = new AnnonceurStatsOtherResponse($item->id, Annonceur::find($item->annonceur_id)->nom, Annonceur::find($item->annonceur_id), Campagne::find($item->campagne_id)->remuneration, $item->resultat, Routeur::find($item->routeur_id)->prix * $item->volume, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par)->name);
+            $annonceur = new AnnonceurStatsOtherResponse($item->id, Annonceur::find($item->annonceur_id)->nom, Annonceur::find($item->annonceur_id), $item->remuneration, $item->resultat, Routeur::find($item->routeur_id)->prix * $item->volume, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par)->name);
             return $annonceur;
         });
         $annonceurs = $annonceursFull->uniqueStrict("nom");
@@ -162,6 +162,8 @@ class AnnonceurController extends Controller
         Annonceur::create([
             'nom'=>$request->input('nom'),
             'url'=>$request->input('url'),
+            'login'=>$request->input('login'),
+            'password'=>$request->input('password'),
             'adresse_facturation'=>$request->input('adresse_facturation'),
             'email_comptabilite'=>$request->input('email_comptabilite'), 
             'email_direction'=>$request->input('email_direction'),
@@ -197,6 +199,8 @@ class AnnonceurController extends Controller
                 ->update([
                     'nom'=>$request->input('nom'),
                     'url'=>$request->input('url'), 
+                    'login'=>$request->input('login'),
+                    'password'=>$request->input('password'),
                     'adresse_facturation'=>$request->input('adresse_facturation'),
                     'email_comptabilite'=>$request->input('email_comptabilite'), 
                     'email_direction'=>$request->input('email_direction'),

@@ -18,27 +18,38 @@
                             <div class="col-lg-4 col-sm-6" style="margin: 5px 0;">
                                 <!-- <input type="text" placeholder="Filtre date" name="filtre_date" id="filtre_date" class="form-control" daterangepicker=""> -->
                                 <button class="btn btn-default" daterangepicker="filtre_date_options" date-begin="filter_data.filtre_date_debut" date-end="filter_data.filtre_date_fin">
-                                    <i class="fa fa-calendar"></i> <span style="margin-left: 5px">{{filter_data.filtre_date_debut}} - {{filter_data.filtre_date_fin}}</span> <b class="caret"></b>
+                                    <i class="fa fa-calendar"></i> 
+                                    <!-- <span ng-if="filter_data.filtre_date_debut==null && filter_data.filtre_date_fin==null" style="margin-left: 5px">Intervalle de date d'envoi</span>  -->
+                                    <span style="margin-left: 5px">{{filter_data.filtre_date_debut}} - {{filter_data.filtre_date_fin}}</span> 
+                                    <b class="caret"></b>
                                 </button>
                             </div>
                             <div class="col-lg-2 col-sm-6" style="margin: 5px 0;">
-                                <select class="form-control" id="filtre_routeur" name="filtre_routeur" ng-model="filter_data.filtre_routeur">
-                                    <option ng-repeat="routeur in routeurs" value="{{ routeur.id }}">{{ routeur.nom }}</option>
+                                <select class="form-control" name="filtre_routeur"
+                                        id="filtre_routeur" ng-model="filter_data.filtre_routeur"
+                                        ng-options="routeur.id as routeur.nom for routeur in routeurs">
+                                    <option value="" selected>Routeurs...</option>
                                 </select>
                             </div>
                             <div class="col-lg-2 col-sm-6" style="margin: 5px 0;">
-                                <select class="form-control" id="filtre_base" name="filtre_base" ng-model="filter_data.filtre_base">
-                                    <option ng-repeat="base in bases" value="{{ base.id }}">{{ base.nom }}</option>
+                                <select class="form-control" name="filtre_routeur"
+                                        id="filtre_base" ng-model="filter_data.filtre_base"
+                                        ng-options="base.id as base.nom for base in bases">
+                                    <option value="" selected>Bases...</option>
                                 </select>
                             </div>
                             <div class="col-lg-2 col-sm-6" style="margin: 5px 0;">
-                                <select class="form-control" id="filtre_annonceur" name="filtre_annonceur" ng-model="filter_data.filtre_annonceur">
-                                    <option ng-repeat="annonceur in annonceurs" value="{{ annonceur.id }}">{{ annonceur.nom }}</option>
+                                <select class="form-control" name="filtre_annonceur"
+                                        id="filtre_annonceur" ng-model="filter_data.filtre_annonceur"
+                                        ng-options="annonceur.id as annonceur.nom for annonceur in annonceurs">
+                                    <option value="" selected>Annonceurs...</option>
                                 </select>
                             </div>
                             <div class="col-lg-2 col-sm-6" style="margin: 5px 0;">
-                                <select class="form-control" id="filtre_campagne" name="filtre_campagne" ng-model="filter_data.filtre_campagne">
-                                    <option ng-repeat="campagne in campagnes" value="{{ campagne.id }}">{{ campagne.nom }}</option>
+                                <select class="form-control" name="filtre_campagne"
+                                        id="filtre_campagne" ng-model="filter_data.filtre_campagne"
+                                        ng-options="campagne.id as campagne.nom for campagne in campagnes">
+                                    <option value="" selected>Campagnes...</option>
                                 </select>
                             </div>
                         </div>
@@ -52,7 +63,7 @@
                             <!-- <div class="col-lg-9 col-sm-12">
                                 <div class="input-icon right mb10">
                                     <i class="fa fa-search"></i>
-                                    <input type="text" ng-model="filterOptions.filterText" class="form-control" placeholder="Filtre">
+                                    <input type="text" ng-model="filterOptions.filterText" class="form-control" placeholder="Filtre par nom">
                                 </div>
                             </div> -->
                             <div class="col-lg-3 col-sm-12 pull-right">
@@ -81,7 +92,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr ng-repeat="resultat in resultats">
+                                    <tr ng-repeat="resultat in resultats" ng-if="!showLoader">
                                         <td data-title="Date d'envoi">
                                             <span>
                                                 {{ resultat.date }}
@@ -161,6 +172,9 @@
                                     </tr>
                                 </tbody>
                             </table>
+                            <div style="text-align: center;" ng-if="showLoader">
+                                <img src="images/loader.gif" alt="">
+                            </div>
                         </div>
                         <pagination boundary-links="true" rotate="false"  total-items="totalServerItems" ng-model="pagingOptions.currentPage" previous-text="Précédent" next-text="Suivant" first-text="Première" last-text="Dernière"></pagination>
                     </div>

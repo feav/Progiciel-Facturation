@@ -31,7 +31,7 @@
                         <div class="col-lg-9 col-sm-12">
                             <div class="input-icon right mb10">
                                 <i class="fa fa-search"></i>
-                                <input type="text" ng-model="filterOptions.filterText" class="form-control" placeholder="Filtre">
+                                <input type="text" ng-model="filterOptions.filterText" class="form-control" placeholder="Filtre par nom">
                             </div>
                         </div>
                         <div class="col-lg-3 col-sm-12">
@@ -53,7 +53,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr ng-repeat="elt in tab">
+                                <tr ng-repeat="elt in tab" ng-if="!showLoader">
                                     <td data-title="Nom">
                                         <span>
                                             {{ elt.nom }}
@@ -61,7 +61,7 @@
                                     </td>
                                     <td data-title="Prix">
                                         <span>
-                                            {{ elt.prix }}
+                                            {{ elt.prix }} €
                                         </span>
                                     </td>
                                     <td data-title="Volume">
@@ -87,14 +87,17 @@
                                 </tr>
                             </tbody>
                         </table>
+                        <div style="text-align: center;" ng-if="showLoader">
+                            <img src="images/loader.gif" alt="">
+                        </div>
                     </div>
                     <pagination boundary-links="true" rotate="false"  total-items="totalServerItems" ng-model="pagingOptions.currentPage" previous-text="Précédent" next-text="Suivant" first-text="Première" last-text="Dernière"></pagination>
                 </div>
                 <div class="row">
                     <div class="col-lg-3 col-sm-12"><button class="btn btn-orange btn-block" data-pulsate="{onHover:true}">Total Volume: {{ totalVolume }} </button></div>
-                    <div class="col-lg-3 col-sm-12"><button class="btn btn-green btn-block" data-pulsate="{onHover:true}">Total Chiffre d'Affaires: {{ totalCA }}</button></div>
-                    <div class="col-lg-3 col-sm-12"><button class="btn btn-inverse btn-block" data-pulsate="{onHover:true}">Total Prix d'Achat: {{ totalPA }}</button></div>
-                    <div class="col-lg-3 col-sm-12"><button class="btn btn-magenta btn-block" data-pulsate="{onHover:true}">Total Prix Marge: {{ totalMarge }}</button></div>
+                    <div class="col-lg-3 col-sm-12"><button class="btn btn-green btn-block" data-pulsate="{onHover:true}">Total Chiffre d'Affaires: {{ totalCA }} € </button></div>
+                    <div class="col-lg-3 col-sm-12"><button class="btn btn-inverse btn-block" data-pulsate="{onHover:true}">Total Prix d'Achat: {{ totalPA }} €</button></div>
+                    <div class="col-lg-3 col-sm-12"><button class="btn btn-magenta btn-block" data-pulsate="{onHover:true}">Total Prix Marge: {{ totalMarge }} €</button></div>
                 </div>
             </div>
         </div>

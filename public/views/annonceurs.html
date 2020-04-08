@@ -39,6 +39,18 @@
                         </div>
                     </div>
                     <div class="form-group row">
+                        <label for="login" class="col-sm-4 col-form-label">Login de l'Annonceur</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="login" name="login">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="password" class="col-sm-4 col-form-label">Mot de passe de l'Annonceur</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="password" name="password">
+                        </div>
+                    </div>
+                    <div class="form-group row">
                         <label for="adresse_facturation" class="col-sm-4 col-form-label">Adresse de Facturation *</label>
                         <div class="col-sm-8">
                             <input type="text" required class="form-control" id="adresse_facturation" name="adresse_facturation">
@@ -94,7 +106,7 @@
                         <div class="col-lg-9 col-sm-12">
                             <div class="input-icon right mb10">
                                 <i class="fa fa-search"></i>
-                                <input type="text" ng-model="filterOptions.filterText" class="form-control" placeholder="Filtre">
+                                <input type="text" ng-model="filterOptions.filterText" class="form-control" placeholder="Filtre par nom">
                             </div>
                         </div>
                         <div class="col-lg-3 col-sm-12">
@@ -109,6 +121,8 @@
                                 <tr style="font-weight: bold">
                                     <th>Nom</th>
                                     <th>URL</th>
+                                    <th>Login</th>
+                                    <th>Mot de Passe</th>
                                     <th>Adresse facturation</th>
                                     <th>Email Comptabilité</th>
                                     <th>Email Direction</th>
@@ -122,7 +136,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr ng-repeat="annonceur in annonceurs">
+                                <tr ng-repeat="annonceur in annonceurs" ng-if="!showLoader">
                                     <td data-title="Nom">
                                         <span editable-text="annonceur.nom" e-name="nom" e-form="rowform" e-required>
                                             {{ annonceur.nom }}
@@ -131,6 +145,16 @@
                                     <td data-title="URL">
                                         <span editable-text="annonceur.url" e-name="url" e-form="rowform">
                                             {{ annonceur.url }}
+                                        </span>
+                                    </td>
+                                    <td data-title="Login">
+                                        <span editable-text="annonceur.login" e-name="login" e-form="rowform" e-required>
+                                            {{ annonceur.login }}
+                                        </span>
+                                    </td>
+                                    <td data-title="Mot de Passe">
+                                        <span editable-text="annonceur.password" e-name="password" e-form="rowform">
+                                            {{ annonceur.password }}
                                         </span>
                                     </td>
                                     <td data-title="Adresse facturation">
@@ -198,6 +222,9 @@
                                 </tr>
                             </tbody>
                         </table>
+                        <div style="text-align: center;" ng-if="showLoader">
+                            <img src="images/loader.gif" alt="">
+                        </div>
                     </div>
                     <pagination boundary-links="true" rotate="false"  total-items="totalServerItems" ng-model="pagingOptions.currentPage" previous-text="Précédent" next-text="Suivant" first-text="Première" last-text="Dernière"></pagination>
                 </div>

@@ -16,7 +16,7 @@ class CreateRouteursTable extends Migration
         Schema::create('routeurs', function (Blueprint $table) {
             $table->id();
             $table->string('nom');
-            $table->decimal('prix', 16, 8);
+            $table->float('prix', 16, 8);
             $table->unsignedBigInteger('cree_par');
             $table->unsignedBigInteger('modifie_par')->nullable();
             $table->timestamps();

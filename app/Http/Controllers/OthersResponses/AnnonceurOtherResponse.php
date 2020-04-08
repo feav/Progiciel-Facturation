@@ -10,6 +10,10 @@ class AnnonceurOtherResponse
      
     public $url;
 
+    public $login;
+
+    public $password;
+
     public $adresse_facturation;
 
     public $email_comptabilite;
@@ -33,11 +37,13 @@ class AnnonceurOtherResponse
      *
      * @return void
      */
-    public function __construct($id, $n, $url, $af, $ec, $ed, $ep, $dp, $cl, $cp, $ml, $mp)
+    public function __construct($id, $n, $url, $lgn, $pwd, $af, $ec, $ed, $ep, $dp, $cl, $cp, $ml, $mp)
     {
         $this->id = $id;
         $this->nom = $n;
         $this->url = $url;
+        $this->login = $lgn;
+        $this->password = $pwd;
         $this->adresse_facturation = $af;
         $this->email_comptabilite = $ec;
         $this->email_direction = $ed;

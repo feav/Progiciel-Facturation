@@ -75,7 +75,7 @@ class BaseController extends Controller
         $totalVolume = $basesFull->sum("volume");
         
         $basesFull->transform(function ($item, $key) {
-            $base = new BaseStatsOtherResponse($item->id, Base::find($item->base_id)->nom, Annonceur::find($item->annonceur_id), Campagne::find($item->campagne_id)->remuneration, $item->resultat, Routeur::find($item->routeur_id)->prix * $item->volume, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par)->name);
+            $base = new BaseStatsOtherResponse($item->id, Base::find($item->base_id)->nom, Annonceur::find($item->annonceur_id), $item->remuneration, $item->resultat, Routeur::find($item->routeur_id)->prix * $item->volume, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par)->name);
             return $base;
         });
         $bases = $basesFull->uniqueStrict("nom");
@@ -108,7 +108,7 @@ class BaseController extends Controller
             $query->where('nom', 'like', '%' . $search_text . '%');
         })->paginate($per_page);
         $bases->transform(function ($item, $key) {
-            $base = new BaseStatsOtherResponse($item->id, Base::find($item->base_id)->nom, Annonceur::find($item->annonceur_id), Campagne::find($item->campagne_id)->remuneration, $item->resultat, Routeur::find($item->routeur_id)->prix * $item->volume, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par)->name);
+            $base = new BaseStatsOtherResponse($item->id, Base::find($item->base_id)->nom, Annonceur::find($item->annonceur_id), $item->remuneration, $item->resultat, Routeur::find($item->routeur_id)->prix * $item->volume, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par)->name);
             return $base;
         });
         return response()
@@ -129,7 +129,7 @@ class BaseController extends Controller
         $totalVolume = $basesFull->sum("volume");
 
         $basesFull->transform(function ($item, $key) {
-            $base = new BaseStatsOtherResponse($item->id, Base::find($item->base_id)->nom, Annonceur::find($item->annonceur_id), Campagne::find($item->campagne_id)->remuneration, $item->resultat, Routeur::find($item->routeur_id)->prix * $item->volume, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par)->name);
+            $base = new BaseStatsOtherResponse($item->id, Base::find($item->base_id)->nom, Annonceur::find($item->annonceur_id), $item->remuneration, $item->resultat, Routeur::find($item->routeur_id)->prix * $item->volume, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par)->name);
             return $base;
         });
         $bases = $basesFull->uniqueStrict("nom");

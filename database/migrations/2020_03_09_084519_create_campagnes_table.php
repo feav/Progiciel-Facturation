@@ -17,7 +17,7 @@ class CreateCampagnesTable extends Migration
             $table->id();
             $table->string('nom');
             $table->string('type_remuneration');
-            $table->decimal('remuneration', 16, 8);
+            $table->float('remuneration', 8, 2);
             $table->foreignId('annonceur_id');
             $table->unsignedBigInteger('cree_par');
             $table->unsignedBigInteger('modifie_par')->nullable();

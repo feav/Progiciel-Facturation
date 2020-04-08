@@ -16,6 +16,8 @@ class CreateAnnonceursTable extends Migration
         Schema::create('annonceurs', function (Blueprint $table) {
             $table->id();
             $table->string('nom');
+            $table->string('login')->nullable(true);
+            $table->string('password')->nullable(true);
             $table->string('url')->nullable(true);
             $table->string('adresse_facturation');
             $table->string('email_comptabilite')->nullable(true);

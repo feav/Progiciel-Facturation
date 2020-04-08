@@ -78,7 +78,7 @@ class RouteurController extends Controller
         $totalVolume = $routeursFull->sum("volume");
         
         $routeursFull->transform(function ($item, $key) {
-            $routeur = new RouteurStatsOtherResponse ($item->id, Routeur::find($item->routeur_id)->nom, Annonceur::find($item->annonceur_id), Routeur::find($item->routeur_id)->prix, $item->volume, Campagne::find($item->campagne_id)->remuneration, $item->resultat, Routeur::find($item->routeur_id)->prix * $item->volume, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par)->name );
+            $routeur = new RouteurStatsOtherResponse ($item->id, Routeur::find($item->routeur_id)->nom, Annonceur::find($item->annonceur_id), Routeur::find($item->routeur_id)->prix, $item->volume, $item->remuneration, $item->resultat, Routeur::find($item->routeur_id)->prix * $item->volume, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par)->name );
             return $routeur;
         });
         $routeurs = $routeursFull->uniqueStrict("nom");
@@ -98,8 +98,6 @@ class RouteurController extends Controller
                             'totalMarge'=>$totalMarge,
                             'data'=>new RESTResponse(200, "OK", $routeurs));
         return response()->json($response);
-        // return response()
-        //         ->json(new RESTPaginateResponse($routeursFull->currentPage(), $routeurs, $routeursFull->url(1), $routeursFull->lastPage(), $routeursFull->url($routeursFull->lastPage()), $routeursFull->nextPageUrl(), $routeursFull->perPage(), $routeursFull->previousPageUrl(), $routeursFull->count(), $routeursFull->total() ));
     }
 
     /**
@@ -115,12 +113,10 @@ class RouteurController extends Controller
             });
         })->get();
         $routeurs->transform(function ($item, $key) {
-            $routeur = new RouteurStatsOtherResponse ($item->id, Routeur::find($item->routeur_id)->nom, Annonceur::find($item->annonceur_id), Routeur::find($item->routeur_id)->prix, $item->volume, Campagne::find($item->campagne_id)->remuneration, $item->resultat, Routeur::find($item->routeur_id)->prix * $item->volume, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par)->name );
+            $routeur = new RouteurStatsOtherResponse ($item->id, Routeur::find($item->routeur_id)->nom, Annonceur::find($item->annonceur_id), Routeur::find($item->routeur_id)->prix, $item->volume, $item->remuneration, $item->resultat, Routeur::find($item->routeur_id)->prix * $item->volume, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par)->name );
             return $routeur;
         });
         return response()->json(new RESTResponse(200, "OK", $routeurs));
-        // return response()
-        //         ->json(new RESTPaginateResponse($routeurs->currentPage(), $routeurs->items(), $routeurs->url(1), $routeurs->lastPage(), $routeurs->url($routeurs->lastPage()), $routeurs->nextPageUrl(), $routeurs->perPage(), $routeurs->previousPageUrl(), $routeurs->count(), $routeurs->total() ));
     }
 
     /**
@@ -137,7 +133,7 @@ class RouteurController extends Controller
         $totalVolume = $routeursFull->sum("volume");
         
         $routeursFull->transform(function ($item, $key) {
-            $routeur = new RouteurStatsOtherResponse ($item->id, Routeur::find($item->routeur_id)->nom, Annonceur::find($item->annonceur_id), Routeur::find($item->routeur_id)->prix, $item->volume, Campagne::find($item->campagne_id)->remuneration, $item->resultat, Routeur::find($item->routeur_id)->prix * $item->volume, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par)->name );
+            $routeur = new RouteurStatsOtherResponse ($item->id, Routeur::find($item->routeur_id)->nom, Annonceur::find($item->annonceur_id), Routeur::find($item->routeur_id)->prix, $item->volume, $item->remuneration, $item->resultat, Routeur::find($item->routeur_id)->prix * $item->volume, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par)->name );
             return $routeur;
         });
         $routeurs = $routeursFull->uniqueStrict("nom");
@@ -157,7 +153,6 @@ class RouteurController extends Controller
                             'totalMarge'=>$totalMarge,
                             'data'=>new RESTResponse(200, "OK", $routeurs));
         return response()->json($response);
-        //return response()->json(new RESTPaginateResponse($plannings->currentPage(), $plannings->items(), $plannings->url(1), $plannings->lastPage(), $plannings->url($plannings->lastPage()), $plannings->nextPageUrl(), $plannings->perPage(), $plannings->previousPageUrl(), $plannings->count(), $plannings->total()));
     }
 
     /**

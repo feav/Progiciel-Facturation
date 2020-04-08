@@ -199,6 +199,7 @@ class ResultatController extends Controller
         $campagne = Campagne::find($request->input('campagne'));
         $resultat->base()->associate($base);
         $resultat->campagne()->associate($campagne);
+        $resultat->remuneration = $campagne->remuneration;
         $resultat->routeur_id = $base->routeur_id;
         $resultat->annonceur_id = $campagne->annonceur_id;
         $resultat->cree_par = Auth::user()->id;

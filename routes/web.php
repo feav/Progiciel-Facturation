@@ -40,7 +40,7 @@ Route::get('bases/parRouteur/{idRouteur}', 'BaseController@indexByRouteurId');
 Route::get('campagnes/paginate/{per_page}', 'CampagneController@indexPaginate');
 Route::get('campagnes/paginate/{per_page}/searchText/{search_text}', 'CampagneController@indexSearchPaginate');
 Route::get('campagnes/forStatistics', 'CampagneController@indexForStatistics');
-Route::get('campagnes/forStatistics/searchText/{search_text}', 'CampagneController@indexSearchForStatistics');
+Route::post('campagnes/forStatistics/searchText/{search_text}', 'CampagneController@indexSearchForStatistics');
 Route::post('campagnes/applyFilterForStatistics', 'CampagneController@applyFilterForStatistics');
 Route::get('campagnes/parAnnonceur/{idAnnonceur}', 'CampagneController@indexByAnnonceurId');
 
