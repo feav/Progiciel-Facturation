@@ -13,10 +13,11 @@
     </div>
 
     <div class="container-fluid">
-        <div class="verticalcenter">
-            <div class="panel panel-primary" style="width:100%; max-width: 400px; margin: auto">
+        <div class="verticalcenter"style="text-align: center;">
+            <img src="images/logo-noir.png" alt="" width="150px" height="50px" style="margin: 10px auto;">
+            <div class="panel panel-inverse" style="width:100%; max-width: 400px; margin: auto">
                 <div class="panel-body">
-                    <h3 class="text-center" style="margin-bottom: 25px;"><b>Logiciel de Statistiques</b><br>Connectez-vous ici !</h3>
+                    <h3 class="text-center" style="margin-bottom: 25px;">Connectez-vous ici !</h3>
                         <form id="loginForm" method="POST" class="form-horizontal">
                             {{ csrf_field() }}
                             <div class="form-group">
@@ -36,7 +37,7 @@
                                     <label><input type="checkbox" name="remember_me"> Se souvenir de moi</label>
                                 </div>
                             </div>
-                            <button id="loginFormSubmitButton" type="submit" class="btn btn-primary btn-block">Connexion</button>
+                            <button id="loginFormSubmitButton" type="submit" class="btn btn-brown btn-block">Connexion</button>
                         </form>
                 </div>
             </div>

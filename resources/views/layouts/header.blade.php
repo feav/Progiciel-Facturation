@@ -7,7 +7,9 @@
     <a id="leftmenu-trigger" tooltip-placement="right" tooltip="Basculer la Barre de Menu" ng-click="toggleLeftBar()"></a>
 
     <div class="navbar-header pull-left">
-        <a class="navbar-brand" href="/" style="color: #fff">Logiciel de Statistiques</a>
+        <a class="navbar-brand" href="/" style="color: #fff">
+            <img src="images/logo-blanc.png" alt="" width="75px" height="25px">
+        </a>
     </div>
 
     <ul class="nav navbar-nav pull-right toolbar userinfo">

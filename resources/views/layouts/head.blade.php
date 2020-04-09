@@ -1,8 +1,8 @@
     <meta charset="utf-8">
-    <title>Logiciel de Statistiques</title>
+    <title>GIDAI</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Logiciel de Statistiques">
+    <meta name="description" content="GIDAI">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link rel="icon" type="image/png" href="favicon.png">

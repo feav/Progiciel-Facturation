@@ -18,7 +18,7 @@
         <div class="verticalcenter">
             <div class="panel panel-primary" style="width:100%; max-width: 400px; margin: auto">
                 <div class="panel-body">
-                    <h3 class="text-center" style="margin-bottom: 25px;"><b>Logiciel de Statistiques</b><br>Créez un compte ici !</h3>
+                    <h3 class="text-center" style="margin-bottom: 25px;"><b>GIDAI</b><br>Créez un compte ici !</h3>
                         <form id="registerForm" method="POST" class="form-horizontal" style="margin-bottom: 0px !important;">
                             {{ csrf_field() }}
                             <div class="form-group">
