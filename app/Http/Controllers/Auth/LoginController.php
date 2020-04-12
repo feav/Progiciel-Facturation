@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\RESTResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -64,9 +65,9 @@ class LoginController extends Controller
                 ], 
                 $request->has('remember_me'))
             ) {
-            // Authentication passed...
             return redirect()->route('index');
-        }
+        }else
+            return redirect()->route('login')->withErrors(['msg', "L'adresse email et le mot de passe ne correspondent pas !"]);
     }
 
     /**
