@@ -190,6 +190,24 @@ class RouteurController extends Controller
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
+    public function updateRouteur(Request $request, $id)
+    {
+        Routeur::where('id',$id)
+                ->update([  
+                    'nom'=>$request->input('nom'),
+                    'prix'=>$request->input('prix'),
+                    'modifie_par'=>Auth::user()->id
+                ]);
+        return response()->json(new RESTResponse(200, "OK", null));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
     public function update(Request $request, $id)
     {
         Routeur::where('id',$id)
@@ -208,6 +226,22 @@ class RouteurController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
+    {
+        $routeur = Routeur::find($id);
+        if($routeur != null){
+            $routeur->delete();
+            return response()->json(new RESTResponse(200, "OK", null));
+        }else
+            return response()->json(new RESTResponse(404, "L'élément que vous souhaiter supprimer n'existe pas dans la Base de données !", null));
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function deleteRouteur($id)
     {
         $routeur = Routeur::find($id);
         if($routeur != null){

@@ -217,6 +217,30 @@ class CampagneController extends Controller
      * @param  integer $id
      * @return \Illuminate\Http\Response
      */
+    public function updateCampagne(Request $request, $id)
+    {
+        $campagne = Campagne::find($id);
+        if($campagne != null){
+            $campagne->nom = $request->input('nom');
+            $campagne->type_remuneration = $request->input('type_remuneration');
+            $campagne->remuneration = $request->input('remuneration');
+            $campagne->annonceur()->dissociate();
+            $annonceur = Annonceur::find($request->input('annonceur'));
+            $campagne->annonceur()->associate($annonceur);
+            $campagne->modifie_par = Auth::user()->id;
+            $campagne->save();
+            return response()->json(new RESTResponse(200, "OK", null));
+        }else
+            return response()->json(new RESTResponse(404, "L'élément que vous souhaitez modifier n'existe pas dans la Base de données !", null));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  integer $id
+     * @return \Illuminate\Http\Response
+     */
     public function update(Request $request, $id)
     {
         $campagne = Campagne::find($id);
@@ -232,6 +256,23 @@ class CampagneController extends Controller
             return response()->json(new RESTResponse(200, "OK", null));
         }else
             return response()->json(new RESTResponse(404, "L'élément que vous souhaitez modifier n'existe pas dans la Base de données !", null));
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  integer $id
+     * @return \Illuminate\Http\Response
+     */
+    public function deleteCampagne($id)
+    {
+        $campagne = Campagne::find($id);
+        if($campagne != null){
+            $campagne->annonceur()->dissociate();
+            $campagne->delete();
+            return response()->json(new RESTResponse(200, "OK", null));
+        }else
+        return response()->json(new RESTResponse(404, "L'élément que vous souhaiter supprimer n'existe pas dans la Base de données !", null));
     }
 
     /**

@@ -193,6 +193,28 @@ class PlanningController extends Controller
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
+    public function deletePlanning($id)
+    {
+        $planning = Planning::find($id);
+        $resultat = Resultat::find($id);
+        if($planning != null && $resultat != null){
+            $planning->base()->dissociate();
+            $planning->campagne()->dissociate();
+            $resultat->base()->dissociate();
+            $resultat->campagne()->dissociate();
+            $planning->delete();
+            $resultat->delete();
+            return response()->json(new RESTResponse(200, "OK", null));
+        }else
+        return response()->json(new RESTResponse(404, "L'élément que vous souhaiter supprimer n'existe pas dans la Base de données !", null));
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
     public function destroy($id)
     {
         $planning = Planning::find($id);

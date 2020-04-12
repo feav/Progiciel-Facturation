@@ -94,6 +94,31 @@ class UserController extends Controller
      * @param  \App\User  $user
      * @return \Illuminate\Http\Response
      */
+    public function updateUser(Request $request, $id)
+    {
+        $user = User::find($id);
+        if($user != null){
+            $user->name = $request->input('name');
+            $user->email = $request->input('email');
+            if($request->has('password'))
+                $user->password = bcrypt($request->input('password'));
+            $user->role()->dissociate();
+            $user->role()->associate(Role::find($request->input('role')));
+            $user->modifie_par = Auth::user()->id;
+            $user->save();
+            return response()->json(new RESTResponse(200, "OK", null));
+        }else
+            return response()->json(new RESTResponse(404, "L'élément que vous souhaitez modifier n'existe pas dans la Base de données !", null));
+    }
+
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\User  $user
+     * @return \Illuminate\Http\Response
+     */
     public function update(Request $request, $id)
     {
         $user = User::find($id);
@@ -114,10 +139,24 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\User  $user
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(User $user)
+    public function deleteUser($id)
+    {
+        $user=User::find($id);
+        $user->role()->dissociate();
+        $user->delete();
+        return response()->json(new RESTResponse(200, "OK", null));
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
     {
         $user=User::find($id);
         $user->role()->dissociate();

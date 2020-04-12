@@ -136,7 +136,7 @@ angular
         }, true);
 
         $scope.saveRouteur = function(data, id) {
-            $http.put('routeurs/'+id, data)
+            $http.post('routeurs/update/'+id, data)
             .success(function (resp) {
                 $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);
                 $scope.notif('Routeur', 'Routeur modifié avec succès !', 'success');
@@ -148,7 +148,7 @@ angular
         };
 
         $scope.removeRouteur = function(id) {
-            $http.delete('routeurs/'+id)
+            $http.post('routeurs/delete/'+id)
             .success(function (resp) {
                 $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);
                 $scope.notif('Routeur', 'Routeur supprimé avec succès !', 'success');
@@ -242,7 +242,7 @@ angular
         }, true);
         
         $scope.saveBase = function(data, id) {
-            $http.put('bases/'+id, data)
+            $http.post('bases/update/'+id, data)
             .success(function (resp) {
                 $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);
                 $scope.notif('Base', 'Base modifiée avec succès !', 'success');
@@ -254,7 +254,7 @@ angular
         };
         
         $scope.removeBase = function(id) {
-            $http.delete('bases/'+id)
+            $http.post('bases/delete/'+id)
             .success(function (resp) {
                 $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);
                 $scope.notif('Base', 'Base supprimée avec succès !', 'success');
@@ -347,7 +347,7 @@ angular
         }, true);
         
         $scope.saveAnnonceur = function(data, id) {
-            $http.put('annonceurs/'+id, data)
+            $http.post('annonceurs/update/'+id, data)
             .success(function (resp) {
                 $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);
                 $scope.notif('Annonceur', 'Annonceur modifié avec succès !', 'success');
@@ -359,7 +359,7 @@ angular
         };
         
         $scope.removeAnnonceur = function(id) {
-            $http.delete('annonceurs/'+id)
+            $http.post('annonceurs/delete/'+id)
             .success(function (resp) {
                 $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);
                 $scope.notif('Annonceur', 'Annonceur supprimé avec succès !', 'success');
@@ -455,7 +455,7 @@ angular
         
         $scope.saveCampagne = function(data, id) {
             if(data.annonceur)
-            $http.put('campagnes/'+id, data)
+            $http.post('campagnes/update/'+id, data)
             .success(function (resp) {
                 $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);
                 $scope.notif('Campagne', 'Campagne modifiée avec succès !', 'success');
@@ -467,7 +467,7 @@ angular
         };
         
         $scope.removeCampagne = function(id) {
-            $http.delete('campagnes/'+id)
+            $http.post('campagnes/delete/'+id)
             .success(function (resp) {
                 $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);
                 $scope.notif('Campagne', 'Campagne supprimée avec succès !', 'success');
@@ -617,7 +617,7 @@ angular
         }, true);
         
         $scope.savePlanning = function(data, id) {
-            $http.put('plannings/'+id, data)
+            $http.post('plannings/update/'+id, data)
             .success(function (resp) {
                 $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);
                 $scope.notif('Planning', 'Planning modifié avec succès !', 'success');
@@ -629,7 +629,7 @@ angular
         };
         
         $scope.removePlanning = function(id) {
-            $http.delete('plannings/'+id)
+            $http.post('plannings/delete/'+id)
             .success(function (resp) {
                 $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);
                 $scope.notif('Planning', 'Planning supprimé avec succès !', 'success');
@@ -758,7 +758,7 @@ angular
         }, true);
         
         $scope.saveResultat = function(data, id) {
-            $http.put('resultats/'+id, data)
+            $http.post('resultats/update/'+id, data)
                 .success(function (resp) {
                     $scope.validerFiltre();
                     $scope.notif('Résultat', 'Résultat modifié avec succès !', 'success');
@@ -848,7 +848,7 @@ angular
         }, true);
         
         $scope.saveUser = function(data, id) {
-            $http.put('users/'+id, data)
+            $http.post('users/update/'+id, data)
             .success(function (resp) {
                 $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);
                 $scope.notif('Utilisateur', 'Utilisateur modifié avec succès !', 'success');
@@ -860,7 +860,7 @@ angular
         };
         
         $scope.removeUser = function(id) {
-            $http.delete('users/'+id)
+            $http.post('users/delete/'+id)
             .success(function (resp) {
                 $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);
                 $scope.notif('Utilisateur', 'Utilisateur supprimé avec succès !', 'success');

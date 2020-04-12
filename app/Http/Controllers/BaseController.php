@@ -196,6 +196,28 @@ class BaseController extends Controller
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
+    public function updateBase(Request $request, $id)
+    {
+        $base = Base::find($id);
+        if($base != null){
+            $base->nom = $request->input('nom');
+            $routeur = Routeur::find($request->input('routeur'));
+            $base->routeur()->dissociate();
+            $base->routeur()->associate($routeur);
+            $base->modifie_par = Auth::user()->id;
+            $base->save();
+            return response()->json(new RESTResponse(200, "OK", null));
+        }else
+            return response()->json(new RESTResponse(404, "L'élément que vous souhaitez modifier n'existe pas dans la Base de données !", null));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
     public function update(Request $request, $id)
     {
         $base = Base::find($id);
@@ -209,6 +231,23 @@ class BaseController extends Controller
             return response()->json(new RESTResponse(200, "OK", null));
         }else
             return response()->json(new RESTResponse(404, "L'élément que vous souhaitez modifier n'existe pas dans la Base de données !", null));
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function deleteBase($id)
+    {
+        $base = Base::find($id);
+        if($base != null){
+            $base->routeur()->dissociate();
+            $base->delete();
+            return response()->json(new RESTResponse(200, "OK", null));
+        }else
+        return response()->json(new RESTResponse(404, "L'élément que vous souhaiter supprimer n'existe pas dans la Base de données !", null));
     }
 
     /**
