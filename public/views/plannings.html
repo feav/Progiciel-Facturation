@@ -158,23 +158,43 @@
                                         </span>
                                     </td>
                                     <td data-title="Routeur">
-                                        <span editable-select="planning.routeur.id" e-name="routeur" e-form="rowform" e-required  e-ng-options="r.id as r.nom for r in routeurs">
+                                        <span ng-if="planning.routeur != null" editable-select="planning.routeur.id" e-name="routeur"
+                                            e-form="rowform" e-required  e-ng-options="r.id as r.nom for r in routeurs">
                                             {{ planning.routeur.nom }}
+                                        </span>
+                                        <span ng-if="planning.routeur == null" class="text-danger" style="font-style: italic;"
+                                            editable-select="planning.routeur.id" e-name="routeur" e-form="rowform" e-required  e-ng-options="r.id as r.nom for r in routeurs">
+                                            Non-Assigné<br>ou<br>Supprimé
                                         </span>
                                     </td>
                                     <td data-title="Base">
-                                        <span editable-select="planning.base.id" e-name="base" e-form="rowform" e-required  e-ng-options="b.id as b.nom for b in bases">
+                                        <span ng-if="planning.base != null" editable-select="planning.base.id" e-name="base"
+                                            e-form="rowform" e-required  e-ng-options="b.id as b.nom for b in bases">
                                             {{ planning.base.nom }}
+                                        </span>
+                                        <span ng-if="planning.base == null" class="text-danger" style="font-style: italic;"
+                                            editable-select="planning.base.id" e-name="base" e-form="rowform" e-required  e-ng-options="b.id as b.nom for b in bases">
+                                            Non-Assignée<br>ou<br>Supprimée
                                         </span>
                                     </td>
                                     <td data-title="Annonceur">
-                                        <span editable-select="planning.annonceur.id" e-name="annonceur" e-form="rowform" e-required  e-ng-options="a.id as a.nom for a in annonceurs">
+                                        <span ng-if="planning.annonceur != null" editable-select="planning.annonceur.id" e-name="annonceur"
+                                        e-form="rowform" e-required  e-ng-options="a.id as a.nom for a in annonceurs">
                                             {{ planning.annonceur.nom }}
+                                        </span>
+                                        <span ng-if="planning.annonceur == null" class="text-danger" style="font-style: italic;"
+                                            editable-select="planning.annonceur.id" e-name="annonceur" e-form="rowform" e-required  e-ng-options="a.id as a.nom for a in annonceurs">
+                                            Non-Assigné<br>ou<br>Supprimé
                                         </span>
                                     </td>
                                     <td data-title="Campagne">
-                                        <span editable-select="planning.campagne.id" e-name="campagne" e-form="rowform" e-required  e-ng-options="c.id as c.nom for c in campagnes">
+                                        <span ng-if="planning.campagne != null" editable-select="planning.campagne.id" e-name="campagne"
+                                            e-form="rowform" e-required  e-ng-options="c.id as c.nom for c in campagnes">
                                             {{ planning.campagne.nom }}
+                                        </span>
+                                        <span ng-if="planning.campagne == null" class="text-danger" style="font-style: italic;"
+                                            editable-select="planning.campagne.id" e-name="campagne" e-form="rowform" e-required  e-ng-options="c.id as c.nom for c in campagnes">
+                                            Non-Assignée<br>ou<br>Supprimée
                                         </span>
                                     </td>
                                     <td data-title="Volume">
@@ -188,8 +208,11 @@
                                         </span>
                                     </td>
                                     <td data-title="Créé Par">
-                                        <span>
+                                        <span ng-if="planning.cree_par != null">
                                             {{ planning.cree_par }}
+                                        </span>
+                                        <span ng-if="planning.cree_par == null" class="text-danger" style="font-style: italic;">
+                                            Utilisateur Supprimé
                                         </span>
                                     </td>
                                     <td data-title="Modifié le">
@@ -198,8 +221,11 @@
                                         </span>
                                     </td>
                                     <td data-title="Modifié Par">
-                                        <span>
+                                        <span ng-if="planning.modifie_par != null">
                                             {{ planning.modifie_par }}
+                                        </span>
+                                        <span ng-if="planning.modifie_par == null" class="text-danger" style="font-style: italic;">
+                                            Utilisateur Supprimé
                                         </span>
                                     </td>
                                     <td data-title="Actions" style="white-space: nowrap">

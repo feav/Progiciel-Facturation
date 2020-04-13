@@ -132,8 +132,11 @@
                                         </span>
                                     </td>
                                     <td data-title="Créé Par">
-                                        <span>
+                                        <span ng-if="user.cree_par != null">
                                             {{ user.cree_par }}
+                                        </span>
+                                        <span ng-if="user.cree_par == null" class="text-danger" style="font-style: italic;">
+                                            Utilisateur Supprimé
                                         </span>
                                     </td>
                                     <td data-title="Modifié le">
@@ -142,8 +145,11 @@
                                         </span>
                                     </td>
                                     <td data-title="Modifié Par">
-                                        <span>
+                                        <span ng-if="user.modifie_par != null">
                                             {{ user.modifie_par }}
+                                        </span>
+                                        <span ng-if="user.modifie_par == null" class="text-danger" style="font-style: italic;">
+                                            Utilisateur Supprimé
                                         </span>
                                     </td>
                                     <td data-title="Actions" style="white-space: nowrap">

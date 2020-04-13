@@ -81,10 +81,10 @@
                                 <tr style="font-weight: bold">
                                     <th>Nom</th>
                                     <th>Routeur</th>
-                                    <th>Créé le</th>
-                                    <th>Créé par</th>
-                                    <th>Modifié le</th>
-                                    <th>Modifié par</th>
+                                    <th>Créée le</th>
+                                    <th>Créée par</th>
+                                    <th>Modifiée le</th>
+                                    <th>Modifiée par</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -96,8 +96,13 @@
                                         </span>
                                     </td>
                                     <td data-title="Routeur">
-                                        <span editable-select="base.routeur.id" e-name="routeur" e-form="rowform" e-required  e-ng-options="r.id as r.nom for r in routeurs">
+                                        <span ng-if="base.routeur != null" editable-select="base.routeur.id" e-name="routeur"
+                                            e-form="rowform" e-required  e-ng-options="r.id as r.nom for r in routeurs">
                                             {{ base.routeur.nom }}
+                                        </span>
+                                        <span ng-if="base.routeur == null" class="text-danger" style="font-style: italic;"
+                                            editable-select="base.routeur.id" e-name="routeur" e-form="rowform" e-required  e-ng-options="r.id as r.nom for r in routeurs">
+                                            Non-Assigné<br>ou<br>Supprimé
                                         </span>
                                     </td>
                                     <td data-title="Créé le">
@@ -106,8 +111,11 @@
                                         </span>
                                     </td>
                                     <td data-title="Créé Par">
-                                        <span>
+                                        <span ng-if="base.cree_par != null">
                                             {{ base.cree_par }}
+                                        </span>
+                                        <span ng-if="base.cree_par == null" class="text-danger" style="font-style: italic;">
+                                            Utilisateur Supprimé
                                         </span>
                                     </td>
                                     <td data-title="Modifié le">
@@ -116,8 +124,11 @@
                                         </span>
                                     </td>
                                     <td data-title="Modifié Par">
-                                        <span>
+                                        <span ng-if="base.modifie_par != null">
                                             {{ base.modifie_par }}
+                                        </span>
+                                        <span ng-if="base.modifie_par == null" class="text-danger" style="font-style: italic;">
+                                            Utilisateur Supprimé
                                         </span>
                                     </td>
                                     <td data-title="Actions" style="white-space: nowrap">

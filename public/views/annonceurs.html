@@ -188,8 +188,11 @@
                                         </span>
                                     </td>
                                     <td data-title="Créé Par">
-                                        <span>
+                                        <span ng-if="annonceur.cree_par != null">
                                             {{ annonceur.cree_par }}
+                                        </span>
+                                        <span ng-if="annonceur.cree_par == null" class="text-danger" style="font-style: italic;">
+                                            Utilisateur Supprimé
                                         </span>
                                     </td>
                                     <td data-title="Modifié le">
@@ -198,8 +201,11 @@
                                         </span>
                                     </td>
                                     <td data-title="Modifié Par">
-                                        <span>
+                                        <span ng-if="annonceur.modifie_par != null">
                                             {{ annonceur.modifie_par }}
+                                        </span>
+                                        <span ng-if="annonceur.modifie_par == null" class="text-danger" style="font-style: italic;">
+                                            Utilisateur Supprimé
                                         </span>
                                     </td>
                                     <td style="white-space: nowrap" data-title="Actions">

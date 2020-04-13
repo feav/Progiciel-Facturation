@@ -104,23 +104,27 @@
                                             </span>
                                         </td>
                                         <td data-title="Routeur">
-                                            <span>
-                                                {{ resultat.routeur }}
+                                            <span ng-if="resultat.routeur != null">{{ resultat.routeur }}</span>
+                                            <span ng-if="resultat.routeur == null" class="text-danger" style="font-style: italic;">
+                                                Non-Assigné<br>ou<br>Supprimé
                                             </span>
                                         </td>
                                         <td data-title="Base">
-                                            <span>
-                                                {{ resultat.base }}
+                                            <span ng-if="resultat.base != null">{{ resultat.base }}</span>
+                                            <span ng-if="resultat.base == null" class="text-danger" style="font-style: italic;">
+                                                Non-Assignée<br>ou<br>Supprimée
                                             </span>
                                         </td>
                                         <td data-title="Annonceur">
-                                            <span>
-                                                {{ resultat.annonceur }}
+                                            <span ng-if="resultat.annonceur != null">{{ resultat.annonceur }}</span>
+                                            <span ng-if="resultat.annonceur == null" class="text-danger" style="font-style: italic;">
+                                                Non-Assigné<br>ou<br>Supprimé
                                             </span>
                                         </td>
                                         <td data-title="Campagne">
-                                            <span>
-                                                {{ resultat.campagne }}
+                                            <span ng-if="resultat.campagne != null">{{ resultat.campagne }}</span>
+                                            <span ng-if="resultat.campagne == null" class="text-danger" style="font-style: italic;">
+                                                Non-Assignée<br>ou<br>Supprimée
                                             </span>
                                         </td>
                                         <td data-title="Volume">
@@ -139,8 +143,11 @@
                                             </span>
                                         </td>
                                         <td data-title="Créé Par">
-                                            <span>
+                                            <span ng-if="resultat.cree_par != null">
                                                 {{ resultat.cree_par }}
+                                            </span>
+                                            <span ng-if="resultat.cree_par == null" class="text-danger" style="font-style: italic;">
+                                                Utilisateur Supprimé
                                             </span>
                                         </td>
                                         <td data-title="Modifié le">
@@ -149,8 +156,11 @@
                                             </span>
                                         </td>
                                         <td data-title="Modifié Par">
-                                            <span>
+                                            <span ng-if="resultat.modifie_par != null">
                                                 {{ resultat.modifie_par }}
+                                            </span>
+                                            <span ng-if="resultat.modifie_par == null" class="text-danger" style="font-style: italic;">
+                                                Utilisateur Supprimé
                                             </span>
                                         </td>
                                         <td data-title="Actions" style="white-space: nowrap">
