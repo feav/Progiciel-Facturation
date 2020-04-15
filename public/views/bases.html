@@ -35,7 +35,7 @@
                     <div class="form-group row">
                         <label for="routeursPourBase" class="col-sm-3 col-form-label">Sélectionnez un Routeur *</label>
                         <div class="col-sm-9">
-                            <select ui-select2 ng-model="routeurPourBase" required id="routeursPourBase" placeholder="Sélectionnez un routeur..." name="routeur" style="width:100%">
+                            <select ui-select2 ng-model="routeurPourBase" ng-required="true" required id="routeursPourBase" placeholder="Sélectionnez un routeur..." name="routeur" style="width:100%">
                             </select>
                         </div>
                     </div>
@@ -177,6 +177,7 @@
                                 text : value.nom 
                             }));
                         });
+                        $("#routeursPourBase").prop("selectedIndex", -1);
                     }
                 },
                 error: function (res,status,err) { console.log(err) },

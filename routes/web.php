@@ -77,3 +77,8 @@ Route::resource('roles', 'RoleController', ['only' => ['index']]);
 Route::fallback(function () {
     return view('pages.errors.404');
 });
+
+Route::get('/clear-cache', function() {
+    $exitCode = Artisan::call('cache:clear');
+    return redirect()->route('index');
+});
