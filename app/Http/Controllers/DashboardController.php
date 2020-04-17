@@ -20,7 +20,7 @@ class DashboardController extends Controller
         $ca_journalier = Resultat::where('date_envoi', date('Y-m-d', strtotime('today')))
                                     ->get()
                                     ->sum(function ($resultat) {
-                                        return ($resultat->resultat * $resultat->campagne->remuneration);
+                                        return ($resultat->resultat * $resultat->remuneration);
                                     });
                                
      
@@ -32,7 +32,7 @@ class DashboardController extends Controller
                                     ])
                                     ->get()
                                     ->sum(function ($resultat) {
-                                        return ($resultat->resultat * $resultat->campagne->remuneration);
+                                        return ($resultat->resultat * $resultat->remuneration);
                                     });
 
         $ca_mensuel = Resultat::whereBetween(
@@ -43,7 +43,7 @@ class DashboardController extends Controller
                                 ])
                                 ->get()
                                 ->sum(function ($resultat) {
-                                    return ($resultat->resultat * $resultat->campagne->remuneration);
+                                    return ($resultat->resultat * $resultat->remuneration);
                                 });
         
         $ca_annuel = Resultat::whereBetween(
@@ -54,7 +54,7 @@ class DashboardController extends Controller
                                 ])
                                 ->get()
                                 ->sum(function ($resultat) {
-                                    return ($resultat->resultat * $resultat->campagne->remuneration);
+                                    return ($resultat->resultat * $resultat->remuneration);
                                 });
 
         $volume_journalier = Resultat::where('date_envoi', date('Y-m-d', strtotime('today')))
