@@ -29,7 +29,7 @@
                     <div class="form-group row">
                         <label for="annonceursPourPlanning" class="col-sm-5 col-form-label">Sélectionnez un Annonceur *</label>
                         <div class="col-sm-7">
-                            <select ui-select2  ng-model="annonceur" ng-change="annonceurChange()" required id="annonceursPourPlanning" name="annonceur" style="width:100%">
+                            <select ui-select2 ng-model="annonceur" ng-required="true" ng-change="annonceurChange()" required id="annonceursPourPlanning" name="annonceur" style="width:100%">
                                 <option ng-repeat="a in annonceurs" value="{{a.id}}">
                                     {{a.nom}}
                                 </option>
@@ -39,7 +39,7 @@
                     <div class="form-group row">
                         <label for="campagnesPourPlanning" class="col-sm-5 col-form-label">Sélectionnez une Campagne *</label>
                         <div class="col-sm-7">
-                            <select ui-select2 ng-model="campagne" required id="campagnesPourPlanning" name="campagne" style="width:100%">
+                            <select ui-select2 ng-model="campagne" ng-required="true" required id="campagnesPourPlanning" name="campagne" style="width:100%">
                                 <option ng-repeat="c in campagnesPourPlanning" value="{{c.id}}">
                                     {{c.nom}}
                                 </option>
@@ -49,7 +49,7 @@
                     <div class="form-group row">
                         <label for="routeursPourPlanning" class="col-sm-5 col-form-label">Sélectionnez un Routeur *</label>
                         <div class="col-sm-7">
-                            <select ui-select2 ng-model="routeur" ng-change="routeurChange()" required id="routeursPourPlanning" name="routeur" style="width:100%">
+                            <select ui-select2 ng-model="routeur" ng-required="true" ng-change="routeurChange()" required id="routeursPourPlanning" name="routeur" style="width:100%">
                                 <option ng-repeat="r in routeurs" value="{{r.id}}">
                                     {{r.nom}}
                                 </option>
@@ -59,7 +59,7 @@
                     <div class="form-group row">
                         <label for="basesPourPlanning" class="col-sm-5 col-form-label">Sélectionnez une Base *</label>
                         <div class="col-sm-7">
-                            <select ui-select2 ng-model="base" required id="basesPourPlanning" name="base" style="width:100%">
+                            <select ui-select2 ng-model="base" ng-required="true" required id="basesPourPlanning" name="base" style="width:100%">
                                 <option ng-repeat="b in basesPourPlanning" value="{{b.id}}">
                                     {{b.nom}}
                                 </option>
@@ -283,6 +283,10 @@
                         $('#planifierEnvoiModal').modal('hide');
                         $("#successPlanifierEnvoiNotifButton").click();
                         $('#planifierEnvoiForm')[0].reset();
+                        $("#annonceursPourPlanning").select2("val", "");
+                        $("#campagnesPourPlanning").select2("val", "");
+                        $("#routeursPourPlanning").select2("val", "");
+                        $("#basesPourPlanning").select2("val", "");
                     }else
                         $("#errorPlanifierEnvoiNotifButton").click();
                 },

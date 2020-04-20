@@ -197,7 +197,8 @@
                                 value: value.id,
                                 text : value.intitule 
                             }));
-                        });      
+                        });
+                        $("#rolesPourUser").prop("selectedIndex", -1);
                     }
                 },
                 error: function (res,status,err) { console.log(err) },
@@ -217,6 +218,7 @@
                             $('#ajouterUserModal').modal('hide');
                             $("#successUserNotifButton").click();
                             $('#ajouterUserForm')[0].reset();
+                            $("#rolesPourUser").select2("val", "");
                         }else
                             $("#errorUserNotifButton").click();
                     },

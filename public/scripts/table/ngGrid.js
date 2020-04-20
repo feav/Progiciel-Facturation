@@ -512,14 +512,14 @@ angular
         $scope.base = null;
 
         $scope.filter_data = {
-            filtre_date_debut : moment().subtract('days', 30).format('D MMMM YYYY'),
-            filtre_date_fin : moment().format('D MMMM YYYY')
+            filtre_date_debut : moment().startOf('year').format('D MMMM YYYY'),
+            filtre_date_fin : moment().endOf('month').format('D MMMM YYYY')
         };
 
         $scope.filtre_date_options = {
             opens: 'right',
-            startDate: moment().subtract('days', 30),
-            endDate: moment(),
+            startDate: moment().startOf('year'),
+            endDate: moment().endOf('month'),
             ranges: {
                 'Ce Jour': [moment(), moment()],
                 'Cette Semaine': [moment().startOf('week').add('days', 1), moment().endOf('week').add('days', 1)],
@@ -587,14 +587,15 @@ angular
                             $scope.showLoader = false;
                         });
                 } else {
-                    $http.get('plannings/paginate/'+pageSize+'?page='+page)
-                        .success(function (resp) {
-                            $scope.setPagingData(resp);
-                            $scope.showLoader = false;
-                        })
-                        .error(function (res,status,err) {
-                            $scope.showLoader = false;
-                        });
+                    // $http.get('plannings/paginate/'+pageSize+'?page='+page)
+                    //     .success(function (resp) {
+                    //         $scope.setPagingData(resp);
+                    //         $scope.showLoader = false;
+                    //     })
+                    //     .error(function (res,status,err) {
+                    //         $scope.showLoader = false;
+                    //     });
+                    $scope.validerFiltre();
                 }
             }, 100);
         };
@@ -664,8 +665,8 @@ angular
             filtre_base: null,
             filtre_annonceur: null,
             filtre_campagne: null,
-            filtre_date_debut : moment().subtract('days', 30).format('D MMMM YYYY'),
-            filtre_date_fin : moment().format('D MMMM YYYY')
+            filtre_date_debut : moment().startOf('year').format('D MMMM YYYY'),
+            filtre_date_fin : moment().endOf('month').format('D MMMM YYYY')
         };
 
         $scope.totalServerItems = 0;
@@ -677,9 +678,21 @@ angular
 
         $scope.filtre_date_options = {
             opens: 'right',
-            startDate: moment().subtract('days', 30),
-            endDate: moment()
+            startDate: moment().startOf('year'),
+            endDate: moment().endOf('month')
         };
+
+        $scope.annonceurChange = function(){
+            $http.get('campagnes/parAnnonceur/'+$scope.filter_data.filtre_annonceur).success(function (rep) {
+                $scope.campagnes = rep.body
+            });
+        }
+
+        $scope.routeurChange = function(){
+            $http.get('bases/parRouteur/'+$scope.filter_data.filtre_routeur).success(function (rep) {
+                $scope.bases = rep.body
+            });
+        }
 
         $scope.validerFiltre = function (){
             $scope.showLoader = true;
@@ -742,9 +755,9 @@ angular
         $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
 
         $http.get('routeurs').success(function (resp) { $scope.routeurs = resp.body; });
-        $http.get('bases').success(function (resp) { $scope.bases = resp.body; });
+        //$http.get('bases').success(function (resp) { $scope.bases = resp.body; });
         $http.get('annonceurs').success(function (resp) { $scope.annonceurs = resp.body; });
-        $http.get('campagnes').success(function (resp) { $scope.campagnes = resp.body; });
+        //$http.get('campagnes').success(function (resp) { $scope.campagnes = resp.body; });
         
         $scope.$watch('pagingOptions', function (newVal, oldVal) {
             if (newVal !== oldVal && newVal.currentPage !== oldVal.currentPage) {
