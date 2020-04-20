@@ -71,17 +71,17 @@
                                     </td>
                                     <td data-title="Chiffre d'Affaires">
                                         <span>
-                                            {{ elt.resultat == null ? '0 €' : (elt.resultat*elt.rem)+' €' }}
+                                            {{ elt.resultat == null ? '0 €' : (elt.resultat*elt.rem).toFixed(2)+' €' }}
                                         </span>
                                     </td>
                                     <td data-title="Prix d'achat">
                                         <span>
-                                            {{ elt.pa+' €' }}
+                                            {{ elt.pa.toFixed(2)+' €' }}
                                         </span>
                                     </td>
                                     <td data-title="Prix Marge">
                                         <span>
-                                            {{ ((elt.resultat*elt.rem) - elt.pa)+' €' }}
+                                            {{ ((elt.resultat*elt.rem) - elt.pa).toFixed(2)+' €' }}
                                         </span>
                                     </td>
                                 </tr>
