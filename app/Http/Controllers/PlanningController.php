@@ -82,7 +82,7 @@ class PlanningController extends Controller
     public function applyFilter($per_page = 15, Request $request){
         $from = date('Y-m-d', strtotime($request->filtre_date_debut));
         $to = date('Y-m-d', strtotime($request->filtre_date_fin));
-        $plannings = Planning::whereBetween('date_envoi', [$from, $to])->paginate($per_page);
+        $plannings = Planning::whereBetween('date_envoi', [$from, $to])->orderBy('date_envoi')->paginate($per_page);
         $plannings->transform(function ($item, $key) {
             $planning = new PlanningResponse($item->id, date('d-m-Y', strtotime($item->date_envoi)), $item->heure_envoi, Routeur::find($item->routeur_id), Base::find($item->base_id), Annonceur::find($item->annonceur_id), Campagne::find($item->campagne_id), $item->volume, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name);
             return $planning;
