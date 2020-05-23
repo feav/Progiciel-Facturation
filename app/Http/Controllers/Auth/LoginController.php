@@ -123,7 +123,6 @@ class LoginController extends Controller
         //         'scope' => '',
         //     ],
         // ]);
-        
         // return json_decode((string) $response->getBody(), true);
     }
 

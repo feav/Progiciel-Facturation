@@ -82,3 +82,8 @@ Route::get('/clear-cache', function() {
     $exitCode = Artisan::call('cache:clear');
     return redirect()->route('index');
 });
+
+Route::get('/passport-install', function() {
+    $exitCode = Artisan::call('passport:install');
+    return $exitCode;
+});

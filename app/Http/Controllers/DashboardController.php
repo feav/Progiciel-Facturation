@@ -17,7 +17,7 @@ class DashboardController extends Controller
      */
     public function statistics()
     {
-        $ca_journalier = Resultat::where('date_envoi', date('Y-m-d', strtotime('today')))
+        $ca_journalier = Resultat::where('date_envoi', date('Y-m-d', strtotime('yesterday')))
                                     ->get()
                                     ->sum(function ($resultat) {
                                         return ($resultat->resultat * $resultat->remuneration);
@@ -57,7 +57,7 @@ class DashboardController extends Controller
                                     return ($resultat->resultat * $resultat->remuneration);
                                 });
 
-        $volume_journalier = Resultat::where('date_envoi', date('Y-m-d', strtotime('today')))
+        $volume_journalier = Resultat::where('date_envoi', date('Y-m-d', strtotime('yesterday')))
                                         ->sum('volume');
 
         $volume_hebdomadaire = Resultat::whereBetween(
