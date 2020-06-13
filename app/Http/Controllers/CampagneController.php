@@ -68,31 +68,37 @@ class CampagneController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function indexForStatistics(){
-        //$campagnes = Resultat::paginate($per_page);
-        $campagnesFull = Resultat::all();
-
-        $totalVolume = $campagnesFull->sum("volume");
-        
-        $campagnesFull->transform(function ($item, $key) {
-            $campagne = new CampagneStatsOtherResponse($item->id, Campagne::find($item->campagne_id)->nom, Annonceur::find($item->annonceur_id), $item->remuneration, $item->resultat, Routeur::find($item->routeur_id)->prix * $item->volume, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name);
+    public function indexForStatistics($page = 1, $per_page = 15){
+        $resultats = Resultat::all()->uniqueStrict("campagne_id")->slice(($page - 1) * $per_page, $page * $per_page);
+        $resultats->transform(function ($item, $key) {
+            $campagne = new CampagneStatsOtherResponse(
+                $item->id, 
+                Campagne::find($item->campagne_id)->nom, 
+                Annonceur::find($item->annonceur_id), 
+                $item->remuneration, 
+                Resultat::where('campagne_id', $item->campagne_id)->get()->sum("resultat"), 
+                Resultat::where('campagne_id', $item->campagne_id)->get()->sum(function ($item) { return Routeur::find($item->routeur_id)->prix * $item->volume; }), 
+                Resultat::where('campagne_id', $item->campagne_id)->get()->sum("volume"), 
+                date('d-m-Y à H:i:s', strtotime($item->created_at)), 
+                User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, 
+                date('d-m-Y à H:i:s', strtotime($item->updated_at)), 
+                User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name
+            );
             return $campagne;
         });
-        $campagnes = $campagnesFull->uniqueStrict("nom");
-        $campagnes->each(function ($item, $key) use($campagnesFull) {
-            $item->resultat = $campagnesFull->where('nom', $item->nom)->sum("resultat");
-            $item->pa = $campagnesFull->where('nom', $item->nom)->sum("pa");
-        });
-        
-        $totalPA = $campagnes->sum("pa");
-        $totalCA = $campagnes->sum(function ($item) { return $item->rem * $item->resultat; });
+        $total = Resultat::all()->uniqueStrict("campagne_id")->count();
+        $totalVolume = $resultats->sum("volume");
+        $totalPA = $resultats->sum("pa");
+        $totalCA = $resultats->sum(function ($item) { return $item->rem * $item->resultat; });
         $totalMarge = $totalCA - $totalPA;
-
-        $response = array(  'totalVolume'=>$totalVolume, 
-                            'totalPA'=>$totalPA,
-                            'totalCA'=>$totalCA,
-                            'totalMarge'=>$totalMarge,
-                            'data'=>new RESTResponse(200, "OK", $campagnes));
+        $response = array(  
+            'total'=>$total,
+            'totalVolume'=>$totalVolume, 
+            'totalPA'=>$totalPA,
+            'totalCA'=>$totalCA,
+            'totalMarge'=>$totalMarge,
+            'data'=>new RESTResponse(200, "OK", $resultats)
+        );
         return response()->json($response);
     }
 	
@@ -139,32 +145,42 @@ class CampagneController extends Controller
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function applyFilterForStatistics(Request $request){
+    public function applyFilterForStatistics($page = 1, $per_page = 15, Request $request){
         $from = date('Y-m-d', strtotime($request->filtre_date_debut));
         $to = date('Y-m-d', strtotime($request->filtre_date_fin));
-        $campagnesFull = Resultat::whereBetween('date_envoi', [$from, $to])->get();
 
-        $totalVolume = $campagnesFull->sum("volume");
-        
-        $campagnesFull->transform(function ($item, $key) {
-            $campagne = new CampagneStatsOtherResponse($item->id, Campagne::find($item->campagne_id)->nom, Annonceur::find($item->annonceur_id), $item->remuneration, $item->resultat, Routeur::find($item->routeur_id)->prix * $item->volume, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name);
+        $resultats = Resultat::whereBetween('date_envoi', [$from, $to])
+                            ->get()->uniqueStrict("campagne_id")->slice(($page - 1) * $per_page, $page * $per_page);
+        $resultats->transform(function ($item, $key) use($from, $to) {
+            $campagne = new CampagneStatsOtherResponse(
+                $item->id, 
+                Campagne::find($item->campagne_id)->nom, 
+                Annonceur::find($item->annonceur_id), 
+                $item->remuneration, 
+                Resultat::whereBetween('date_envoi', [$from, $to])->where('campagne_id', $item->campagne_id)->get()->sum("resultat"), 
+                Resultat::whereBetween('date_envoi', [$from, $to])->where('campagne_id', $item->campagne_id)->get()->sum(function ($item) { return Routeur::find($item->routeur_id)->prix * $item->volume; }), 
+                Resultat::whereBetween('date_envoi', [$from, $to])->where('campagne_id', $item->campagne_id)->get()->sum("volume"), 
+                date('d-m-Y à H:i:s', strtotime($item->created_at)), 
+                User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, 
+                date('d-m-Y à H:i:s', strtotime($item->updated_at)), 
+                User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name
+            );
             return $campagne;
         });
-        $campagnes = $campagnesFull->uniqueStrict("nom");
-        $campagnes->each(function ($item, $key) use($campagnesFull) {
-            $item->resultat = $campagnesFull->where('nom', $item->nom)->sum("resultat");
-            $item->pa = $campagnesFull->where('nom', $item->nom)->sum("pa");
-        });
-        
-        $totalPA = $campagnes->sum("pa");
-        $totalCA = $campagnes->sum(function ($item) { return $item->rem * $item->resultat; });
+        $total = Resultat::whereBetween('date_envoi', [$from, $to])
+                            ->get()->uniqueStrict("campagne_id")->count();
+        $totalVolume = $resultats->sum("volume");
+        $totalPA = $resultats->sum("pa");
+        $totalCA = $resultats->sum(function ($item) { return $item->rem * $item->resultat; });
         $totalMarge = $totalCA - $totalPA;
-
-        $response = array(  'totalVolume'=>$totalVolume, 
-                            'totalPA'=>$totalPA,
-                            'totalCA'=>$totalCA,
-                            'totalMarge'=>$totalMarge,
-                            'data'=>new RESTResponse(200, "OK", $campagnes));
+        $response = array(  
+            'total'=>$total,
+            'totalVolume'=>$totalVolume, 
+            'totalPA'=>$totalPA,
+            'totalCA'=>$totalCA,
+            'totalMarge'=>$totalMarge,
+            'data'=>new RESTResponse(200, "OK", $resultats)
+        );
         return response()->json($response);
     }
     

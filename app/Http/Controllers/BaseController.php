@@ -68,34 +68,38 @@ class BaseController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function indexForStatistics(){
-        //$bases = Resultat::paginate($per_page);
-        $basesFull = Resultat::all();
-
-        $totalVolume = $basesFull->sum("volume");
-        
-        $basesFull->transform(function ($item, $key) {
-            $base = new BaseStatsOtherResponse($item->id, Base::find($item->base_id)->nom, Annonceur::find($item->annonceur_id), $item->remuneration, $item->resultat, Routeur::find($item->routeur_id)->prix * $item->volume, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name);
+    public function indexForStatistics($page = 1, $per_page = 15){
+        $resultats = Resultat::all()->uniqueStrict("base_id")->slice(($page - 1) * $per_page, $page * $per_page);
+        $resultats->transform(function ($item, $key) {
+            $base = new BaseStatsOtherResponse(
+                $item->id, 
+                Base::find($item->base_id)->nom, 
+                Annonceur::find($item->annonceur_id), 
+                $item->remuneration, 
+                Resultat::where('base_id', $item->base_id)->get()->sum("resultat"), 
+                Resultat::where('base_id', $item->base_id)->get()->sum(function ($item) { return Routeur::find($item->routeur_id)->prix * $item->volume; }), 
+                Resultat::where('base_id', $item->base_id)->get()->sum("volume"), 
+                date('d-m-Y à H:i:s', strtotime($item->created_at)), 
+                User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, 
+                date('d-m-Y à H:i:s', strtotime($item->updated_at)), 
+                User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name
+            );
             return $base;
         });
-        $bases = $basesFull->uniqueStrict("nom");
-        $bases->each(function ($item, $key) use($basesFull) {
-            $item->resultat = $basesFull->where('nom', $item->nom)->sum("resultat");
-            $item->pa = $basesFull->where('nom', $item->nom)->sum("pa");
-        });
-        
-        $totalPA = $bases->sum("pa");
-        $totalCA = $bases->sum(function ($item) { return $item->rem * $item->resultat; });
+        $total = Resultat::all()->uniqueStrict("base_id")->count();
+        $totalVolume = $resultats->sum("volume");
+        $totalPA = $resultats->sum("pa");
+        $totalCA = $resultats->sum(function ($item) { return $item->rem * $item->resultat; });
         $totalMarge = $totalCA - $totalPA;
-
-        $response = array(  'totalVolume'=>$totalVolume, 
-                            'totalPA'=>$totalPA,
-                            'totalCA'=>$totalCA,
-                            'totalMarge'=>$totalMarge,
-                            'data'=>new RESTResponse(200, "OK", $bases));
+        $response = array(  
+            'total'=>$total,
+            'totalVolume'=>$totalVolume, 
+            'totalPA'=>$totalPA,
+            'totalCA'=>$totalCA,
+            'totalMarge'=>$totalMarge,
+            'data'=>new RESTResponse(200, "OK", $resultats)
+        );
         return response()->json($response);
-        // return response()
-        //         ->json(new RESTPaginateResponse($bases->currentPage(), $bases->items(), $bases->url(1), $bases->lastPage(), $bases->url($bases->lastPage()), $bases->nextPageUrl(), $bases->perPage(), $bases->previousPageUrl(), $bases->count(), $bases->total()));
 	}
 	
 	/**
@@ -121,32 +125,42 @@ class BaseController extends Controller
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function applyFilterForStatistics(Request $request){
+    public function applyFilterForStatistics($page = 1, $per_page = 15, Request $request){
         $from = date('Y-m-d', strtotime($request->filtre_date_debut));
         $to = date('Y-m-d', strtotime($request->filtre_date_fin));
-        $basesFull = Resultat::whereBetween('date_envoi', [$from, $to])->get();
 
-        $totalVolume = $basesFull->sum("volume");
-
-        $basesFull->transform(function ($item, $key) {
-            $base = new BaseStatsOtherResponse($item->id, Base::find($item->base_id)->nom, Annonceur::find($item->annonceur_id), $item->remuneration, $item->resultat, Routeur::find($item->routeur_id)->prix * $item->volume, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name);
+        $resultats = Resultat::whereBetween('date_envoi', [$from, $to])
+                            ->get()->uniqueStrict("base_id")->slice(($page - 1) * $per_page, $page * $per_page);
+        $resultats->transform(function ($item, $key) use($from, $to) {
+            $base = new BaseStatsOtherResponse(
+                $item->id, 
+                Base::find($item->base_id)->nom, 
+                Annonceur::find($item->annonceur_id), 
+                $item->remuneration, 
+                Resultat::whereBetween('date_envoi', [$from, $to])->where('base_id', $item->base_id)->get()->sum("resultat"), 
+                Resultat::whereBetween('date_envoi', [$from, $to])->where('base_id', $item->base_id)->get()->sum(function ($item) { return Routeur::find($item->routeur_id)->prix * $item->volume; }), 
+                Resultat::whereBetween('date_envoi', [$from, $to])->where('base_id', $item->base_id)->get()->sum("volume"), 
+                date('d-m-Y à H:i:s', strtotime($item->created_at)), 
+                User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, 
+                date('d-m-Y à H:i:s', strtotime($item->updated_at)), 
+                User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name
+            );
             return $base;
         });
-        $bases = $basesFull->uniqueStrict("nom");
-        $bases->each(function ($item, $key) use($basesFull) {
-            $item->resultat = $basesFull->where('nom', $item->nom)->sum("resultat");
-            $item->pa = $basesFull->where('nom', $item->nom)->sum("pa");
-        });
-
-        $totalPA = $bases->sum("pa");
-        $totalCA = $bases->sum(function ($item) { return $item->rem * $item->resultat; });
+        $total = Resultat::whereBetween('date_envoi', [$from, $to])
+                            ->get()->uniqueStrict("base_id")->count();
+        $totalVolume = $resultats->sum("volume");
+        $totalPA = $resultats->sum("pa");
+        $totalCA = $resultats->sum(function ($item) { return $item->rem * $item->resultat; });
         $totalMarge = $totalCA - $totalPA;
-
-        $response = array(  'totalVolume'=>$totalVolume, 
-                            'totalPA'=>$totalPA,
-                            'totalCA'=>$totalCA,
-                            'totalMarge'=>$totalMarge,
-                            'data'=>new RESTResponse(200, "OK", $bases));
+        $response = array(  
+            'total'=>$total,
+            'totalVolume'=>$totalVolume, 
+            'totalPA'=>$totalPA,
+            'totalCA'=>$totalCA,
+            'totalMarge'=>$totalMarge,
+            'data'=>new RESTResponse(200, "OK", $resultats)
+        );
         return response()->json($response);
     }
 

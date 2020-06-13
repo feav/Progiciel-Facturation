@@ -16,6 +16,8 @@ class CampagneStatsOtherResponse
 
     public $pa;
 
+    public $volume;
+
     public $cree_le;
 
     public $cree_par;
@@ -29,7 +31,7 @@ class CampagneStatsOtherResponse
      *
      * @return void
      */
-    public function __construct($id, $n, $ann, $rem, $res, $p, $cl, $cp, $ml, $mp)
+    public function __construct($id, $n, $ann, $rem, $res, $p, $v, $cl, $cp, $ml, $mp)
     {
         $this->id = $id;
         $this->nom = $n;
@@ -37,6 +39,7 @@ class CampagneStatsOtherResponse
         $this->rem = $rem;
         $this->resultat = $res;
         $this->pa = $p;
+        $this->volume = $v;
         $this->cree_le = $cl;
         $this->cree_par = $cp;
         $this->modifie_le = $ml;

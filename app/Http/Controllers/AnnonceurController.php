@@ -67,34 +67,38 @@ class AnnonceurController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function indexForStatistics(){
-        //$annonceursFull = Resultat::paginate($per_page);
-        $annonceursFull = Resultat::all();
-
-        $totalVolume = $annonceursFull->sum("volume");
-        
-        $annonceursFull->transform(function ($item, $key) {
-            $annonceur = new AnnonceurStatsOtherResponse ($item->id, Annonceur::find($item->annonceur_id)->nom, Annonceur::find($item->annonceur_id), $item->remuneration, $item->resultat, Routeur::find($item->routeur_id)->prix * $item->volume, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name);
+    public function indexForStatistics($page = 1, $per_page = 15){
+        $resultats = Resultat::all()->uniqueStrict("annonceur_id")->slice(($page - 1) * $per_page, $page * $per_page);
+        $resultats->transform(function ($item, $key) {
+            $annonceur = new AnnonceurStatsOtherResponse(
+                $item->id, 
+                Annonceur::find($item->annonceur_id)->nom, 
+                Annonceur::find($item->annonceur_id), 
+                $item->remuneration, 
+                Resultat::where('annonceur_id', $item->annonceur_id)->get()->sum("resultat"), 
+                Resultat::where('annonceur_id', $item->annonceur_id)->get()->sum(function ($item) { return Routeur::find($item->routeur_id)->prix * $item->volume; }), 
+                Resultat::where('annonceur_id', $item->annonceur_id)->get()->sum("volume"), 
+                date('d-m-Y à H:i:s', strtotime($item->created_at)), 
+                User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, 
+                date('d-m-Y à H:i:s', strtotime($item->updated_at)), 
+                User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name
+            );
             return $annonceur;
         });
-        $annonceurs = $annonceursFull->uniqueStrict("nom");
-        $annonceurs->each(function ($item, $key) use($annonceursFull) {
-            $item->resultat = $annonceursFull->where('nom', $item->nom)->sum("resultat");
-            $item->pa = $annonceursFull->where('nom', $item->nom)->sum("pa");
-        });
-        
-        $totalPA = $annonceurs->sum("pa");
-        $totalCA = $annonceurs->sum(function ($item) { return $item->rem * $item->resultat; });
+        $total = Resultat::all()->uniqueStrict("annonceur_id")->count();
+        $totalVolume = $resultats->sum("volume");
+        $totalPA = $resultats->sum("pa");
+        $totalCA = $resultats->sum(function ($item) { return $item->rem * $item->resultat; });
         $totalMarge = $totalCA - $totalPA;
-
-        $response = array(  'totalVolume'=>$totalVolume, 
-                            'totalPA'=>$totalPA,
-                            'totalCA'=>$totalCA,
-                            'totalMarge'=>$totalMarge,
-                            'data'=>new RESTResponse(200, "OK", $annonceurs));
+        $response = array(  
+            'total'=>$total,
+            'totalVolume'=>$totalVolume, 
+            'totalPA'=>$totalPA,
+            'totalCA'=>$totalCA,
+            'totalMarge'=>$totalMarge,
+            'data'=>new RESTResponse(200, "OK", $resultats)
+        );
         return response()->json($response);
-        // return response()
-        //         ->json(new RESTPaginateResponse($annonceurs->currentPage(), $annonceurs->items(), $annonceurs->url(1), $annonceurs->lastPage(), $annonceurs->url($annonceurs->lastPage()), $annonceurs->nextPageUrl(), $annonceurs->perPage(), $annonceurs->previousPageUrl(), $annonceurs->count(), $annonceurs->total()));
 	}
 	
 	/**
@@ -122,32 +126,42 @@ class AnnonceurController extends Controller
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function applyFilterForStatistics(Request $request){
+    public function applyFilterForStatistics($page = 1, $per_page = 15, Request $request){
         $from = date('Y-m-d', strtotime($request->filtre_date_debut));
         $to = date('Y-m-d', strtotime($request->filtre_date_fin));
-        $annonceursFull = Resultat::whereBetween('date_envoi', [$from, $to])->get();
 
-        $totalVolume = $annonceursFull->sum("volume");
-        
-        $annonceursFull->transform(function ($item, $key) {
-            $annonceur = new AnnonceurStatsOtherResponse($item->id, Annonceur::find($item->annonceur_id)->nom, Annonceur::find($item->annonceur_id), $item->remuneration, $item->resultat, Routeur::find($item->routeur_id)->prix * $item->volume, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name);
+        $resultats = Resultat::whereBetween('date_envoi', [$from, $to])
+                            ->get()->uniqueStrict("annonceur_id")->slice(($page - 1) * $per_page, $page * $per_page);
+        $resultats->transform(function ($item, $key) use($from, $to) {
+            $annonceur = new AnnonceurStatsOtherResponse(
+                $item->id, 
+                Annonceur::find($item->annonceur_id)->nom, 
+                Annonceur::find($item->annonceur_id), 
+                $item->remuneration, 
+                Resultat::whereBetween('date_envoi', [$from, $to])->where('annonceur_id', $item->annonceur_id)->get()->sum("resultat"), 
+                Resultat::whereBetween('date_envoi', [$from, $to])->where('annonceur_id', $item->annonceur_id)->get()->sum(function ($item) { return Routeur::find($item->routeur_id)->prix * $item->volume; }), 
+                Resultat::whereBetween('date_envoi', [$from, $to])->where('annonceur_id', $item->annonceur_id)->get()->sum("volume"), 
+                date('d-m-Y à H:i:s', strtotime($item->created_at)), 
+                User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, 
+                date('d-m-Y à H:i:s', strtotime($item->updated_at)), 
+                User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name
+            );
             return $annonceur;
         });
-        $annonceurs = $annonceursFull->uniqueStrict("nom");
-        $annonceurs->each(function ($item, $key) use($annonceursFull) {
-            $item->resultat = $annonceursFull->where('nom', $item->nom)->sum("resultat");
-            $item->pa = $annonceursFull->where('nom', $item->nom)->sum("pa");
-        });
-        
-        $totalPA = $annonceurs->sum("pa");
-        $totalCA = $annonceurs->sum(function ($item) { return $item->rem * $item->resultat; });
+        $total = Resultat::whereBetween('date_envoi', [$from, $to])
+                            ->get()->uniqueStrict("annonceur_id")->count();
+        $totalVolume = $resultats->sum("volume");
+        $totalPA = $resultats->sum("pa");
+        $totalCA = $resultats->sum(function ($item) { return $item->rem * $item->resultat; });
         $totalMarge = $totalCA - $totalPA;
-
-        $response = array(  'totalVolume'=>$totalVolume, 
-                            'totalPA'=>$totalPA,
-                            'totalCA'=>$totalCA,
-                            'totalMarge'=>$totalMarge,
-                            'data'=>new RESTResponse(200, "OK", $annonceurs));
+        $response = array(  
+            'total'=>$total,
+            'totalVolume'=>$totalVolume, 
+            'totalPA'=>$totalPA,
+            'totalCA'=>$totalCA,
+            'totalMarge'=>$totalMarge,
+            'data'=>new RESTResponse(200, "OK", $resultats)
+        );
         return response()->json($response);
     }
 

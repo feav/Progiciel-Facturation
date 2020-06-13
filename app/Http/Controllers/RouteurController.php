@@ -70,33 +70,39 @@ class RouteurController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function indexForStatistics()
+    public function indexForStatistics($page = 1, $per_page = 15)
     {
-        //$routeursFull = Resultat::paginate($per_page);
-        $routeursFull = Resultat::all();
-
-        $totalVolume = $routeursFull->sum("volume");
-        
-        $routeursFull->transform(function ($item, $key) {
-            $routeur = new RouteurStatsOtherResponse ($item->id, Routeur::find($item->routeur_id)->nom, Annonceur::find($item->annonceur_id), Routeur::find($item->routeur_id)->prix, $item->volume, $item->remuneration, $item->resultat, Routeur::find($item->routeur_id)->prix * $item->volume, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name);
+        $resultats = Resultat::all()->uniqueStrict("routeur_id")->slice(($page - 1) * $per_page, $page * $per_page);
+        $resultats->transform(function ($item, $key) {
+            $routeur = new RouteurStatsOtherResponse(
+                $item->id, 
+                Routeur::find($item->routeur_id)->nom, 
+                Annonceur::find($item->annonceur_id), 
+                Routeur::find($item->routeur_id)->prix,
+                Resultat::where('routeur_id', $item->routeur_id)->get()->sum("volume"), 
+                $item->remuneration, 
+                Resultat::where('routeur_id', $item->routeur_id)->get()->sum("resultat"), 
+                Resultat::where('routeur_id', $item->routeur_id)->get()->sum(function ($item) { return Routeur::find($item->routeur_id)->prix * $item->volume; }), 
+                date('d-m-Y à H:i:s', strtotime($item->created_at)), 
+                User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, 
+                date('d-m-Y à H:i:s', strtotime($item->updated_at)), 
+                User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name
+            );
             return $routeur;
         });
-        $routeurs = $routeursFull->uniqueStrict("nom");
-        $routeurs->each(function ($item, $key) use($routeursFull) {
-            $item->volume = $routeursFull->where('nom', $item->nom)->sum("volume");
-            $item->resultat = $routeursFull->where('nom', $item->nom)->sum("resultat");
-            $item->pa = $routeursFull->where('nom', $item->nom)->sum("pa");
-        });
-        
-        $totalPA = $routeurs->sum("pa");
-        $totalCA = $routeurs->sum(function ($item) { return $item->rem * $item->resultat; });
+        $total = Resultat::all()->uniqueStrict("routeur_id")->count();
+        $totalVolume = $resultats->sum("volume");
+        $totalPA = $resultats->sum("pa");
+        $totalCA = $resultats->sum(function ($item) { return $item->rem * $item->resultat; });
         $totalMarge = $totalCA - $totalPA;
-
-        $response = array(  'totalVolume'=>$totalVolume, 
-                            'totalPA'=>$totalPA,
-                            'totalCA'=>$totalCA,
-                            'totalMarge'=>$totalMarge,
-                            'data'=>new RESTResponse(200, "OK", $routeurs));
+        $response = array(  
+            'total'=>$total,
+            'totalVolume'=>$totalVolume, 
+            'totalPA'=>$totalPA,
+            'totalCA'=>$totalCA,
+            'totalMarge'=>$totalMarge,
+            'data'=>new RESTResponse(200, "OK", $resultats)
+        );
         return response()->json($response);
     }
 
@@ -125,33 +131,43 @@ class RouteurController extends Controller
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function applyFilterForStatistics(Request $request){
+    public function applyFilterForStatistics($page = 1, $per_page = 15, Request $request){
         $from = date('Y-m-d', strtotime($request->filtre_date_debut));
         $to = date('Y-m-d', strtotime($request->filtre_date_fin));
-        $routeursFull = Resultat::whereBetween('date_envoi', [$from, $to])->get();
 
-        $totalVolume = $routeursFull->sum("volume");
-        
-        $routeursFull->transform(function ($item, $key) {
-            $routeur = new RouteurStatsOtherResponse ($item->id, Routeur::find($item->routeur_id)->nom, Annonceur::find($item->annonceur_id), Routeur::find($item->routeur_id)->prix, $item->volume, $item->remuneration, $item->resultat, Routeur::find($item->routeur_id)->prix * $item->volume, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name);
+        $resultats = Resultat::whereBetween('date_envoi', [$from, $to])
+                            ->get()->uniqueStrict("routeur_id")->slice(($page - 1) * $per_page, $page * $per_page);
+        $resultats->transform(function ($item, $key) use($from, $to) {
+            $routeur = new RouteurStatsOtherResponse(
+                $item->id, 
+                Routeur::find($item->routeur_id)->nom, 
+                Annonceur::find($item->annonceur_id), 
+                Routeur::find($item->routeur_id)->prix,
+                Resultat::whereBetween('date_envoi', [$from, $to])->where('routeur_id', $item->routeur_id)->get()->sum("volume"), 
+                $item->remuneration, 
+                Resultat::whereBetween('date_envoi', [$from, $to])->where('routeur_id', $item->routeur_id)->get()->sum("resultat"), 
+                Resultat::whereBetween('date_envoi', [$from, $to])->where('routeur_id', $item->routeur_id)->get()->sum(function ($item) { return Routeur::find($item->routeur_id)->prix * $item->volume; }), 
+                date('d-m-Y à H:i:s', strtotime($item->created_at)), 
+                User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, 
+                date('d-m-Y à H:i:s', strtotime($item->updated_at)), 
+                User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name
+            );
             return $routeur;
         });
-        $routeurs = $routeursFull->uniqueStrict("nom");
-        $routeurs->each(function ($item, $key) use($routeursFull) {
-            $item->volume = $routeursFull->where('nom', $item->nom)->sum("volume");
-            $item->resultat = $routeursFull->where('nom', $item->nom)->sum("resultat");
-            $item->pa = $routeursFull->where('nom', $item->nom)->sum("pa");
-        });
-        
-        $totalPA = $routeurs->sum("pa");
-        $totalCA = $routeurs->sum(function ($item) { return $item->rem * $item->resultat; });
+        $total = Resultat::whereBetween('date_envoi', [$from, $to])
+                            ->get()->uniqueStrict("routeur_id")->count();
+        $totalVolume = $resultats->sum("volume");
+        $totalPA = $resultats->sum("pa");
+        $totalCA = $resultats->sum(function ($item) { return $item->rem * $item->resultat; });
         $totalMarge = $totalCA - $totalPA;
-
-        $response = array(  'totalVolume'=>$totalVolume, 
-                            'totalPA'=>$totalPA,
-                            'totalCA'=>$totalCA,
-                            'totalMarge'=>$totalMarge,
-                            'data'=>new RESTResponse(200, "OK", $routeurs));
+        $response = array(  
+            'total'=>$total,
+            'totalVolume'=>$totalVolume, 
+            'totalPA'=>$totalPA,
+            'totalCA'=>$totalCA,
+            'totalMarge'=>$totalMarge,
+            'data'=>new RESTResponse(200, "OK", $resultats)
+        );
         return response()->json($response);
     }
 

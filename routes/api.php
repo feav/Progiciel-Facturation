@@ -27,34 +27,34 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('routeurs/delete/{id}', 'RouteurController@deleteRouteur');
     Route::get('routeurs/paginate/{per_page}', 'RouteurController@indexPaginate');
     Route::get('routeurs/paginate/{per_page}/searchText/{search_text}', 'RouteurController@indexSearchPaginate');
-    Route::get('routeurs/forStatistics', 'RouteurController@indexForStatistics');
+    Route::get('routeurs/forStatistics/{page?}/{per_page?}', 'RouteurController@indexForStatistics')->where(['page'=>'[0-9]+', 'per_page'=>'[0-9]+']);
     Route::get('routeurs/forStatistics/searchText/{search_text}', 'RouteurController@indexSearchForStatistics');
-    Route::post('routeurs/applyFilterForStatistics', 'RouteurController@applyFilterForStatistics');
+    Route::post('routeurs/applyFilterForStatistics/{page?}/{per_page?}', 'RouteurController@applyFilterForStatistics')->where(['page'=>'[0-9]+', 'per_page'=>'[0-9]+']);
 
     Route::post('annonceurs/update/{id}', 'AnnonceurController@updateAnnonceur');
     Route::post('annonceurs/delete/{id}', 'AnnonceurController@deleteAnnonceur');
     Route::get('annonceurs/paginate/{per_page}', 'AnnonceurController@indexPaginate');
     Route::get('annonceurs/paginate/{per_page}/searchText/{search_text}', 'AnnonceurController@indexSearchPaginate');
-    Route::get('annonceurs/forStatistics', 'AnnonceurController@indexForStatistics');
+    Route::get('annonceurs/forStatistics/{page?}/{per_page?}', 'AnnonceurController@indexForStatistics')->where(['page'=>'[0-9]+', 'per_page'=>'[0-9]+']);
     Route::get('annonceurs/forStatistics/searchText/{search_text}', 'AnnonceurController@indexSearchForStatistics');
-    Route::post('annonceurs/applyFilterForStatistics', 'AnnonceurController@applyFilterForStatistics');
+    Route::post('annonceurs/applyFilterForStatistics/{page?}/{per_page?}', 'AnnonceurController@applyFilterForStatistics')->where(['page'=>'[0-9]+', 'per_page'=>'[0-9]+']);
 
     Route::post('bases/update/{id}', 'BaseController@updateBase');
     Route::post('bases/delete/{id}', 'BaseController@deleteBase');
     Route::get('bases/paginate/{per_page}', 'BaseController@indexPaginate');
     Route::get('bases/paginate/{per_page}/searchText/{search_text}', 'BaseController@indexSearchPaginate');
-    Route::get('bases/forStatistics', 'BaseController@indexForStatistics');
+    Route::get('bases/forStatistics/{page?}/{per_page?}', 'BaseController@indexForStatistics')->where(['page'=>'[0-9]+', 'per_page'=>'[0-9]+']);
     Route::get('bases/forStatistics/searchText/{search_text}', 'BaseController@indexSearchForStatistics');
-    Route::post('bases/applyFilterForStatistics', 'BaseController@applyFilterForStatistics');
+    Route::post('bases/applyFilterForStatistics/{page?}/{per_page?}', 'BaseController@applyFilterForStatistics')->where(['page'=>'[0-9]+', 'per_page'=>'[0-9]+']);
     Route::get('bases/parRouteur/{idRouteur}', 'BaseController@indexByRouteurId');
 
     Route::post('campagnes/update/{id}', 'CampagneController@updateCampagne');
     Route::post('campagnes/delete/{id}', 'CampagneController@deleteCampagne');
     Route::get('campagnes/paginate/{per_page}', 'CampagneController@indexPaginate');
     Route::get('campagnes/paginate/{per_page}/searchText/{search_text}', 'CampagneController@indexSearchPaginate');
-    Route::get('campagnes/forStatistics', 'CampagneController@indexForStatistics');
+    Route::get('campagnes/forStatistics/{page?}/{per_page?}', 'CampagneController@indexForStatistics')->where(['page'=>'[0-9]+', 'per_page'=>'[0-9]+']);
     Route::post('campagnes/forStatistics/searchText/{search_text}', 'CampagneController@indexSearchForStatistics');
-    Route::post('campagnes/applyFilterForStatistics', 'CampagneController@applyFilterForStatistics');
+    Route::post('campagnes/applyFilterForStatistics', 'CampagneController@applyFilterForStatistics')->where(['page'=>'[0-9]+', 'per_page'=>'[0-9]+']);
     Route::get('campagnes/parAnnonceur/{idAnnonceur}', 'CampagneController@indexByAnnonceurId');
 
     Route::post('resultats/update/{id}', 'ResultatController@updateResultat');
