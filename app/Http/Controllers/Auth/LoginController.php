@@ -13,6 +13,7 @@ use Laravel\Passport\Client as OClient;
 use Illuminate\Support\Facades\Route;
 use App\User;
 use App\Role;
+use DB;
 
 class LoginController extends Controller
 {
@@ -82,12 +83,12 @@ class LoginController extends Controller
 
 
         if (Auth::attempt(['email' => $request->input('email'), 'password' => $request->input('password')])) { 
-            $oClient = OClient::where('password_client', 1)->first();
+            $oClient = DB::table('oauth_clients')->where('password_client', 1)->first();
             $data = [
                 'username' => $request->input('email'),
                 'password' => $request->input('password'),
-                'client_id' => '4',
-                'client_secret' => 'kde9SZ7Dc08NUpB6vZHR2b1HAkhE8xwiQmyPG8VL',
+                'client_id' => $oClient->id,
+                'client_secret' => $oClient->secret,
                 'grant_type' => 'password',
             ];
             $request = app('request')->create('/oauth/token', 'POST', $data);
@@ -102,6 +103,8 @@ class LoginController extends Controller
             return response()->json(['code' => 401], 200);
         }
 
+
+        // return response()->json(DB::table('oauth_clients')->where('password_client', 1)->first(), 200);
 
         // if (auth()->attempt(['email' => $request->input('email'), 'password' => $request->input('password')])) {
         //     $token = auth()->user()->createToken('access_token')->accessToken;

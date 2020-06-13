@@ -69,7 +69,7 @@ class CampagneController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function indexForStatistics($page = 1, $per_page = 15){
-        $resultats = Resultat::all()->uniqueStrict("campagne_id")->slice(($page - 1) * $per_page, $page * $per_page);
+        $resultats = Resultat::all()->uniqueStrict("campagne_id")->slice(($page - 1) * $per_page, $per_page);
         $resultats->transform(function ($item, $key) {
             $campagne = new CampagneStatsOtherResponse(
                 $item->id, 
@@ -150,7 +150,7 @@ class CampagneController extends Controller
         $to = date('Y-m-d', strtotime($request->filtre_date_fin));
 
         $resultats = Resultat::whereBetween('date_envoi', [$from, $to])
-                            ->get()->uniqueStrict("campagne_id")->slice(($page - 1) * $per_page, $page * $per_page);
+                            ->get()->uniqueStrict("campagne_id")->slice(($page - 1) * $per_page, $per_page);
         $resultats->transform(function ($item, $key) use($from, $to) {
             $campagne = new CampagneStatsOtherResponse(
                 $item->id, 

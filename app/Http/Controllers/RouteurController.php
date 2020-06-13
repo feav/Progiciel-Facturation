@@ -72,7 +72,7 @@ class RouteurController extends Controller
      */
     public function indexForStatistics($page = 1, $per_page = 15)
     {
-        $resultats = Resultat::all()->uniqueStrict("routeur_id")->slice(($page - 1) * $per_page, $page * $per_page);
+        $resultats = Resultat::all()->uniqueStrict("routeur_id")->slice(($page - 1) * $per_page, $per_page);
         $resultats->transform(function ($item, $key) {
             $routeur = new RouteurStatsOtherResponse(
                 $item->id, 
@@ -136,7 +136,7 @@ class RouteurController extends Controller
         $to = date('Y-m-d', strtotime($request->filtre_date_fin));
 
         $resultats = Resultat::whereBetween('date_envoi', [$from, $to])
-                            ->get()->uniqueStrict("routeur_id")->slice(($page - 1) * $per_page, $page * $per_page);
+                            ->get()->uniqueStrict("routeur_id")->slice(($page - 1) * $per_page, $per_page);
         $resultats->transform(function ($item, $key) use($from, $to) {
             $routeur = new RouteurStatsOtherResponse(
                 $item->id, 

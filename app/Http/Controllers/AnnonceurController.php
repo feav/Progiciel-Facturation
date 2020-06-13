@@ -68,7 +68,7 @@ class AnnonceurController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function indexForStatistics($page = 1, $per_page = 15){
-        $resultats = Resultat::all()->uniqueStrict("annonceur_id")->slice(($page - 1) * $per_page, $page * $per_page);
+        $resultats = Resultat::all()->uniqueStrict("annonceur_id")->slice(($page - 1) * $per_page, $per_page);
         $resultats->transform(function ($item, $key) {
             $annonceur = new AnnonceurStatsOtherResponse(
                 $item->id, 
@@ -131,7 +131,7 @@ class AnnonceurController extends Controller
         $to = date('Y-m-d', strtotime($request->filtre_date_fin));
 
         $resultats = Resultat::whereBetween('date_envoi', [$from, $to])
-                            ->get()->uniqueStrict("annonceur_id")->slice(($page - 1) * $per_page, $page * $per_page);
+                            ->get()->uniqueStrict("annonceur_id")->slice(($page - 1) * $per_page, $per_page);
         $resultats->transform(function ($item, $key) use($from, $to) {
             $annonceur = new AnnonceurStatsOtherResponse(
                 $item->id, 
