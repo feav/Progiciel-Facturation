@@ -14,11 +14,9 @@ class RouteurStatsOtherResponse
 
     public $volume;
      
-    public $rem;
-
-    public $resultat;
-
     public $pa;
+
+    public $ca;
 
     public $cree_le;
 
@@ -33,16 +31,15 @@ class RouteurStatsOtherResponse
      *
      * @return void
      */
-    public function __construct($id, $n, $ann, $pr, $v, $rem, $res, $pa, $cl, $cp, $ml, $mp)
+    public function __construct($id, $n, $ann, $pr, $v, $pa, $c, $cl, $cp, $ml, $mp)
     {
         $this->id = $id;
         $this->nom = $n;
         $this->annonceur = $ann;
         $this->prix = $pr;
         $this->volume = $v;
-        $this->rem = $rem;
-        $this->resultat = $res;
         $this->pa = $pa;
+        $this->ca = $c;
         $this->cree_le = $cl;
         $this->cree_par = $cp;
         $this->modifie_le = $ml;
