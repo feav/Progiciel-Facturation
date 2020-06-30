@@ -150,7 +150,7 @@ class PlanningController extends Controller
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function updatePlanning(Request $request, $id)
     {
         $planning = Planning::find($id);
         $resultat = Resultat::find($id);
@@ -158,12 +158,16 @@ class PlanningController extends Controller
             $planning->volume = $request->input('volume');
             $planning->date_envoi = $request->input('date_envoi');
             $planning->heure_envoi = $request->input('heure_envoi');
+
             $planning->base()->dissociate();
             $planning->campagne()->dissociate();
+
             $base = Base::find($request->input('base'));
             $campagne = Campagne::find($request->input('campagne'));
+
             $planning->base()->associate($base);
             $planning->campagne()->associate($campagne);
+
             $planning->routeur_id = $base->routeur_id;
             $planning->annonceur_id = $campagne->annonceur_id;
             $planning->modifie_par = Auth::user()->id;
@@ -172,14 +176,18 @@ class PlanningController extends Controller
             $resultat->volume = $request->input('volume');
             $resultat->date_envoi = $request->input('date_envoi');
             $resultat->heure_envoi = $request->input('heure_envoi');
+
             $resultat->base()->dissociate();
             $resultat->campagne()->dissociate();
+
             $resultat->base()->associate($base);
             $resultat->campagne()->associate($campagne);
+
             $resultat->routeur_id = $base->routeur_id;
             $resultat->annonceur_id = $campagne->annonceur_id;
             $resultat->modifie_par = Auth::user()->id;
             $resultat->remuneration = $campagne->remuneration;
+
             $planning->save();
             $resultat->save();
             return response()->json(new RESTResponse(200, "OK", null));

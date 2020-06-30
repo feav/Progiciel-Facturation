@@ -6,13 +6,13 @@ class CampagneStatsOtherResponse
 {
     public $id;
      
-    public $campagne;
-
-    public $annonceur;
+    public $nom;
      
     public $pa;
 
     public $ca;
+
+    public $pm;
 
     public $volume;
 
@@ -29,13 +29,13 @@ class CampagneStatsOtherResponse
      *
      * @return void
      */
-    public function __construct($id, $camp, $ann, $p, $c, $v, $cl, $cp, $ml, $mp)
+    public function __construct($id, $camp, $p, $c, $pm, $v, $cl, $cp, $ml, $mp)
     {
         $this->id = $id;
-        $this->campagne = $camp;
-        $this->annonceur = $ann;
+        $this->nom = $camp;
         $this->pa = $p;
         $this->ca = $c;
+        $this->pm = $pm;
         $this->volume = $v;
         $this->cree_le = $cl;
         $this->cree_par = $cp;

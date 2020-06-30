@@ -84,11 +84,11 @@ class BaseController extends Controller
 
         $resultats->transform(function ($item, $key) {
             $base = new BaseStatsOtherResponse(
-                $item->id, 
-                Base::find($item->base_id), 
-                Annonceur::find($item->annonceur_id), 
+                $item->base_id, 
+                Base::find($item->base_id)->nom,
                 Resultat::where('base_id', $item->base_id)->get()->sum(function ($item) { return Routeur::find($item->routeur_id)->prix * $item->volume; }), 
                 Resultat::where('base_id', $item->base_id)->get()->sum(function ($item) { return $item->remuneration * $item->resultat; }),
+                0,
                 Resultat::where('base_id', $item->base_id)->get()->sum("volume"), 
                 date('d-m-Y à H:i:s', strtotime($item->created_at)), 
                 User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, 
@@ -97,11 +97,12 @@ class BaseController extends Controller
             );
             return $base;
         });
+        $resultats->each(function ($item, $key) { $item->pm = $item->ca - $item->pa; });
         
         $totalVolumePartiel = $resultats->sum("volume");
         $totalPAPartiel = $resultats->sum("pa");
         $totalCAPartiel = $resultats->sum("ca");
-        $totalMargePartiel = $totalCAPartiel - $totalPAPartiel;
+        $totalMargePartiel = $resultats->sum("pm");
         
         $response = array(  
             'total'=>$total,
@@ -132,14 +133,15 @@ class BaseController extends Controller
 
         $resultats->transform(function ($item, $key) use ($base_id) {
             $annonceur = new AnnonceurStatsOtherResponse(
-                $item->id, 
-                Annonceur::find($item->annonceur_id), 
+                $item->annonceur_id, 
+                Annonceur::find($item->annonceur_id)->nom,
                 Resultat::where('base_id', $base_id)
                         ->where('annonceur_id', $item->annonceur_id)->get()
                         ->sum(function ($item) { return Routeur::find($item->routeur_id)->prix * $item->volume; }), 
                 Resultat::where('base_id', $base_id)
                         ->where('annonceur_id', $item->annonceur_id)->get()
                         ->sum(function ($item) { return $item->remuneration * $item->resultat; }),
+                0,
                 Resultat::where('base_id', $base_id)
                         ->where('annonceur_id', $item->annonceur_id)->get()->sum("volume"), 
                 date('d-m-Y à H:i:s', strtotime($item->created_at)), 
@@ -149,11 +151,12 @@ class BaseController extends Controller
             );
             return $annonceur;
         });
+        $resultats->each(function ($item, $key) { $item->pm = $item->ca - $item->pa; });
         
         $totalVolumePartiel = $resultats->sum("volume");
         $totalPAPartiel = $resultats->sum("pa");
         $totalCAPartiel = $resultats->sum("ca");
-        $totalMargePartiel = $totalCAPartiel - $totalPAPartiel;
+        $totalMargePartiel = $resultats->sum("pm");
 
         $response = array(  
             'total'=>$total,
@@ -184,9 +187,8 @@ class BaseController extends Controller
 
         $resultats->transform(function ($item, $key) use ($base_id, $annonceur_id) {
             $campagne = new CampagneStatsOtherResponse(
-                $item->id, 
-                Campagne::find($item->campagne_id), 
-                Annonceur::find($item->annonceur_id), 
+                $item->campagne_id, 
+                Campagne::find($item->campagne_id)->nom,
                 Resultat::where('base_id', $base_id)
                         ->where('annonceur_id', $annonceur_id)
                         ->where('campagne_id', $item->campagne_id)->get()
@@ -195,6 +197,7 @@ class BaseController extends Controller
                         ->where('annonceur_id', $annonceur_id)
                         ->where('campagne_id', $item->campagne_id)->get()
                         ->sum(function ($item) { return $item->remuneration * $item->resultat; }),
+                0,
                 Resultat::where('base_id', $base_id)
                         ->where('annonceur_id', $annonceur_id)
                         ->where('campagne_id', $item->campagne_id)->get()->sum("volume"), 
@@ -205,11 +208,12 @@ class BaseController extends Controller
             );
             return $campagne;
         });
+        $resultats->each(function ($item, $key) { $item->pm = $item->ca - $item->pa; });
         
         $totalVolumePartiel = $resultats->sum("volume");
         $totalPAPartiel = $resultats->sum("pa");
         $totalCAPartiel = $resultats->sum("ca");
-        $totalMargePartiel = $totalCAPartiel - $totalPAPartiel;
+        $totalMargePartiel = $resultats->sum("pm");
 
         $response = array(  
             'total'=>$total,
@@ -242,9 +246,8 @@ class BaseController extends Controller
 
         $resultats->transform(function ($item, $key) use ($base_id, $annonceur_id, $campagne_id) {
             $routeur = new RouteurStatsOtherResponse(
-                $item->id, 
-                Routeur::find($item->routeur_id), 
-                Annonceur::find($item->annonceur_id), 
+                $item->routeur_id, 
+                Routeur::find($item->routeur_id)->nom,
                 Routeur::find($item->routeur_id)->prix,
                 Resultat::where('base_id', $base_id)
                         ->where('annonceur_id', $annonceur_id)
@@ -260,6 +263,7 @@ class BaseController extends Controller
                         ->where('campagne_id', $campagne_id)
                         ->where('routeur_id', $item->routeur_id)->get()
                         ->sum(function ($item) { return $item->remuneration * $item->resultat; }),
+                0,
                 date('d-m-Y à H:i:s', strtotime($item->created_at)), 
                 User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, 
                 date('d-m-Y à H:i:s', strtotime($item->updated_at)), 
@@ -267,11 +271,12 @@ class BaseController extends Controller
             );
             return $routeur;
         });
+        $resultats->each(function ($item, $key) { $item->pm = $item->ca - $item->pa; });
         
         $totalVolumePartiel = $resultats->sum("volume");
         $totalPAPartiel = $resultats->sum("pa");
         $totalCAPartiel = $resultats->sum("ca");
-        $totalMargePartiel = $totalCAPartiel - $totalPAPartiel;
+        $totalMargePartiel = $resultats->sum("pm");
 
         $response = array(  
             'total'=>$total,
@@ -327,11 +332,11 @@ class BaseController extends Controller
 
         $resultats->transform(function ($item, $key) use($from, $to) {
             $base = new BaseStatsOtherResponse(
-                $item->id, 
-                Base::find($item->base_id), 
-                Annonceur::find($item->annonceur_id), 
+                $item->base_id, 
+                Base::find($item->base_id)->nom,
                 Resultat::whereBetween('date_envoi', [$from, $to])->where('base_id', $item->base_id)->get()->sum(function ($item) { return Routeur::find($item->routeur_id)->prix * $item->volume; }), 
                 Resultat::whereBetween('date_envoi', [$from, $to])->where('base_id', $item->base_id)->get()->sum(function ($item) { return $item->remuneration * $item->resultat; }),
+                0,
                 Resultat::whereBetween('date_envoi', [$from, $to])->where('base_id', $item->base_id)->get()->sum("volume"), 
                 date('d-m-Y à H:i:s', strtotime($item->created_at)), 
                 User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, 
@@ -340,11 +345,12 @@ class BaseController extends Controller
             );
             return $base;
         });
+        $resultats->each(function ($item, $key) { $item->pm = $item->ca - $item->pa; });
         
         $totalVolumePartiel = $resultats->sum("volume");
         $totalPAPartiel = $resultats->sum("pa");
         $totalCAPartiel = $resultats->sum("ca");
-        $totalMargePartiel = $totalCAPartiel - $totalPAPartiel;
+        $totalMargePartiel = $resultats->sum("pm");
 
         $response = array(  
             'total'=>$total,
@@ -378,8 +384,8 @@ class BaseController extends Controller
 
         $resultats->transform(function ($item, $key) use($from, $to, $base_id) {
             $annonceur = new AnnonceurStatsOtherResponse(
-                $item->id, 
-                Annonceur::find($item->annonceur_id), 
+                $item->annonceur_id, 
+                Annonceur::find($item->annonceur_id)->nom,
                 Resultat::whereBetween('date_envoi', [$from, $to])
                         ->where('base_id', $base_id)
                         ->where('annonceur_id', $item->annonceur_id)->get()
@@ -388,6 +394,7 @@ class BaseController extends Controller
                         ->where('base_id', $base_id)
                         ->where('annonceur_id', $item->annonceur_id)->get()
                         ->sum(function ($item) { return $item->remuneration * $item->resultat; }),
+                0,
                 Resultat::whereBetween('date_envoi', [$from, $to])
                         ->where('base_id', $base_id)
                         ->where('annonceur_id', $item->annonceur_id)->get()->sum("volume"), 
@@ -398,11 +405,12 @@ class BaseController extends Controller
             );
             return $annonceur;
         });
+        $resultats->each(function ($item, $key) { $item->pm = $item->ca - $item->pa; });
         
         $totalVolumePartiel = $resultats->sum("volume");
         $totalPAPartiel = $resultats->sum("pa");
         $totalCAPartiel = $resultats->sum("ca");
-        $totalMargePartiel = $totalCAPartiel - $totalPAPartiel;
+        $totalMargePartiel = $resultats->sum("pm");
 
         $response = array(  
             'total'=>$total,
@@ -437,9 +445,8 @@ class BaseController extends Controller
 
         $resultats->transform(function ($item, $key) use($from, $to, $base_id, $annonceur_id) {
             $campagne = new CampagneStatsOtherResponse(
-                $item->id, 
-                Campagne::find($item->campagne_id), 
-                Annonceur::find($item->annonceur_id), 
+                $item->campagne_id, 
+                Campagne::find($item->campagne_id)->nom,
                 Resultat::whereBetween('date_envoi', [$from, $to])
                         ->where('base_id', $base_id)
                         ->where('annonceur_id', $annonceur_id)
@@ -450,6 +457,7 @@ class BaseController extends Controller
                         ->where('annonceur_id', $annonceur_id)
                         ->where('campagne_id', $item->campagne_id)->get()
                         ->sum(function ($item) { return $item->remuneration * $item->resultat; }),
+                0,
                 Resultat::whereBetween('date_envoi', [$from, $to])
                         ->where('base_id', $base_id)
                         ->where('annonceur_id', $annonceur_id)
@@ -465,7 +473,7 @@ class BaseController extends Controller
         $totalVolumePartiel = $resultats->sum("volume");
         $totalPAPartiel = $resultats->sum("pa");
         $totalCAPartiel = $resultats->sum("ca");
-        $totalMargePartiel = $totalCAPartiel - $totalPAPartiel;
+        $totalMargePartiel = $resultats->sum("pm");
 
         $response = array(  
             'total'=>$total,
@@ -502,9 +510,8 @@ class BaseController extends Controller
 
         $resultats->transform(function ($item, $key) use($from, $to, $base_id, $annonceur_id, $campagne_id) {
             $routeur = new RouteurStatsOtherResponse(
-                $item->id, 
-                Routeur::find($item->routeur_id), 
-                Annonceur::find($item->annonceur_id), 
+                $item->routeur_id, 
+                Routeur::find($item->routeur_id)->nom,
                 Routeur::find($item->routeur_id)->prix,
                 Resultat::whereBetween('date_envoi', [$from, $to])
                         ->where('base_id', $base_id)
@@ -523,6 +530,7 @@ class BaseController extends Controller
                         ->where('campagne_id', $campagne_id)
                         ->where('routeur_id', $item->routeur_id)->get()
                         ->sum(function ($item) { return $item->remuneration * $item->resultat; }),
+                0,
                 date('d-m-Y à H:i:s', strtotime($item->created_at)), 
                 User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, 
                 date('d-m-Y à H:i:s', strtotime($item->updated_at)), 
@@ -530,11 +538,12 @@ class BaseController extends Controller
             );
             return $routeur;
         });
+        $resultats->each(function ($item, $key) { $item->pm = $item->ca - $item->pa; });
         
         $totalVolumePartiel = $resultats->sum("volume");
         $totalPAPartiel = $resultats->sum("pa");
         $totalCAPartiel = $resultats->sum("ca");
-        $totalMargePartiel = $totalCAPartiel - $totalPAPartiel;
+        $totalMargePartiel = $resultats->sum("pm");
 
         $response = array(  
             'total'=>$total,

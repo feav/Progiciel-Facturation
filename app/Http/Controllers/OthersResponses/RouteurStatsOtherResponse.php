@@ -6,9 +6,7 @@ class RouteurStatsOtherResponse
 {
     public $id;
      
-    public $routeur;
-
-    public $annonceur;
+    public $nom;
 
     public $prix;
 
@@ -17,6 +15,8 @@ class RouteurStatsOtherResponse
     public $pa;
 
     public $ca;
+
+    public $pm;
 
     public $cree_le;
 
@@ -31,15 +31,15 @@ class RouteurStatsOtherResponse
      *
      * @return void
      */
-    public function __construct($id, $r, $ann, $pr, $v, $pa, $c, $cl, $cp, $ml, $mp)
+    public function __construct($id, $r, $pr, $v, $pa, $c, $pm, $cl, $cp, $ml, $mp)
     {
         $this->id = $id;
-        $this->routeur = $r;
-        $this->annonceur = $ann;
+        $this->nom = $r;
         $this->prix = $pr;
         $this->volume = $v;
         $this->pa = $pa;
         $this->ca = $c;
+        $this->pm = $pm;
         $this->cree_le = $cl;
         $this->cree_par = $cp;
         $this->modifie_le = $ml;

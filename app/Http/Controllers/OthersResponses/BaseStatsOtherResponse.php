@@ -6,13 +6,13 @@ class BaseStatsOtherResponse
 {
     public $id;
      
-    public $base;
-
-    public $annonceur;
+    public $nom;
      
     public $pa;
 
     public $ca;
+
+    public $pm;
 
     public $volume;
 
@@ -29,13 +29,13 @@ class BaseStatsOtherResponse
      *
      * @return void
      */
-    public function __construct($id, $b, $ann, $p, $c, $v, $cl, $cp, $ml, $mp)
+    public function __construct($id, $b, $p, $c, $pm, $v, $cl, $cp, $ml, $mp)
     {
         $this->id = $id;
-        $this->base = $b;
-        $this->annonceur = $ann;
+        $this->nom = $b;
         $this->pa = $p;
         $this->ca = $c;
+        $this->pm = $pm;
         $this->volume = $v;
         $this->cree_le = $cl;
         $this->cree_par = $cp;

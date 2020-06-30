@@ -87,6 +87,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('resultats/paginate/{per_page}/searchText/{search_text}', 'ResultatController@indexSearchPaginate');
     Route::post('resultats/applyFilter/{per_page}', 'ResultatController@applyFilter');
 
+    Route::post('plannings/update/{id}', 'PlanningController@updatePlanning');
     Route::post('plannings/delete/{id}', 'PlanningController@deletePlanning');
     Route::get('plannings/paginate/{per_page}', 'PlanningController@indexPaginate');
     Route::get('plannings/paginate/{per_page}/searchText/{search_text}', 'PlanningController@indexSearchPaginate');
