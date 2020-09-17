@@ -35,7 +35,7 @@ class UserController extends Controller
     public function indexPaginate($per_page = 15){
         $users = User::paginate($per_page);
         $users->transform(function ($item, $key) {
-            $user = new UserResponse($item->id, $item->name, $item->email, $item->password, Role::find($item->role_id), date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name);
+            $user = new UserResponse($item->id, $item->name, $item->email, $item->password, Role::find($item->role_id)->intitule, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name);
             return $user;
         });
         return response()

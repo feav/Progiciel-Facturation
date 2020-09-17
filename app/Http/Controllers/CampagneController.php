@@ -44,7 +44,7 @@ class CampagneController extends Controller
     public function indexPaginate($per_page = 15){
         $campagnes = Campagne::paginate($per_page);
         $campagnes->transform(function ($item, $key) {
-            $campagne = new CampagneOtherResponse ($item->id, $item->nom, $item->type_remuneration, $item->remuneration, Annonceur::find($item->annonceur_id), date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name);
+            $campagne = new CampagneOtherResponse ($item->id, $item->nom, $item->type_remuneration, $item->remuneration, Annonceur::find($item->annonceur_id)->nom, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name);
             return $campagne;
         });
         return response()
