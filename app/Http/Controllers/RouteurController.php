@@ -28,9 +28,9 @@ class RouteurController extends Controller
      */
     public function index()
     {
-        $routeurs = Routeur::all();
+        $routeurs = Routeur::where('deleted', 0)->get();
         $routeurs->transform(function ($item, $key) {
-            $routeur = new RouteurOtherResponse ($item->id, $item->nom, $item->prix, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name);
+            $routeur = new RouteurOtherResponse ($item->id, $item->nom, $item->prix, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name, $item->deleted);
             return $routeur;
         });
         return response()->json(new RESTResponse(200, "OK", $routeurs));
@@ -44,9 +44,9 @@ class RouteurController extends Controller
      */
     public function indexPaginate($per_page = 15)
     {
-        $routeurs = Routeur::paginate($per_page);
+        $routeurs = Routeur::where('deleted', 0)->paginate($per_page);
         $routeurs->transform(function ($item, $key) {
-            $routeur = new RouteurOtherResponse ($item->id, $item->nom, $item->prix, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name);
+            $routeur = new RouteurOtherResponse ($item->id, $item->nom, $item->prix, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name, $item->deleted);
             return $routeur;
         });
         return response()
@@ -60,9 +60,11 @@ class RouteurController extends Controller
      */
     public function indexSearchPaginate($per_page = 15, $search_text="")
     {
-        $routeurs = Routeur::where('nom', 'like', '%' . $search_text . '%')->paginate($per_page);
+        $routeurs = Routeur::where('nom', 'like', '%' . $search_text . '%')
+                                ->where('deleted', 0)
+                                ->paginate($per_page);
         $routeurs->transform(function ($item, $key) {
-            $routeur = new RouteurOtherResponse ($item->id, $item->nom, $item->prix, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name);
+            $routeur = new RouteurOtherResponse ($item->id, $item->nom, $item->prix, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name, $item->deleted);
             return $routeur;
         });
         return response()
@@ -655,7 +657,9 @@ class RouteurController extends Controller
     {
         $routeur = Routeur::find($id);
         if($routeur != null){
-            $routeur->delete();
+            // $routeur->delete();
+            $routeur->deleted = true;
+            $routeur->save();
             return response()->json(new RESTResponse(200, "OK", null));
         }else
             return response()->json(new RESTResponse(404, "L'élément que vous souhaiter supprimer n'existe pas dans la Base de données !", null));

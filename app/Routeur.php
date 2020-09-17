@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Routeur extends Model
 {
-    protected $fillable = ['nom', 'prix', 'cree_par', 'modifie_par'];
+    protected $fillable = ['nom', 'prix', 'cree_par', 'modifie_par', 'deleted'];
 
     public function bases()
     {

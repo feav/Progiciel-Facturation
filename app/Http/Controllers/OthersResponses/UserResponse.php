@@ -24,12 +24,14 @@ class UserResponse
 
     public $modifie_par;
 
+    public $deleted;
+
     /**
      * Create a new CampagneOtherResponse instance.
      *
      * @return void
      */
-    public function __construct($id, $n, $em, $pw, $rol, $nrol, $cl, $cp, $ml, $mp)
+    public function __construct($id, $n, $em, $pw, $rol, $nrol, $cl, $cp, $ml, $mp, $del)
     {
         $this->id = $id;
         $this->nom = $n;
@@ -41,5 +43,6 @@ class UserResponse
         $this->cree_par = $cp;
         $this->modifie_le = $ml;
         $this->modifie_par = $mp;
+        $this->deleted = $del;
     }
 }

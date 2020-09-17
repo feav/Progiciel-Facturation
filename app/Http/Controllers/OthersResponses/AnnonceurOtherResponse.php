@@ -32,12 +32,14 @@ class AnnonceurOtherResponse
 
     public $modifie_par;
 
+    public $deleted;
+
     /**
      * Create a new AnnonceurOtherResponse instance.
      *
      * @return void
      */
-    public function __construct($id, $n, $url, $lgn, $pwd, $af, $ec, $ed, $ep, $dp, $cl, $cp, $ml, $mp)
+    public function __construct($id, $n, $url, $lgn, $pwd, $af, $ec, $ed, $ep, $dp, $cl, $cp, $ml, $mp, $del)
     {
         $this->id = $id;
         $this->nom = $n;
@@ -53,5 +55,6 @@ class AnnonceurOtherResponse
         $this->cree_par = $cp;
         $this->modifie_le = $ml;
         $this->modifie_par = $mp;
+        $this->deleted = $del;
     }
 }

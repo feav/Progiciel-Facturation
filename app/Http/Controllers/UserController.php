@@ -19,9 +19,9 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::all();
+        $users = User::where('deleted', 0)->get();
         $users->transform(function ($item, $key) {
-            $user = new UserResponse($item->id, $item->name, $item->email, $item->password, Role::find($item->role_id), Role::find($item->role_id)->intitule, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name);
+            $user = new UserResponse($item->id, $item->name, $item->email, $item->password, Role::find($item->role_id), Role::find($item->role_id)->intitule, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name, $item->deleted);
             return $user;
         });
         return response()->json($users);
@@ -33,9 +33,9 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function indexPaginate($per_page = 15){
-        $users = User::paginate($per_page);
+        $users = User::where('deleted', 0)->paginate($per_page);
         $users->transform(function ($item, $key) {
-            $user = new UserResponse($item->id, $item->name, $item->email, $item->password, Role::find($item->role_id), Role::find($item->role_id)->intitule, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name);
+            $user = new UserResponse($item->id, $item->name, $item->email, $item->password, Role::find($item->role_id), Role::find($item->role_id)->intitule, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name, $item->deleted);
             return $user;
         });
         return response()
@@ -48,9 +48,11 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function indexSearchPaginate($per_page = 15, $search_text=""){
-        $users = User::where('name', 'like', '%' . $search_text . '%')->paginate($per_page);
+        $users = User::where('name', 'like', '%' . $search_text . '%')
+                        ->where('deleted', 0)
+                        ->paginate($per_page);
         $users->transform(function ($item, $key) {
-            $user = new UserResponse($item->id, $item->name, $item->email, $item->password, Role::find($item->role_id), Role::find($item->role_id)->intitule, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name);
+            $user = new UserResponse($item->id, $item->name, $item->email, $item->password, Role::find($item->role_id), Role::find($item->role_id)->intitule, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name, $item->deleted);
             return $user;
         });
         return response()
@@ -97,7 +99,7 @@ class UserController extends Controller
     public function updateUser(Request $request, $id)
     {
         $user = User::find($id);
-        if($user != null){
+        if($user != null && !$user->deleted){
             $user->name = $request->input('name');
             $user->email = $request->input('email');
             if($request->has('password'))
@@ -122,7 +124,7 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         $user = User::find($id);
-        if($user != null){
+        if($user != null && !$user->deleted){
             $user->name = $request->input('name');
             $user->email = $request->input('email');
             if($request->has('password'))
@@ -145,8 +147,9 @@ class UserController extends Controller
     public function deleteUser($id)
     {
         $user=User::find($id);
-        $user->role()->dissociate();
-        $user->delete();
+        // $user->role()->dissociate();
+        $user->deleted = true;
+        $user->save();
         return response()->json(new RESTResponse(200, "OK", null));
     }
 

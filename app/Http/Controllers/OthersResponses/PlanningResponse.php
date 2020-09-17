@@ -36,12 +36,14 @@ class PlanningResponse
 
     public $modifie_par;
 
+    public $deleted;
+
     /**
      * Create a new PlanningResponse instance.
      *
      * @return void
      */
-    public function __construct($id, $d, $h, $ro, $nro, $b, $nb, $a, $na, $c, $nc, $v, $cl, $cp, $ml, $mp)
+    public function __construct($id, $d, $h, $ro, $nro, $b, $nb, $a, $na, $c, $nc, $v, $cl, $cp, $ml, $mp, $del)
     {
         $this->id = $id;
         $this->date = $d;
@@ -59,5 +61,6 @@ class PlanningResponse
         $this->cree_par = $cp;
         $this->modifie_le = $ml;
         $this->modifie_par = $mp;
+        $this->deleted = $del;
     }
 }

@@ -28,9 +28,9 @@ class CampagneController extends Controller
      */
     public function index()
     {
-        $campagnes = Campagne::all();
+        $campagnes = Campagne::where('deleted', 0)->get();
         $campagnes->transform(function ($item, $key) {
-            $campagne = new CampagneOtherResponse ($item->id, $item->nom, $item->type_remuneration, $item->remuneration, Annonceur::find($item->annonceur_id) == null ? null : Annonceur::find($item->annonceur_id), Annonceur::find($item->annonceur_id) == null ? null : Annonceur::find($item->annonceur_id)->nom, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name);
+            $campagne = new CampagneOtherResponse ($item->id, $item->nom, $item->type_remuneration, $item->remuneration, Annonceur::find($item->annonceur_id) == null ? null : Annonceur::find($item->annonceur_id), Annonceur::find($item->annonceur_id) == null ? null : Annonceur::find($item->annonceur_id)->nom, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name, $item->deleted);
             return $campagne;
         });
         return response()->json(new RESTResponse(200, "OK", $campagnes));
@@ -42,9 +42,9 @@ class CampagneController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function indexPaginate($per_page = 15){
-        $campagnes = Campagne::paginate($per_page);
+        $campagnes = Campagne::where('deleted', 0)->paginate($per_page);
         $campagnes->transform(function ($item, $key) {
-            $campagne = new CampagneOtherResponse ($item->id, $item->nom, $item->type_remuneration, $item->remuneration, Annonceur::find($item->annonceur_id) == null ? null : Annonceur::find($item->annonceur_id), Annonceur::find($item->annonceur_id) == null ? null : Annonceur::find($item->annonceur_id)->nom, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name);
+            $campagne = new CampagneOtherResponse ($item->id, $item->nom, $item->type_remuneration, $item->remuneration, Annonceur::find($item->annonceur_id) == null ? null : Annonceur::find($item->annonceur_id), Annonceur::find($item->annonceur_id) == null ? null : Annonceur::find($item->annonceur_id)->nom, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name, $item->deleted);
             return $campagne;
         });
         return response()
@@ -57,9 +57,11 @@ class CampagneController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function indexSearchPaginate($per_page = 15, $search_text=""){
-        $campagnes = Campagne::where('nom', 'like', '%' . $search_text . '%')->paginate($per_page);
+        $campagnes = Campagne::where('nom', 'like', '%' . $search_text . '%')
+                                ->where('deleted', 0)
+                                ->paginate($per_page);
         $campagnes->transform(function ($item, $key) {
-            $campagne = new CampagneOtherResponse ($item->id, $item->nom, $item->type_remuneration, $item->remuneration, Annonceur::find($item->annonceur_id) == null ? null : Annonceur::find($item->annonceur_id), Annonceur::find($item->annonceur_id) == null ? null : Annonceur::find($item->annonceur_id)->nom, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name);
+            $campagne = new CampagneOtherResponse ($item->id, $item->nom, $item->type_remuneration, $item->remuneration, Annonceur::find($item->annonceur_id) == null ? null : Annonceur::find($item->annonceur_id), Annonceur::find($item->annonceur_id) == null ? null : Annonceur::find($item->annonceur_id)->nom, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name, $item->deleted);
             return $campagne;
         });
         return response()
@@ -681,8 +683,10 @@ class CampagneController extends Controller
     {
         $campagne = Campagne::find($id);
         if($campagne != null){
-            $campagne->annonceur()->dissociate();
-            $campagne->delete();
+            // $campagne->annonceur()->dissociate();
+            // $campagne->delete();
+            $campagne->deleted = true;
+            $campagne->save();
             return response()->json(new RESTResponse(200, "OK", null));
         }else
         return response()->json(new RESTResponse(404, "L'élément que vous souhaiter supprimer n'existe pas dans la Base de données !", null));

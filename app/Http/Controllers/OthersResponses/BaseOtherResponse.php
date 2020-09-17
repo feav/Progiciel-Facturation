@@ -20,12 +20,14 @@ class BaseOtherResponse
 
     public $modifie_par;
 
+    public $deleted;
+
     /**
      * Create a new BaseOtherResponse instance.
      *
      * @return void
      */
-    public function __construct($id, $n, $ro, $nro, $cl, $cp, $ml, $mp)
+    public function __construct($id, $n, $ro, $nro, $cl, $cp, $ml, $mp, $del)
     {
         $this->id = $id;
         $this->nom = $n;
@@ -35,5 +37,6 @@ class BaseOtherResponse
         $this->cree_par = $cp;
         $this->modifie_le = $ml;
         $this->modifie_par = $mp;
+        $this->deleted = $del;
     }
 }

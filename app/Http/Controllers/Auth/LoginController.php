@@ -81,7 +81,7 @@ class LoginController extends Controller
         // }else
         //     return redirect()->route('login')->withErrors(['msg', "L'adresse email et le mot de passe ne correspondent pas !"]);
 
-
+        
         if (Auth::attempt(['email' => $request->input('email'), 'password' => $request->input('password')])) { 
             $oClient = DB::table('oauth_clients')->where('password_client', 1)->first();
             $data = [
@@ -95,9 +95,13 @@ class LoginController extends Controller
             $response = app('router')->prepareResponse($request, app()->handle($request));
             $result = json_decode((string) $response->content(), true);
             $user = Auth::user();
-            $user->poste = Role::find($user->role_id) == null ? 'Poste introuvable' : Role::find($user->role_id)->intitule;
-            $tabdata=array('code' => 200, 'tokens' => $result, 'user' => $user);
-            return response()->json($tabdata, $this->successStatus);
+            if(!$user->deleted){
+                $user->poste = Role::find($user->role_id) == null ? 'Poste introuvable' : Role::find($user->role_id)->intitule;
+                $tabdata=array('code' => 200, 'tokens' => $result, 'user' => $user);
+                return response()->json($tabdata, $this->successStatus);
+            }else{
+                return response()->json(['code' => 403], 200);
+            }
         } 
         else { 
             return response()->json(['code' => 401], 200);

@@ -38,12 +38,14 @@ class ResultatResponse
 
     public $modifie_par;
 
+    public $deleted;
+
     /**
      * Create a new ResultatResponse instance.
      *
      * @return void
      */
-    public function __construct($id, $d, $h, $ro, $nro, $b, $nb, $a, $na, $c, $nc, $v, $re, $cl, $cp, $ml, $mp)
+    public function __construct($id, $d, $h, $ro, $nro, $b, $nb, $a, $na, $c, $nc, $v, $re, $cl, $cp, $ml, $mp, $del)
     {
         $this->id = $id;
         $this->date = $d;
@@ -62,5 +64,6 @@ class ResultatResponse
         $this->cree_par = $cp;
         $this->modifie_le = $ml;
         $this->modifie_par = $mp;
+        $this->deleted = $del;
     }
 }

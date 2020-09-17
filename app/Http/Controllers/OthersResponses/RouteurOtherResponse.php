@@ -18,12 +18,14 @@ class RouteurOtherResponse
 
     public $modifie_par;
 
+    public $deleted;
+
     /**
      * Create a new RouteurOtherResponse instance.
      *
      * @return void
      */
-    public function __construct($id, $n, $pr, $cl, $cp, $ml, $mp)
+    public function __construct($id, $n, $pr, $cl, $cp, $ml, $mp, $del)
     {
         $this->id = $id;
         $this->nom = $n;
@@ -32,5 +34,6 @@ class RouteurOtherResponse
         $this->cree_par = $cp;
         $this->modifie_le = $ml;
         $this->modifie_par = $mp;
+        $this->deleted = $del;
     }
 }
