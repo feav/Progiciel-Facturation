@@ -10,6 +10,8 @@ class BaseOtherResponse
      
     public $routeur;
 
+    public $nom_routeur;
+
     public $cree_le;
 
     public $cree_par;
@@ -23,11 +25,12 @@ class BaseOtherResponse
      *
      * @return void
      */
-    public function __construct($id, $n, $ro, $cl, $cp, $ml, $mp)
+    public function __construct($id, $n, $ro, $nro, $cl, $cp, $ml, $mp)
     {
         $this->id = $id;
         $this->nom = $n;
         $this->routeur = $ro;
+        $this->nom_routeur = $nro;
         $this->cree_le = $cl;
         $this->cree_par = $cp;
         $this->modifie_le = $ml;

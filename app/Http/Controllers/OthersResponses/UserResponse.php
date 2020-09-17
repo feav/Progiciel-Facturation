@@ -14,6 +14,8 @@ class UserResponse
      
     public $role;
 
+    public $nom_role;
+
     public $cree_le;
 
     public $cree_par;
@@ -27,13 +29,14 @@ class UserResponse
      *
      * @return void
      */
-    public function __construct($id, $n, $em, $pw, $rol, $cl, $cp, $ml, $mp)
+    public function __construct($id, $n, $em, $pw, $rol, $nrol, $cl, $cp, $ml, $mp)
     {
         $this->id = $id;
         $this->nom = $n;
         $this->email = $em;
         $this->password = $pw;
         $this->role = $rol;
+        $this->nom_role = $nrol;
         $this->cree_le = $cl;
         $this->cree_par = $cp;
         $this->modifie_le = $ml;

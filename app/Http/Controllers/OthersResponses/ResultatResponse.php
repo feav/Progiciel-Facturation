@@ -12,11 +12,19 @@ class ResultatResponse
      
     public $routeur;
 
+    public $nom_routeur;
+
     public $base;
+
+    public $nom_base;
      
     public $annonceur;
+
+    public $nom_annonceur;
      
     public $campagne;
+
+    public $nom_campagne;
 
     public $volume;
 
@@ -35,15 +43,19 @@ class ResultatResponse
      *
      * @return void
      */
-    public function __construct($id, $d, $h, $ro, $b, $a, $c, $v, $re, $cl, $cp, $ml, $mp)
+    public function __construct($id, $d, $h, $ro, $nro, $b, $nb, $a, $na, $c, $nc, $v, $re, $cl, $cp, $ml, $mp)
     {
         $this->id = $id;
         $this->date = $d;
         $this->heure = $h;
         $this->routeur = $ro;
+        $this->nom_routeur = $nro;
         $this->base = $b;
+        $this->nom_base = $nb;
         $this->annonceur = $a;
+        $this->nom_annonceur = $na;
         $this->campagne = $c;
+        $this->nom_campagne = $nc;
         $this->volume = $v;
         $this->resultat = $re;
         $this->cree_le = $cl;

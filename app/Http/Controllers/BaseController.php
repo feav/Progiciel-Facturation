@@ -30,7 +30,7 @@ class BaseController extends Controller
     {
         $bases = Base::all();
         $bases->transform(function ($item, $key) {
-            $base = new BaseOtherResponse($item->id, $item->nom, Routeur::find($item->routeur_id), date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name);
+            $base = new BaseOtherResponse($item->id, $item->nom, Routeur::find($item->routeur_id) == null ? null : Routeur::find($item->routeur_id), Routeur::find($item->routeur_id) == null ? null : Routeur::find($item->routeur_id)->nom, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name);
             return $base;
         });
         return response()->json(new RESTResponse(200, "OK", $bases));
@@ -44,7 +44,7 @@ class BaseController extends Controller
     public function indexPaginate($per_page = 15){
         $bases = Base::paginate($per_page);
         $bases->transform(function ($item, $key) {
-            $base = new BaseOtherResponse($item->id, $item->nom, Routeur::find($item->routeur_id) == null ? null : Routeur::find($item->routeur_id)->nom, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name);
+            $base = new BaseOtherResponse($item->id, $item->nom, Routeur::find($item->routeur_id) == null ? null : Routeur::find($item->routeur_id), Routeur::find($item->routeur_id) == null ? null : Routeur::find($item->routeur_id)->nom, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name);
             return $base;
         });
         return response()
@@ -59,7 +59,7 @@ class BaseController extends Controller
     public function indexSearchPaginate($per_page = 15, $search_text=""){
         $bases = Base::where('nom', 'like', '%' . $search_text . '%')->paginate($per_page);
         $bases->transform(function ($item, $key) {
-            $base = new BaseOtherResponse($item->id, $item->nom, Routeur::find($item->routeur_id), date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name);
+            $base = new BaseOtherResponse($item->id, $item->nom, Routeur::find($item->routeur_id) == null ? null : Routeur::find($item->routeur_id), Routeur::find($item->routeur_id) == null ? null : Routeur::find($item->routeur_id)->nom, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name);
             return $base;
         });
         return response()
