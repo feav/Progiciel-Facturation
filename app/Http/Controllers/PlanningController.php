@@ -25,7 +25,7 @@ class PlanningController extends Controller
      */
     public function index()
     {
-        $plannings = Planning::where('deleted', 0)->get();
+        $plannings = Planning::all();
         $plannings->transform(function ($item, $key) {
             $planning = new PlanningResponse($item->id, date('d-m-Y', strtotime($item->date_envoi)), $item->heure_envoi, Routeur::find($item->routeur_id) == null ? null : Routeur::find($item->routeur_id), Routeur::find($item->routeur_id) == null ? null : Routeur::find($item->routeur_id)->nom, Base::find($item->base_id) == null ? null : Base::find($item->base_id), Base::find($item->base_id) == null ? null : Base::find($item->base_id)->nom, Annonceur::find($item->annonceur_id) == null ? null : Annonceur::find($item->annonceur_id), Annonceur::find($item->annonceur_id) == null ? null : Annonceur::find($item->annonceur_id)->nom, Campagne::find($item->campagne_id) == null ? null : Campagne::find($item->campagne_id), Campagne::find($item->campagne_id) == null ? null : Campagne::find($item->campagne_id)->nom, $item->volume, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name, $item->deleted);
             return $planning;
@@ -39,7 +39,7 @@ class PlanningController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function indexPaginate($per_page = 15){
-        $plannings = Planning::where('deleted', 0)->paginate($per_page);
+        $plannings = Planning::paginate($per_page);
         $plannings->transform(function ($item, $key) {
             $planning = new PlanningResponse($item->id, date('d-m-Y', strtotime($item->date_envoi)), $item->heure_envoi, Routeur::find($item->routeur_id) == null ? null : Routeur::find($item->routeur_id), Routeur::find($item->routeur_id) == null ? null : Routeur::find($item->routeur_id)->nom, Base::find($item->base_id) == null ? null : Base::find($item->base_id), Base::find($item->base_id) == null ? null : Base::find($item->base_id)->nom, Annonceur::find($item->annonceur_id) == null ? null : Annonceur::find($item->annonceur_id), Annonceur::find($item->annonceur_id) == null ? null : Annonceur::find($item->annonceur_id)->nom, Campagne::find($item->campagne_id) == null ? null : Campagne::find($item->campagne_id), Campagne::find($item->campagne_id) == null ? null : Campagne::find($item->campagne_id)->nom, $item->volume, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name, $item->deleted);
             return $planning;
@@ -53,7 +53,7 @@ class PlanningController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function indexSearchPaginate($per_page = 15, $search_text=""){
-        $plannings = Planning::where('deleted', 0)->whereHas('campagne', function ($query) use($search_text) {
+        $plannings = Planning::whereHas('campagne', function ($query) use($search_text) {
             $query->where('nom', 'like', '%' . $search_text . '%');
         })->orWhereHas('base', function ($query) use($search_text) {
             $query->where('nom', 'like', '%' . $search_text . '%');
@@ -82,7 +82,7 @@ class PlanningController extends Controller
     public function applyFilter($per_page = 15, Request $request){
         $from = date('Y-m-d', strtotime($request->filtre_date_debut));
         $to = date('Y-m-d', strtotime($request->filtre_date_fin));
-        $plannings = Planning::where('deleted', 0)->whereBetween('date_envoi', [$from, $to])->orderBy('date_envoi')->paginate($per_page);
+        $plannings = Planning::whereBetween('date_envoi', [$from, $to])->orderBy('date_envoi')->paginate($per_page);
         $plannings->transform(function ($item, $key) {
             $planning = new PlanningResponse($item->id, date('d-m-Y', strtotime($item->date_envoi)), $item->heure_envoi, Routeur::find($item->routeur_id) == null ? null : Routeur::find($item->routeur_id), Routeur::find($item->routeur_id) == null ? null : Routeur::find($item->routeur_id)->nom, Base::find($item->base_id) == null ? null : Base::find($item->base_id), Base::find($item->base_id) == null ? null : Base::find($item->base_id)->nom, Annonceur::find($item->annonceur_id) == null ? null : Annonceur::find($item->annonceur_id), Annonceur::find($item->annonceur_id) == null ? null : Annonceur::find($item->annonceur_id)->nom, Campagne::find($item->campagne_id) == null ? null : Campagne::find($item->campagne_id), Campagne::find($item->campagne_id) == null ? null : Campagne::find($item->campagne_id)->nom, $item->volume, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name, $item->deleted);
             return $planning;

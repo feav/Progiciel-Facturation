@@ -84,75 +84,75 @@ class ResultatController extends Controller
         $resultats;
 
         if($request->filtre_annonceur==null && $request->filtre_routeur==null && $request->filtre_campagne==null && $request->filtre_base==null){
-            $resultats = Resultat::where('deleted', 0)->whereBetween('date_envoi', [$from, $to])->orderBy('date_envoi')->paginate($per_page);
+            $resultats = Resultat::whereBetween('date_envoi', [$from, $to])->orderBy('date_envoi')->paginate($per_page);
         }else if($request->filtre_annonceur!=null && $request->filtre_routeur==null && $request->filtre_campagne==null && $request->filtre_base==null){
-            $resultats = Resultat::where('deleted', 0)->where([ 'annonceur_id' => $request->filtre_annonceur ])
+            $resultats = Resultat::where([ 'annonceur_id' => $request->filtre_annonceur ])
                                     ->whereBetween('date_envoi', [$from, $to])->orderBy('date_envoi')->paginate($per_page);
         }else if($request->filtre_annonceur==null && $request->filtre_routeur!=null && $request->filtre_campagne==null && $request->filtre_base==null){
-            $resultats = Resultat::where('deleted', 0)->where([ 'routeur_id' => $request->filtre_routeur ])
+            $resultats = Resultat::where([ 'routeur_id' => $request->filtre_routeur ])
                                     ->whereBetween('date_envoi', [$from, $to])->orderBy('date_envoi')->paginate($per_page);
         }else if($request->filtre_annonceur==null && $request->filtre_routeur==null && $request->filtre_campagne!=null && $request->filtre_base==null){
-            $resultats = Resultat::where('deleted', 0)->where([ 'campagne_id' => $request->filtre_campagne ])
+            $resultats = Resultat::where([ 'campagne_id' => $request->filtre_campagne ])
                                     ->whereBetween('date_envoi', [$from, $to])->orderBy('date_envoi')->paginate($per_page);
         }else if($request->filtre_annonceur==null && $request->filtre_routeur==null && $request->filtre_campagne==null && $request->filtre_base!=null){
-            $resultats = Resultat::where('deleted', 0)->where([ 'base_id' => $request->filtre_base ])
+            $resultats = Resultat::where([ 'base_id' => $request->filtre_base ])
                                     ->whereBetween('date_envoi', [$from, $to])->orderBy('date_envoi')->paginate($per_page);
         }else if($request->filtre_annonceur==null && $request->filtre_routeur!=null && $request->filtre_campagne!=null && $request->filtre_base!=null){
-            $resultats = Resultat::where('deleted', 0)->where([
+            $resultats = Resultat::where([
                 'routeur_id' => $request->filtre_routeur,
                 'campagne_id' => $request->filtre_campagne,
                 'base_id' => $request->filtre_base
             ])->whereBetween('date_envoi', [$from, $to])->orderBy('date_envoi')->paginate($per_page);
         }else if($request->filtre_annonceur!=null && $request->filtre_routeur==null && $request->filtre_campagne!=null && $request->filtre_base!=null){
-            $resultats = Resultat::where('deleted', 0)->where([
+            $resultats = Resultat::where([
                 'annonceur_id' => $request->filtre_annonceur,
                 'campagne_id' => $request->filtre_campagne,
                 'base_id' => $request->filtre_base
             ])->whereBetween('date_envoi', [$from, $to])->orderBy('date_envoi')->paginate($per_page);
         }else if($request->filtre_annonceur!=null && $request->filtre_routeur!=null && $request->filtre_campagne==null && $request->filtre_base!=null){
-            $resultats = Resultat::where('deleted', 0)->where([
+            $resultats = Resultat::where([
                 'annonceur_id' => $request->filtre_annonceur,
                 'routeur_id' => $request->filtre_routeur,
                 'base_id' => $request->filtre_base
             ])->whereBetween('date_envoi', [$from, $to])->orderBy('date_envoi')->paginate($per_page);
         }else if($request->filtre_annonceur!=null && $request->filtre_routeur!=null && $request->filtre_campagne!=null && $request->filtre_base==null){
-            $resultats = Resultat::where('deleted', 0)->where([
+            $resultats = Resultat::where([
                 'annonceur_id' => $request->filtre_annonceur,
                 'routeur_id' => $request->filtre_routeur,
                 'campagne_id' => $request->filtre_campagne
             ])->whereBetween('date_envoi', [$from, $to])->orderBy('date_envoi')->paginate($per_page);
         }else if($request->filtre_annonceur==null && $request->filtre_routeur==null && $request->filtre_campagne!=null && $request->filtre_base!=null){
-            $resultats = Resultat::where('deleted', 0)->where([
+            $resultats = Resultat::where([
                 'campagne_id' => $request->filtre_campagne,
                 'base_id' => $request->filtre_base
             ])->whereBetween('date_envoi', [$from, $to])->orderBy('date_envoi')->paginate($per_page);
         }else if($request->filtre_annonceur==null && $request->filtre_routeur!=null && $request->filtre_campagne==null && $request->filtre_base!=null){
-            $resultats = Resultat::where('deleted', 0)->where([
+            $resultats = Resultat::where([
                 'routeur_id' => $request->filtre_routeur,
                 'base_id' => $request->filtre_base
             ])->whereBetween('date_envoi', [$from, $to])->orderBy('date_envoi')->paginate($per_page);
         }else if($request->filtre_annonceur==null && $request->filtre_routeur!=null && $request->filtre_campagne!=null && $request->filtre_base==null){
-            $resultats = Resultat::where('deleted', 0)->where([
+            $resultats = Resultat::where([
                 'routeur_id' => $request->filtre_routeur,
                 'campagne_id' => $request->filtre_campagne
             ])->whereBetween('date_envoi', [$from, $to])->orderBy('date_envoi')->paginate($per_page);
         }else if($request->filtre_annonceur!=null && $request->filtre_routeur==null && $request->filtre_campagne==null && $request->filtre_base!=null){
-            $resultats = Resultat::where('deleted', 0)->where([
+            $resultats = Resultat::where([
                 'annonceur_id' => $request->filtre_annonceur,
                 'base_id' => $request->filtre_base
             ])->whereBetween('date_envoi', [$from, $to])->orderBy('date_envoi')->paginate($per_page);
         }else if($request->filtre_annonceur!=null && $request->filtre_routeur==null && $request->filtre_campagne!=null && $request->filtre_base==null){
-            $resultats = Resultat::where('deleted', 0)->where([
+            $resultats = Resultat::where([
                 'annonceur_id' => $request->filtre_annonceur,
                 'campagne_id' => $request->filtre_campagne
             ])->whereBetween('date_envoi', [$from, $to])->orderBy('date_envoi')->paginate($per_page);
         }else if($request->filtre_annonceur!=null && $request->filtre_routeur!=null && $request->filtre_campagne==null && $request->filtre_base==null){
-            $resultats = Resultat::where('deleted', 0)->where([
+            $resultats = Resultat::where([
                 'annonceur_id' => $request->filtre_annonceur,
                 'routeur_id' => $request->filtre_routeur,
             ])->whereBetween('date_envoi', [$from, $to])->orderBy('date_envoi')->paginate($per_page);
         }else {
-            $resultats = Resultat::where('deleted', 0)->where([
+            $resultats = Resultat::where([
                 'annonceur_id' => $request->filtre_annonceur,
                 'routeur_id' => $request->filtre_routeur,
                 'campagne_id' => $request->filtre_campagne,

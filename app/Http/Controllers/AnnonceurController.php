@@ -29,7 +29,7 @@ class AnnonceurController extends Controller
      */
     public function index()
     {
-        $annonceurs = Annonceur::where('deleted', 0)->get();
+        $annonceurs = Annonceur::all();
         $annonceurs->transform(function ($item, $key) {
             $annonceur = new AnnonceurOtherResponse ($item->id, $item->nom, $item->url, $item->login, $item->password, $item->adresse_facturation, $item->email_comptabilite, $item->email_direction, $item->email_production, $item->delai_paiement, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name, $item->deleted);
             return $annonceur;
@@ -43,7 +43,7 @@ class AnnonceurController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function indexPaginate($per_page = 15){
-        $annonceurs = Annonceur::where('deleted', 0)->paginate($per_page);
+        $annonceurs = Annonceur::paginate($per_page);
         $annonceurs->transform(function ($item, $key) {
             $annonceur = new AnnonceurOtherResponse ($item->id, $item->nom, $item->url, $item->login, $item->password, $item->adresse_facturation, $item->email_comptabilite, $item->email_direction, $item->email_production, $item->delai_paiement, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name, $item->deleted);
             return $annonceur;
@@ -59,7 +59,6 @@ class AnnonceurController extends Controller
      */
     public function indexSearchPaginate($per_page = 15, $search_text=""){
         $annonceurs = Annonceur::where('nom', 'like', '%' . $search_text . '%')
-                                ->where('deleted', 0)
                                 ->paginate($per_page);
         $annonceurs->transform(function ($item, $key) {
             $annonceur = new AnnonceurOtherResponse ($item->id, $item->nom, $item->url, $item->login, $item->password, $item->adresse_facturation, $item->email_comptabilite, $item->email_direction, $item->email_production, $item->delai_paiement, date('d-m-Y à H:i:s', strtotime($item->created_at)), User::find($item->cree_par) == null ? null : User::find($item->cree_par)->name, date('d-m-Y à H:i:s', strtotime($item->updated_at)), User::find($item->modifie_par) == null ? null : User::find($item->modifie_par)->name, $item->deleted);
