@@ -663,4 +663,21 @@ class RouteurController extends Controller
         }else
             return response()->json(new RESTResponse(404, "L'élément que vous souhaiter supprimer n'existe pas dans la Base de données !", null));
     }
+
+    /**
+     * Enable the specified resource from storage.
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function enable($id)
+    {
+        $routeur = Routeur::find($id);
+        if($routeur != null){
+            $routeur->deleted = false;
+            $routeur->save();
+            return response()->json(new RESTResponse(200, "OK", null));
+        }else
+            return response()->json(new RESTResponse(404, "L'élément que vous souhaiter activer n'existe pas dans la Base de données !", null));
+    }
 }

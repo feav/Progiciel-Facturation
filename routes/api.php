@@ -25,6 +25,7 @@ Route::middleware(['auth:api'])->group(function () {
 
     Route::post('routeurs/update/{id}', 'RouteurController@updateRouteur');
     Route::post('routeurs/delete/{id}', 'RouteurController@deleteRouteur');
+    Route::post('routeurs/enable/{id}', 'RouteurController@enable');
     Route::get('routeurs/paginate/{per_page}', 'RouteurController@indexPaginate');
     Route::get('routeurs/paginate/{per_page}/searchText/{search_text}', 'RouteurController@indexSearchPaginate');
     Route::get('routeurs/forStatistics/{page?}/{per_page?}', 'RouteurController@indexForStatistics')->where(['page'=>'[0-9]+', 'per_page'=>'[0-9]+']);
@@ -39,6 +40,7 @@ Route::middleware(['auth:api'])->group(function () {
 
     Route::post('annonceurs/update/{id}', 'AnnonceurController@updateAnnonceur');
     Route::post('annonceurs/delete/{id}', 'AnnonceurController@deleteAnnonceur');
+    Route::post('annonceurs/enable/{id}', 'AnnonceurController@enable');
     Route::get('annonceurs/paginate/{per_page}', 'AnnonceurController@indexPaginate');
     Route::get('annonceurs/paginate/{per_page}/searchText/{search_text}', 'AnnonceurController@indexSearchPaginate');
     Route::get('annonceurs/forStatistics/{page?}/{per_page?}', 'AnnonceurController@indexForStatistics')->where(['page'=>'[0-9]+', 'per_page'=>'[0-9]+']);
@@ -53,6 +55,7 @@ Route::middleware(['auth:api'])->group(function () {
 
     Route::post('bases/update/{id}', 'BaseController@updateBase');
     Route::post('bases/delete/{id}', 'BaseController@deleteBase');
+    Route::post('bases/enable/{id}', 'BaseController@enable');
     Route::get('bases/paginate/{per_page}', 'BaseController@indexPaginate');
     Route::get('bases/paginate/{per_page}/searchText/{search_text}', 'BaseController@indexSearchPaginate');
     Route::get('bases/forStatistics/{page?}/{per_page?}', 'BaseController@indexForStatistics')->where(['page'=>'[0-9]+', 'per_page'=>'[0-9]+']);
@@ -68,6 +71,7 @@ Route::middleware(['auth:api'])->group(function () {
 
     Route::post('campagnes/update/{id}', 'CampagneController@updateCampagne');
     Route::post('campagnes/delete/{id}', 'CampagneController@deleteCampagne');
+    Route::post('campagnes/enable/{id}', 'CampagneController@enable');
     Route::get('campagnes/paginate/{per_page}', 'CampagneController@indexPaginate');
     Route::get('campagnes/paginate/{per_page}/searchText/{search_text}', 'CampagneController@indexSearchPaginate');
     Route::get('campagnes/forStatistics/{page?}/{per_page?}', 'CampagneController@indexForStatistics')->where(['page'=>'[0-9]+', 'per_page'=>'[0-9]+']);
@@ -89,12 +93,15 @@ Route::middleware(['auth:api'])->group(function () {
 
     Route::post('plannings/update/{id}', 'PlanningController@updatePlanning');
     Route::post('plannings/delete/{id}', 'PlanningController@deletePlanning');
+    Route::post('plannings/enable/{id}', 'PlanningController@enable');
+    Route::post('plannings/hide/{id}', 'PlanningController@hide');
     Route::get('plannings/paginate/{per_page}', 'PlanningController@indexPaginate');
     Route::get('plannings/paginate/{per_page}/searchText/{search_text}', 'PlanningController@indexSearchPaginate');
     Route::post('plannings/applyFilter/{per_page}', 'PlanningController@applyFilter');
 
     Route::post('users/update/{id}', 'UserController@updateUser');
     Route::post('users/delete/{id}', 'UserController@deleteUser');
+    Route::post('users/enable/{id}', 'UserController@enable');
     Route::get('users/paginate/{per_page}', 'UserController@indexPaginate');
     Route::get('users/paginate/{per_page}/searchText/{search_text}', 'UserController@indexSearchPaginate');
 

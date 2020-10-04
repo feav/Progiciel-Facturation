@@ -671,6 +671,23 @@ class AnnonceurController extends Controller
     }
 
     /**
+     * Enable the specified resource from storage.
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function enable($id)
+    {
+        $annonceur = Annonceur::find($id);
+        if($annonceur != null){
+            $annonceur->deleted = false;
+            $annonceur->save();
+            return response()->json(new RESTResponse(200, "OK", null));
+        }else
+            return response()->json(new RESTResponse(404, "L'élément que vous souhaiter activer n'existe pas dans la Base de données !", null));
+    }
+
+    /**
      * Remove the specified resource from storage.
      *
      * @param  int $id

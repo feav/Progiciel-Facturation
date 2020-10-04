@@ -146,10 +146,29 @@ class UserController extends Controller
     public function deleteUser($id)
     {
         $user=User::find($id);
-        // $user->role()->dissociate();
-        $user->deleted = true;
-        $user->save();
-        return response()->json(new RESTResponse(200, "OK", null));
+        if($user != null){
+            $user->deleted = true;
+            $user->save();
+            return response()->json(new RESTResponse(200, "OK", null));
+        }else
+            return response()->json(new RESTResponse(404, "L'élément que vous souhaiter supprimer n'existe pas dans la Base de données !", null));
+    }
+
+    /**
+     * Enable the specified resource from storage.
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function enable($id)
+    {
+        $user=User::find($id);
+        if($user != null){
+            $user->deleted = false;
+            $user->save();
+            return response()->json(new RESTResponse(200, "OK", null));
+        }else
+            return response()->json(new RESTResponse(404, "L'élément que vous souhaiter activer n'existe pas dans la Base de données !", null));
     }
 
     /**

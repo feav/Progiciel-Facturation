@@ -654,13 +654,28 @@ class BaseController extends Controller
     {
         $base = Base::find($id);
         if($base != null){
-            // $base->routeur()->dissociate();
-            // $base->delete();
             $base->deleted = true;
             $base->save();
             return response()->json(new RESTResponse(200, "OK", null));
         }else
         return response()->json(new RESTResponse(404, "L'élément que vous souhaiter supprimer n'existe pas dans la Base de données !", null));
+    }
+
+    /**
+     * Enable the specified resource from storage.
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function enable($id)
+    {
+        $base = Base::find($id);
+        if($base != null){
+            $base->deleted = false;
+            $base->save();
+            return response()->json(new RESTResponse(200, "OK", null));
+        }else
+            return response()->json(new RESTResponse(404, "L'élément que vous souhaiter activer n'existe pas dans la Base de données !", null));
     }
 
     /**
